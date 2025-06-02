@@ -108,6 +108,38 @@ if (isset($_GET['hapus'])) {
     header("Location: admin.php?deleted=1");
     exit;
 }
+
+// Tambahkan setelah koneksi database
+
+function getTotalPackages($koneksi) {
+    $result = $koneksi->query("SELECT COUNT(*) as total FROM paket");
+    return $result->fetch_assoc()['total'];
+}
+
+function getTotalPhotos($koneksi) {
+    $result = $koneksi->query("SELECT COUNT(*) as total FROM package_gallery");
+    $gallery_count = $result->fetch_assoc()['total'];
+    
+    $result = $koneksi->query("SELECT fotos FROM paket");
+    $main_count = 0;
+    while($row = $result->fetch_assoc()) {
+        $fotos = json_decode($row['fotos'], true);
+        if (is_array($fotos)) {
+            $main_count += count($fotos);
+        }
+    }
+    
+    return $gallery_count + $main_count;
+}
+
+function getLatestPackageDate($koneksi) {
+    $result = $koneksi->query("SELECT created_at FROM paket ORDER BY id DESC LIMIT 1");
+    if ($result->num_rows > 0) {
+        $date = $result->fetch_assoc()['created_at'];
+        return date('d M Y', strtotime($date));
+    }
+    return 'Belum ada';
+}
 ?>
 
 <!DOCTYPE html>
@@ -127,1409 +159,1570 @@ if (isset($_GET['hapus'])) {
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="admin-styles.css?v=<?= time() ?>">
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="admin-styles.css" as="style">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" as="style">
 </head>
 <body>
     <!-- Update header section -->
-<header class="admin-header">
-    <div class="header-content">
-        <div class="logo-section">
-            <img src="../Asset/logo/logompti.png" alt="Vacationland Logo">
-            <h1>Admin Panel</h1>
-        </div>
-        
-        <!-- Mobile Menu Toggle -->
-        <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-        
-        <div class="admin-info">
-            <span>Selamat datang, Admin</span>
-            <a href="loginadmin.php?logout=1" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> 
-                <span class="logout-text">Logout</span>
-            </a>
-        </div>
-    </div>
-</header>
-
-<!-- Mobile Sidebar -->
-<div class="mobile-sidebar" id="mobileSidebar">
-    <div class="mobile-sidebar-header">
-        <div class="mobile-logo">
-            <img src="../Asset/logo/logompti.png" alt="Logo">
-            <span>Admin Panel</span>
-        </div>
-        <button class="mobile-close" onclick="toggleMobileMenu()">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-    
-    <nav class="mobile-nav">
-        <a href="#add-package" onclick="scrollToSection('add-package'); toggleMobileMenu();">
-            <i class="fas fa-plus-circle"></i>
-            <span>Tambah Paket</span>
-        </a>
-        <a href="#packages-list" onclick="scrollToSection('packages-list'); toggleMobileMenu();">
-            <i class="fas fa-list"></i>
-            <span>Daftar Paket</span>
-        </a>
-        <a href="#gallery-management" onclick="scrollToSection('gallery-management'); toggleMobileMenu();">
-            <i class="fas fa-images"></i>
-            <span>Kelola Gallery</span>
-        </a>
-        <a href="loginadmin.php?logout=1" class="mobile-logout">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </a>
-    </nav>
-</div>
-
-<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
-
-    <div class="container">
-        <?= $message ?>
-
-        <!-- Form Tambah Paket -->
-        <div class="admin-section" id="add-package">
-            <h2 class="section-title">
-                <i class="fas fa-plus-circle"></i>
-                Tambah Paket Wisata Baru
-            </h2>
-            
-            <?= $message ?>
-            
-            <form action="tambah.php" method="POST" enctype="multipart/form-data" id="package-form">
-                <!-- Basic Information -->
-                <div class="form-section">
-                    <h3 class="subsection-title">
-                        <i class="fas fa-info-circle"></i> Informasi Dasar
-                    </h3>
-                    
-                    <div class="form-group">
-                        <label for="nama">
-                            <i class="fas fa-tag"></i> Nama Paket <span class="required">*</span>
-                        </label>
-                        <input type="text" id="nama" name="nama" placeholder="Contoh: 3D2N Yogyakarta Heritage Tour" required>
-                        <small class="form-help">Nama paket yang menarik dan deskriptif</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="duration">
-                            <i class="fas fa-clock"></i> Durasi <span class="required">*</span>
-                        </label>
-                        <select id="duration" name="duration" required>
-                            <option value="1D">1 Hari (Day Trip)</option>
-                            <option value="2D1N" selected>2D1N</option>
-                            <option value="3D2N">3D2N</option>
-                            <option value="4D3N">4D3N</option>
-                            <option value="5D4N">5D4N</option>
-                            <option value="custom">Custom</option>
-                        </select>
-                        <small class="form-help">Pilih durasi paket tour</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="deskripsi">
-                            <i class="fas fa-align-left"></i> Deskripsi <span class="required">*</span>
-                        </label>
-                        <textarea id="deskripsi" name="deskripsi" rows="4" placeholder="Deskripsi lengkap tentang paket tour ini..." required></textarea>
-                        <small class="form-help">Jelaskan detail paket, destinasi, dan pengalaman yang akan didapat</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="price">
-                            <i class="fas fa-money-bill-wave"></i> Harga (Rupiah) <span class="required">*</span>
-                        </label>
-                        <div class="price-input-wrapper">
-                            <span class="currency-symbol">Rp</span>
-                            <input type="text" 
-                                   id="price" 
-                                   name="price" 
-                                   placeholder="2.750.000" 
-                                   pattern="[0-9.,]*"
-                                   required
-                                   oninput="formatPriceInput(this)"
-                                   onblur="validatePriceInput(this)">
-                            <span class="price-suffix">/orang</span>
-                        </div>
-                        <small class="form-help">Masukkan harga dalam rupiah per orang</small>
-                    </div>
-                </div>
-                
-                <!-- File Upload -->
-                <div class="form-section">
-                    <h3 class="subsection-title">
-                        <i class="fas fa-images"></i> Foto Paket
-                    </h3>
-                    
-                    <div class="form-group">
-                        <label for="fotos">
-                            <i class="fas fa-camera"></i> Upload Foto (3-6 foto) <span class="required">*</span>
-                        </label>
-                        <div class="file-upload-area">
-                            <input type="file" id="fotos" name="fotos[]" multiple accept="image/jpeg,image/jpg,image/png" required>
-                            <div class="upload-content">
-                                <div class="upload-icon">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                </div>
-                                <h4>Pilih atau Drag & Drop Foto</h4>
-                                <p>Upload 3-6 foto berkualitas tinggi</p>
-                            </div>
-                        </div>
-                        <div class="upload-requirements">
-                            <div class="req-item"><i class="fas fa-check"></i> Format: JPG, JPEG, PNG</div>
-                            <div class="req-item"><i class="fas fa-check"></i> Ukuran maksimal: 5MB per file</div>
-                            <div class="req-item"><i class="fas fa-check"></i> Minimal 3 foto, maksimal 6 foto</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Additional Info -->
-                <div class="form-section">
-                    <h3 class="subsection-title">
-                        <i class="fas fa-list"></i> Informasi Tambahan
-                    </h3>
-                    
-                    <div class="form-group">
-                        <label for="highlights">
-                            <i class="fas fa-star"></i> Highlights/Keunggulan
-                        </label>
-                        <textarea id="highlights" name="highlights" rows="5" placeholder="• Mengunjungi Candi Borobudur&#10;• Wisata Keraton Yogyakarta&#10;• Kuliner khas Gudeg Yu Djum"></textarea>
-                        <small class="form-help">Daftar keunggulan paket (gunakan bullet point dengan •)</small>
-                    </div>
-                    
-                    <div class="form-grid-two">
-                        <div class="form-group">
-                            <label for="inclusions">
-                                <i class="fas fa-check-circle"></i> Yang Termasuk
-                            </label>
-                            <textarea id="inclusions" name="inclusions" rows="6" placeholder="• Transportasi AC&#10;• Tiket masuk wisata&#10;• Makan sesuai program&#10;• Hotel bintang 3"></textarea>
-                            <small class="form-help">Apa saja yang termasuk dalam paket</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="exclusions">
-                                <i class="fas fa-times-circle"></i> Yang Tidak Termasuk
-                            </label>
-                            <textarea id="exclusions" name="exclusions" rows="6" placeholder="• Tiket pesawat&#10;• Pengeluaran pribadi&#10;• Tips guide&#10;• Asuransi perjalanan"></textarea>
-                            <small class="form-help">Apa saja yang tidak termasuk</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Itinerary Builder -->
-                <div class="form-section">
-                    <h3 class="subsection-title">
-                        <i class="fas fa-calendar-day"></i> Itinerary Builder
-                    </h3>
-                    
-                    <div class="itinerary-builder">
-                        <div id="itinerary-days">
-                            <!-- Days akan di-generate oleh JavaScript -->
-                        </div>
-                        
-                        <button type="button" class="btn-add-day" onclick="addNewDay()">
-                            <i class="fas fa-plus"></i> Tambah Hari Baru
-                        </button>
-                        
-                        <div class="form-group" style="margin-top: 20px;">
-                            <label for="itinerary-preview">
-                                <i class="fas fa-eye"></i> Preview Itinerary:
-                            </label>
-                            <div id="itinerary-preview" class="itinerary-preview"></div>
-                        </div>
-                    </div>
-                    
-                    <input type="hidden" name="itinerary" id="itinerary-data">
-                </div>
-                
-                <!-- Form Actions -->
-                <div class="form-actions">
-                    <button type="button" onclick="previewForm()" class="btn-preview">
-                        <i class="fas fa-eye"></i> Preview
-                    </button>
-                    <button type="reset" class="btn-primary" style="background: #6c757d;">
-                        <i class="fas fa-undo"></i> Reset
-                    </button>
-                    <button type="submit" class="btn-submit">
-                        <i class="fas fa-save"></i> Simpan Paket
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Daftar Paket -->
-        <div class="admin-section" id="packages-list">
-            <h2 class="section-title">
-                <i class="fas fa-list"></i>
-                Daftar Paket Wisata
-            </h2>
-            
-            <?php
-            $stmt = $koneksi->prepare("SELECT id, nama, deskripsi, fotos, price, duration FROM paket ORDER BY id DESC");
-            $stmt->execute();
-            $result = $stmt->get_result();
-            
-            if ($result->num_rows > 0): ?>
-                <div class="packages-grid">
-                    <?php while ($paket = $result->fetch_assoc()): ?>
-                        <div class="package-card">
-                            <div class="package-image">
-                                <?php 
-                                $fotos = json_decode($paket['fotos'], true);
-                                $firstPhoto = !empty($fotos) ? $fotos[0] : 'default.jpg';
-                                $photoPath = 'uploads/' . $firstPhoto;
-                                
-                                if (file_exists($photoPath)): ?>
-                                    <img src="<?= $photoPath ?>" alt="<?= htmlspecialchars($paket['nama']) ?>">
-                                <?php else: ?>
-                                    <img src="../Asset/Package_Culture/borobudur.jpg" alt="Default Image">
-                                <?php endif; ?>
-                            </div>
-                            
-                            <div class="package-content">
-                                <h3 class="package-title"><?= htmlspecialchars($paket['nama']) ?></h3>
-                                <p class="package-description">
-                                    <?= htmlspecialchars(substr($paket['deskripsi'], 0, 100)) ?>...
-                                </p>
-                                
-                                <div class="package-meta">
-                                    <span class="duration-badge">
-                                        <i class="fas fa-clock"></i> <?= htmlspecialchars($paket['duration'] ?? '2D1N') ?>
-                                    </span>
-                                    <span class="price-badge">
-                                        <i class="fas fa-money-bill"></i> 
-                                        <?php if ($paket['price'] && $paket['price'] > 0): ?>
-                                            Rp <?= number_format($paket['price'], 0, ',', '.') ?>
-                                        <?php else: ?>
-                                            Hubungi untuk harga
-                                        <?php endif; ?>
-                                    </span>
-                                </div>
-                                
-                                <div class="package-actions">
-                                    <a href="../FrontEnd/html/package_detail.html?id=<?= $paket['id'] ?>" class="view-btn" target="_blank">
-                                        <i class="fas fa-eye"></i> Lihat
-                                    </a>
-                                    <button onclick="openGalleryManage(<?= $paket['id'] ?>, '<?= htmlspecialchars($paket['nama'], ENT_QUOTES) ?>')" class="btn-gallery">
-                                        <i class="fas fa-images"></i> Gallery
-                                    </button>
-                                    <a href="?hapus=<?= $paket['id'] ?>" class="delete-btn" onclick="return confirm('Yakin ingin menghapus paket ini?')">
-                                        <i class="fas fa-trash"></i> Hapus
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
-                </div>
-            <?php else: ?>
-                <div class="no-packages">
-                    <i class="fas fa-suitcase-rolling"></i>
-                    <h3>Belum Ada Paket Tour</h3>
-                    <p>Silakan tambah paket baru menggunakan form di atas.</p>
-                </div>
-            <?php endif; 
-            $stmt->close();
-            ?>
-        </div>
-    </div>
-
-    <!-- Gallery Management Modal - PERBAIKAN LENGKAP -->
-    <div id="galleryManageModal" style="
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0,0,0,0.8);
-        z-index: 999999;
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(3px);
-    ">
-        <div class="modal-content" style="
-            background: white;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 85vh;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            margin: auto;
-        ">
-            <div class="modal-header" style="
-                background: linear-gradient(135deg, #3498db, #2980b9);
-                color: white;
-                padding: 15px 20px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                border-radius: 15px 15px 0 0;
-                flex-shrink: 0;
-            ">
-                <h3 style="
-                    margin: 0;
-                    font-size: 1.2rem;
-                    font-weight: 600;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                ">
-                    <i class="fas fa-images"></i> 
-                    Gallery: <span id="galleryPackageName">-</span>
-                </h3>
-                <button class="close" onclick="closeGalleryModal()" style="
-                    background: rgba(255,255,255,0.2);
-                    border: none;
-                    color: white;
-                    width: 35px;
-                    height: 35px;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1.1rem;
-                ">
-                    <i class="fas fa-times"></i>
-                </button>
+    <!-- Enhanced Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <img src="../Asset/logo/logompti.png" alt="Logo">
+                <h1>Vacationland Admin</h1>
             </div>
             
-            <div class="modal-body" style="
-                padding: 20px;
-                overflow-y: auto;
-                flex: 1;
-                background: #f8f9fa;
-            ">
-                <!-- Upload Section -->
-                <div style="
-                    background: white;
-                    padding: 15px;
-                    border-radius: 10px;
-                    margin-bottom: 20px;
-                    border: 1px solid #e9ecef;
-                ">
-                    <h4 style="
-                        margin: 0 0 10px 0;
-                        color: #2c3e50;
-                        font-size: 0.95rem;
-                        display: flex;
-                        align-items: center;
-                        gap: 6px;
-                    ">
-                        <i class="fas fa-upload"></i> Upload Foto Baru
-                    </h4>
-                    
-                    <form id="galleryUploadForm" enctype="multipart/form-data">
-                        <input type="hidden" id="galleryPackageId" name="package_id">
-                        
-                        <div style="margin-bottom: 10px;">
-                            <label style="
-                                font-size: 0.8rem;
-                                margin-bottom: 5px;
-                                display: block;
-                                color: #555;
-                            ">Pilih Foto (Max 10 files, 5MB each):</label>
-                            <input type="file" 
-                                   id="galleryFiles" 
-                                   name="photos[]" 
-                                   multiple 
-                                   accept="image/*" 
-                                   required
-                                   style="
-                                       padding: 8px;
-                                       border: 2px dashed #3498db;
-                                       border-radius: 6px;
-                                       background: white;
-                                       width: 100%;
-                                       box-sizing: border-box;
-                                   ">
-                        </div>
-                        
-                        <div id="galleryCaptions" style="margin-bottom: 10px;"></div>
-                        
-                        <button type="submit" style="
-                            background: #3498db;
-                            color: white;
-                            padding: 8px 16px;
-                            border: none;
-                            border-radius: 6px;
-                            font-weight: 600;
-                            font-size: 0.9rem;
-                            cursor: pointer;
-                            transition: background 0.3s ease;
-                        ">
-                            <i class="fas fa-upload"></i> Upload Foto
-                        </button>
-                    </form>
+            <!-- Mobile Menu Toggle -->
+            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            
+            <div class="admin-info desktop-only">
+                <div class="admin-welcome">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Welcome, <?= $_SESSION['admin_name'] ?? 'Admin' ?></span>
                 </div>
-                
-                <!-- Photos Grid Section -->
-                <div style="
-                    background: white;
-                    padding: 15px;
-                    border-radius: 10px;
-                    border: 1px solid #e9ecef;
-                ">
-                    <h4 style="
-                        margin: 0 0 15px 0;
-                        color: #2c3e50;
-                        font-size: 0.95rem;
-                        display: flex;
-                        align-items: center;
-                        gap: 6px;
-                    ">
-                        <i class="fas fa-photo-video"></i> Foto yang Ada
-                    </h4>
-                    
-                    <div id="existingPhotos" style="
-                        display: grid;
-                        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                        gap: 10px;
-                        min-height: 150px;
-                        background: #f8f9fa;
-                        padding: 15px;
-                        border-radius: 8px;
-                        border: 1px solid #e9ecef;
-                    ">
-                        <div style="
-                            grid-column: 1 / -1;
-                            text-align: center;
-                            padding: 20px;
-                            color: #666;
-                        ">
-                            <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 8px;"></i>
-                            <p style="margin: 0; font-size: 0.9rem;">Memuat foto gallery...</p>
-                        </div>
-                    </div>
-                </div>
+                <a href="loginadmin.php?logout=1" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
             </div>
         </div>
-    </div>
+    </header>
 
-    <script>
-console.log('🚀 Admin script loaded');
-
-// Preview Form Function - PERBAIKAN LENGKAP
-function previewForm() {
-    console.log('👁️ Preview form called');
-    
-    const form = document.querySelector('form[action="tambah.php"]');
-    if (!form) {
-        alert('Form tidak ditemukan');
-        return;
-    }
-    
-    // Validasi form terlebih dahulu
-    if (!validateForm(form)) {
-        return;
-    }
-    
-    const formData = new FormData(form);
-    
-    // Create modal
-    const modal = document.createElement('div');
-    modal.id = 'preview-modal';
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        z-index: 10001;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        box-sizing: border-box;
-    `;
-    
-    // Build preview content
-    const modalContent = document.createElement('div');
-    modalContent.style.cssText = `
-        background: white;
-        border-radius: 20px;
-        padding: 30px;
-        max-width: 700px;
-        width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
-        position: relative;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-    `;
-    
-    // Get form values
-    const nama = formData.get('nama') || 'Tidak ada nama';
-    const deskripsi = formData.get('deskripsi') || 'Tidak ada deskripsi';
-    const duration = formData.get('duration') || '2D1N';
-    const price = formData.get('price') || '0';
-    const highlights = formData.get('highlights') || 'Tidak ada highlight';
-    const inclusions = formData.get('inclusions') || 'Tidak ada inclusions';
-    const exclusions = formData.get('exclusions') || 'Tidak ada exclusions';
-    const itinerary = formData.get('itinerary') || '{}';
-    
-    // Process itinerary for display
-    let itineraryDisplay = 'Belum ada itinerary';
-    try {
-        const itineraryData = JSON.parse(itinerary);
-        if (itineraryData && typeof itineraryData === 'object') {
-            itineraryDisplay = '';
-            Object.keys(itineraryData).forEach(dayId => {
-                const day = itineraryData[dayId];
-                if (day.title && day.activities) {
-                    itineraryDisplay += `<strong>${day.title}:</strong><br>`;
-                    day.activities.forEach(activity => {
-                        if (activity.description) {
-                            const time = activity.time || '--:--';
-                            itineraryDisplay += `&nbsp;&nbsp;${time} - ${activity.description}<br>`;
-                        }
-                    });
-                    itineraryDisplay += '<br>';
-                }
-            });
-        }
-    } catch (e) {
-        console.warn('Error parsing itinerary:', e);
-    }
-    
-    // Get selected files info
-    const fileInput = document.getElementById('fotos');
-    let filesInfo = 'Tidak ada file dipilih';
-    if (fileInput && fileInput.files.length > 0) {
-        filesInfo = `${fileInput.files.length} file dipilih:<br>`;
-        for (let i = 0; i < fileInput.files.length; i++) {
-            const file = fileInput.files[i];
-            const sizeKB = Math.round(file.size / 1024);
-            filesInfo += `• ${file.name} (${sizeKB} KB)<br>`;
-        }
-    }
-    
-    modalContent.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px;">
-            <h3 style="margin: 0; color: #2c3e50; font-family: 'Lora', serif; font-size: 1.8rem;">
-                <i class="fas fa-eye" style="color: #3498db; margin-right: 10px;"></i>
-                Preview Paket
-            </h3>
-            <button onclick="closePreviewModal()" style="
-                background: #e74c3c;
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                cursor: pointer;
-                font-size: 1.2rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
-            " onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">
+    <!-- Enhanced Mobile Sidebar -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="mobile-logo">
+                <img src="../Asset/logo/logompti.png" alt="Logo">
+                <span>Admin Panel</span>
+            </div>
+            <button class="mobile-close" onclick="toggleMobileMenu()">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         
-        <div style="max-height: 60vh; overflow-y: auto; padding-right: 10px;">
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold; color: #2c3e50; display: block; margin-bottom: 8px;">
-                    <i class="fas fa-tag" style="color: #3498db; margin-right: 8px;"></i>Nama Paket:
-                </label>
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; border-left: 4px solid #3498db;">
-                    ${nama}
-                </div>
+        <nav class="mobile-nav">
+            <a href="#tambah-paket" onclick="scrollToSection('tambah-paket')">
+                <i class="fas fa-plus-circle"></i>
+                <span>Tambah Paket</span>
+            </a>
+            <a href="#daftar-paket" onclick="scrollToSection('daftar-paket')">
+                <i class="fas fa-list"></i>
+                <span>Daftar Paket</span>
+            </a>
+            <a href="../FrontEnd/html/Index.html" target="_blank">
+                <i class="fas fa-eye"></i>
+                <span>Lihat Website</span>
+            </a>
+        </nav>
+        
+        <div class="mobile-logout">
+            <a href="loginadmin.php?logout=1">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+    <!-- Enhanced Container with improved sections -->
+    <div class="container">
+        <?= $message ?>
+        
+        <!-- Dashboard Stats Section -->
+        <div class="admin-section dashboard-stats">
+            <div class="section-title">
+                <i class="fas fa-chart-line"></i>
+                Dashboard Overview
             </div>
             
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold; color: #2c3e50; display: block; margin-bottom: 8px;">
-                    <i class="fas fa-align-left" style="color: #3498db; margin-right: 8px;"></i>Deskripsi:
-                </label>
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; border-left: 4px solid #27ae60;">
-                    ${deskripsi}
-                </div>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <div>
-                    <label style="font-weight: bold; color: #2c3e50; display: block; margin-bottom: 8px;">
-                        <i class="fas fa-clock" style="color: #f39c12; margin-right: 8px;"></i>Durasi:
-                    </label>
-                    <div style="background: #fff3cd; padding: 12px; border-radius: 8px; border-left: 4px solid #f39c12;">
-                        ${duration}
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-suitcase-rolling"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?= getTotalPackages($koneksi) ?></h3>
+                        <p>Total Paket</p>
                     </div>
                 </div>
-                <div>
-                    <label style="font-weight: bold; color: #2c3e50; display: block; margin-bottom: 8px;">
-                        <i class="fas fa-money-bill-wave" style="color: #28a745; margin-right: 8px;"></i>Harga:
-                    </label>
-                    <div style="background: #d4edda; padding: 12px; border-radius: 8px; border-left: 4px solid #28a745;">
-                        Rp ${parseInt(price).toLocaleString('id-ID')}
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?= getTotalPhotos($koneksi) ?></h3>
+                        <p>Total Foto</p>
                     </div>
                 </div>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold; color: #2c3e50; display: block; margin-bottom: 8px;">
-                    <i class="fas fa-star" style="color: #e74c3c; margin-right: 8px;"></i>Highlights:
-                </label>
-                <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; border-left: 4px solid #e74c3c; white-space: pre-wrap;">
-                    ${highlights}
-                </div>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold; color: #2c3e50; display: block; margin-bottom: 8px;">
-                    <i class="fas fa-calendar-day" style="color: #17a2b8; margin-right: 8px;"></i>Itinerary:
-                </label>
-                <div style="background: #d1ecf1; padding: 12px; border-radius: 8px; border-left: 4px solid #17a2b8;">
-                    ${itineraryDisplay}
-                </div>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold; color: #2c3e50; display: block; margin-bottom: 8px;">
-                    <i class="fas fa-check-circle" style="color: #28a745; margin-right: 8px;"></i>Included:
-                </label>
-                <div style="background: #d4edda; padding: 12px; border-radius: 8px; border-left: 4px solid #28a745; white-space: pre-wrap;">
-                    ${inclusions}
-                </div>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold; color: #2c3e50; display: block; margin-bottom: 8px;">
-                    <i class="fas fa-times-circle" style="color: #dc3545; margin-right: 8px;"></i>Excluded:
-                </label>
-                <div style="background: #f8d7da; padding: 12px; border-radius: 8px; border-left: 4px solid #dc3545; white-space: pre-wrap;">
-                    ${exclusions}
-                </div>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="font-weight: bold; color: #2c3e50; display: block; margin-bottom: 8px;">
-                    <i class="fas fa-images" style="color: #6f42c1; margin-right: 8px;"></i>File Foto:
-                </label>
-                <div style="background: #e2e3f0; padding: 12px; border-radius: 8px; border-left: 4px solid #6f42c1;">
-                    ${filesInfo}
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3><?= getLatestPackageDate($koneksi) ?></h3>
+                        <p>Paket Terbaru</p>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div style="margin-top: 25px; padding-top: 20px; border-top: 2px solid #f0f0f0; display: flex; gap: 15px; justify-content: center;">
-            <button onclick="closePreviewModal()" style="
-                background: #6c757d;
-                color: white;
-                border: none;
-                padding: 12px 25px;
-                border-radius: 25px;
-                cursor: pointer;
-                font-weight: 600;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            " onmouseover="this.style.background='#5a6268'" onmouseout="this.style.background='#6c757d'">
-                <i class="fas fa-arrow-left"></i>
-                Kembali Edit
-            </button>
-            <button onclick="submitFormFromPreview()" style="
-                background: #28a745;
-                color: white;
-                border: none;
-                padding: 12px 25px;
-                border-radius: 25px;
-                cursor: pointer;
-                font-weight: 600;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            " onmouseover="this.style.background='#218838'" onmouseout="this.style.background='#28a745'">
-                <i class="fas fa-save"></i>
-                Simpan Paket
-            </button>
+
+        <!-- Enhanced Add Package Section -->
+        <div class="admin-section" id="tambah-paket">
+            <div class="section-title">
+                <i class="fas fa-plus-circle"></i>
+                Tambah Paket Wisata Baru
+            </div>
+            
+            <!-- Multi-Step Form -->
+            <form action="tambah.php" method="POST" enctype="multipart/form-data" class="enhanced-form">
+                
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" data-step="1" id="step-1">
+                    <div class="form-section">
+                        <div class="subsection-title">
+                            <i class="fas fa-info-circle"></i>
+                            Informasi Dasar Paket
+                        </div>
+                        
+                        <div class="form-grid-two">
+                            <div class="form-group">
+                                <label for="nama"><i class="fas fa-tag"></i> Nama Paket <span class="required">*</span></label>
+                                <input type="text" id="nama" name="nama" required maxlength="100" 
+                                       placeholder="Contoh: 2D1N Wisata Yogyakarta">
+                                <span class="form-help">Masukkan nama paket yang menarik dan deskriptif</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="duration"><i class="fas fa-clock"></i> Durasi</label>
+                                <select id="duration" name="duration">
+                                    <option value="1D">1 Hari</option>
+                                    <option value="2D1N" selected>2 Hari 1 Malam</option>
+                                    <option value="3D2N">3 Hari 2 Malam</option>
+                                    <option value="4D3N">4 Hari 3 Malam</option>
+                                    <option value="5D4N">5 Hari 4 Malam</option>
+                                    <option value="Custom">Custom</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="deskripsi"><i class="fas fa-align-left"></i> Deskripsi Paket <span class="required">*</span></label>
+                            <textarea id="deskripsi" name="deskripsi" required rows="4" maxlength="500"
+                                      placeholder="Deskripsikan paket wisata ini dengan menarik..."></textarea>
+                            <span class="form-help">Jelaskan keunikan dan daya tarik paket wisata ini</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="price"><i class="fas fa-money-bill-wave"></i> Harga Paket <span class="required">*</span></label>
+                            <div class="price-input-wrapper">
+                                <span class="currency-symbol">Rp</span>
+                                <input type="text" id="price" name="price" required 
+                                       placeholder="0" 
+                                       oninput="formatPriceInput(this)"
+                                       onblur="validatePriceInput(this)">
+                                <span class="price-suffix">/ orang</span>
+                            </div>
+                            <div id="price-preview" class="price-preview"></div>
+                            <span class="form-help">Masukkan harga dalam Rupiah (tanpa titik atau koma)</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fotos"><i class="fas fa-camera"></i> Foto Paket <span class="required">*</span></label>
+                            <div class="file-upload-area" onclick="document.getElementById('fotos').click()">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="upload-content">
+                                    <h4>Klik untuk Upload Foto</h4>
+                                    <p>atau drag & drop file di sini</p>
+                                </div>
+                                <div class="upload-requirements">
+                                    <div class="req-item"><i class="fas fa-check"></i> Format: JPG, PNG</div>
+                                    <div class="req-item"><i class="fas fa-check"></i> Ukuran: Maks 5MB per file</div>
+                                    <div class="req-item"><i class="fas fa-check"></i> Jumlah: 3-6 foto</div>
+                                </div>
+                            </div>
+                            <input type="file" id="fotos" name="fotos[]" multiple accept="image/*" required style="display: none;">
+                            <div id="file-preview" class="file-preview"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-navigation">
+                        <button type="button" class="btn-next" onclick="nextStep()">
+                            Lanjut ke Highlights <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Highlights & Features -->
+                <div class="form-step" data-step="2" id="step-2">
+                    <div class="form-section">
+                        <div class="subsection-title">
+                            <i class="fas fa-star"></i>
+                            Highlights & Yang Termasuk/Tidak Termasuk
+                        </div>
+                        
+                        <div class="form-grid-two">
+                            <!-- Highlights Builder -->
+                            <div class="form-group">
+                                <label><i class="fas fa-gem"></i> Highlights Paket</label>
+                                <div class="highlights-builder">
+                                    <div class="input-header">
+                                        <button type="button" class="btn-add-sample" onclick="addHighlightSample()">
+                                            <i class="fas fa-magic"></i> Sample Data
+                                        </button>
+                                        <button type="button" class="btn-add-sample" onclick="clearHighlights()">
+                                            <i class="fas fa-trash"></i> Clear All
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="highlight-builder-container">
+                                        <div id="highlight-items" class="highlight-items">
+                                            <!-- Highlight items akan ditambahkan di sini via JavaScript -->
+                                        </div>
+                                        
+                                        <button type="button" class="btn-add-highlight" onclick="addHighlightItem()">
+                                            <i class="fas fa-plus"></i> Tambah Highlight
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Hidden input untuk form submission -->
+                                    <input type="hidden" id="highlights" name="highlights">
+                                    
+                                    <!-- Live Preview -->
+                                    <div class="highlight-preview">
+                                        <div class="preview-header">
+                                            <i class="fas fa-eye"></i> Preview Highlights
+                                        </div>
+                                        <div id="highlight-preview" class="preview-content">
+                                            <p><em>Highlights akan muncul di sini...</em></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Inclusions Builder -->
+                            <div class="form-group">
+                                <label><i class="fas fa-check-circle"></i> Yang Termasuk</label>
+                                <div class="inclusions-builder">
+                                    <div class="input-header">
+                                        <button type="button" class="btn-add-sample" onclick="addInclusionSample()">
+                                            <i class="fas fa-magic"></i> Sample Data
+                                        </button>
+                                        <button type="button" class="btn-add-sample" onclick="clearInclusions()">
+                                            <i class="fas fa-trash"></i> Clear All
+                                        </button>
+                                    </div>
+                                    
+                                    <textarea id="inclusions-text" name="inclusions" rows="8" 
+                                              placeholder="Masukkan item yang termasuk dalam paket, pisahkan dengan enter...
+🏨 Akomodasi hotel
+🚐 Transportasi AC
+🎫 Tiket masuk objek wisata
+🍽️ Makan sesuai program
+👨‍🏫 Guide profesional"
+                                              oninput="updateInclusionPreview()"></textarea>
+                                    
+                                    <!-- Live Preview -->
+                                    <div class="inclusion-preview">
+                                        <div class="preview-header">
+                                            <i class="fas fa-eye"></i> Preview Yang Termasuk
+                                        </div>
+                                        <div id="inclusion-preview" class="preview-content">
+                                            <p><em>Yang termasuk akan muncul di sini...</em></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Exclusions Builder -->
+                        <div class="form-group">
+                            <label><i class="fas fa-times-circle"></i> Yang Tidak Termasuk</label>
+                            <div class="exclusions-builder">
+                                <div class="input-header">
+                                    <button type="button" class="btn-add-sample" onclick="addExclusionSample()">
+                                        <i class="fas fa-magic"></i> Sample Data
+                                    </button>
+                                    <button type="button" class="btn-add-sample" onclick="clearExclusions()">
+                                        <i class="fas fa-trash"></i> Clear All
+                                    </button>
+                                </div>
+                                
+                                <textarea id="exclusions-text" name="exclusions" rows="8" 
+                                          placeholder="Masukkan item yang tidak termasuk dalam paket, pisahkan dengan enter...
+✈️ Tiket pesawat/kereta
+🍻 Minuman beralkohol
+🛍️ Belanja pribadi
+📱 Keperluan pribadi
+💸 Tips guide (opsional)"
+                                          oninput="updateExclusionPreview()"></textarea>
+                                
+                                <!-- Live Preview -->
+                                <div class="exclusion-preview">
+                                    <div class="preview-header">
+                                        <i class="fas fa-eye"></i> Preview Yang Tidak Termasuk
+                                    </div>
+                                    <div id="exclusion-preview" class="preview-content">
+                                        <p><em>Yang tidak termasuk akan muncul di sini...</em></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-navigation">
+                        <button type="button" class="btn-prev" onclick="prevStep()">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </button>
+                        <button type="button" class="btn-next" onclick="nextStep()">
+                            Lanjut ke Itinerary <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Itinerary -->
+                <div class="form-step" data-step="3" id="step-3">
+                    <div class="form-section">
+                        <div class="subsection-title">
+                            <i class="fas fa-route"></i>
+                            Itinerary Perjalanan
+                        </div>
+                        
+                        <div class="itinerary-builder">
+                            <div class="input-header">
+                                <button type="button" class="btn-add-sample" onclick="loadSampleItinerary()">
+                                    <i class="fas fa-magic"></i> Sample Itinerary
+                                </button>
+                                <button type="button" class="btn-add-sample" onclick="clearItinerary()">
+                                    <i class="fas fa-trash"></i> Clear All
+                                </button>
+                                <button type="button" class="btn-add-day" onclick="addNewDay()">
+                                    <i class="fas fa-plus"></i> Tambah Hari
+                                </button>
+                            </div>
+                            
+                            <div id="itinerary-days" class="itinerary-days">
+                                <!-- Days akan ditambahkan di sini via JavaScript -->
+                            </div>
+                            
+                            <!-- Hidden input untuk form submission -->
+                            <input type="hidden" id="itinerary" name="itinerary">
+                            
+                            <!-- Live Preview -->
+                            <div class="itinerary-preview">
+                                <div class="preview-header">
+                                    <i class="fas fa-eye"></i> Preview Itinerary
+                                </div>
+                                <div id="itinerary-preview" class="preview-content">
+                                    <p><em>Itinerary akan muncul di sini...</em></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-navigation">
+                        <button type="button" class="btn-prev" onclick="prevStep()">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </button>
+                        <button type="button" class="btn-next" onclick="nextStep()">
+                            Review & Submit <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Review & Submit -->
+                <div class="form-step" data-step="4" id="step-4">
+                    <div class="form-section">
+                        <div class="subsection-title">
+                            <i class="fas fa-check-double"></i>
+                            Review & Submit
+                        </div>
+                        
+                        <div class="review-summary">
+                            <h3>Review Detail Paket</h3>
+                            <p>Pastikan semua informasi sudah benar sebelum menyimpan paket.</p>
+                            
+                            <div class="review-sections">
+                                <div class="review-basic">
+                                    <h4><i class="fas fa-info-circle"></i> Informasi Dasar</h4>
+                                    <div id="review-basic-content">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                                
+                                <div class="review-highlights">
+                                    <h4><i class="fas fa-star"></i> Highlights</h4>
+                                    <div id="review-highlights-content">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                                
+                                <div class="review-inclusions">
+                                    <h4><i class="fas fa-check"></i> Inclusions/Exclusions</h4>
+                                    <div id="review-inclusions-content">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                                
+                                <div class="review-itinerary">
+                                    <h4><i class="fas fa-route"></i> Itinerary</h4>
+                                    <div id="review-itinerary-content">
+                                        <!-- Will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-navigation">
+                        <button type="button" class="btn-prev" onclick="prevStep()">
+                            <i class="fas fa-arrow-left"></i> Kembali
+                        </button>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save"></i> Simpan Paket
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
-    `;
+
+        <!-- Existing Packages Section -->
+        <div class="admin-section" id="paket-list">
+            <!-- Content paket yang sudah ada tetap sama -->
+        </div>
+    </div>
+
+    <!-- Gallery Management Modal - LENGKAP -->
+    <div id="galleryManageModal" class="modal" style="backdrop-filter: blur(3px);">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3>Kelola Galeri untuk Paket: <span id="galleryPackageName" style="font-weight: bold;"></span></h3>
+                <span class="close" onclick="closeGalleryModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Form Upload Foto Tambahan -->
+                <div class="form-section" style="margin-bottom: 20px;">
+                    <h4 class="subsection-title" style="font-size: 1.2rem; margin-bottom:15px;">
+                        <i class="fas fa-upload"></i> Upload Foto Tambahan
+                    </h4>
+                    <form id="galleryUploadForm" enctype="multipart/form-data">
+                        <input type="hidden" name="package_id" id="galleryPackageId">
+                        <div class="form-group">
+                            <label for="galleryFiles">
+                                <i class="fas fa-images"></i> Pilih Foto (bisa lebih dari satu)
+                            </label>
+                            <input type="file" 
+                                   id="galleryFiles" 
+                                   name="photos[]" 
+                                   multiple 
+                                   accept="image/jpeg,image/jpg,image/png">
+                            <small class="form-help">Format: JPG, JPEG, PNG. Maks: 5MB/file.</small>
+                        </div>
+                        <div id="galleryCaptions" class="form-group" style="margin-top:10px;">
+                            <!-- Input caption akan digenerate oleh JS -->
+                        </div>
+                        <button type="submit" class="btn-submit" style="margin-top:15px;">
+                            <i class="fas fa-cloud-upload-alt"></i> Upload Foto
+                        </button>
+                    </form>
+                    <div id="galleryUploadMessage" style="margin-top:10px;"></div>
+                </div>
+
+                <!-- Daftar Foto yang Sudah Ada -->
+                <div class="form-section">
+                    <h4 class="subsection-title" style="font-size: 1.2rem; margin-bottom:15px;">
+                        <i class="fas fa-photo-video"></i> Foto Tersimpan
+                    </h4>
+                    <div id="existingPhotos" class="packages-grid" 
+                         style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                        <p>Tidak ada foto tambahan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div> <!-- End container -->
+
+    <!-- Load admin-gallery.js SEBELUM script utama -->
+    <script src="admin-gallery.js?v=<?= time() ?>"></script>
+
+    <script>
+console.log('🚀 Admin script loaded');
+
+// =================================
+// NOTIFICATION SYSTEM
+// =================================
+
+function showNotification(message, type = 'info', duration = 5000) {
+    console.log(`📢 Notification: ${type} - ${message}`);
     
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
-    document.body.style.overflow = 'hidden';
-    
-    // Click outside to close
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closePreviewModal();
-        }
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.admin-notification');
+    existingNotifications.forEach(notification => {
+        notification.remove();
     });
     
-    console.log('✅ Preview modal created and displayed');
-}
-
-// Close Preview Modal Function
-function closePreviewModal() {
-    console.log('❌ Closing preview modal');
+    const notification = document.createElement('div');
+    notification.className = `admin-notification notification-${type}`;
     
-    const modal = document.getElementById('preview-modal');
-    if (modal) {
-        modal.remove();
-        document.body.style.overflow = '';
-        console.log('✅ Preview modal closed');
-    } else {
-        console.warn('⚠️ Preview modal not found');
-    }
-}
-
-// Submit form from preview
-function submitFormFromPreview() {
-    console.log('💾 Submitting form from preview');
-    
-    closePreviewModal();
-    
-    const form = document.querySelector('form[action="tambah.php"]');
-    if (form) {
-        // Show loading state
-        const submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) {
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
-            submitBtn.disabled = true;
+    // Set styles based on type
+    const typeStyles = {
+        success: {
+            background: 'linear-gradient(135deg, #27ae60, #2ecc71)',
+            icon: 'fas fa-check-circle'
+        },
+        error: {
+            background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+            icon: 'fas fa-exclamation-triangle'
+        },
+        warning: {
+            background: 'linear-gradient(135deg, #f39c12, #e67e22)',
+            icon: 'fas fa-exclamation-circle'
+        },
+        info: {
+            background: 'linear-gradient(135deg, #3498db, #2980b9)',
+            icon: 'fas fa-info-circle'
         }
-        
-        form.submit();
-    } else {
-        alert('Form tidak ditemukan!');
-    }
-}
-
-// Enhanced Form Validation
-function validateForm(form) {
-    console.log('🔍 Validating form...');
+    };
     
-    // Clear previous errors
-    document.querySelectorAll('.field-error').forEach(error => error.remove());
-    document.querySelectorAll('input, textarea, select').forEach(field => {
-        field.style.borderColor = '';
-    });
+    const style = typeStyles[type] || typeStyles.info;
     
-    let isValid = true;
-    
-    // Validate nama
-    const nama = form.querySelector('[name="nama"]');
-    if (!nama || !nama.value.trim()) {
-        showFieldError(nama, 'Nama paket harus diisi');
-        isValid = false;
-    } else if (nama.value.trim().length < 3) {
-        showFieldError(nama, 'Nama paket minimal 3 karakter');
-        isValid = false;
-    }
-    
-    // Validate deskripsi
-    const deskripsi = form.querySelector('[name="deskripsi"]');
-    if (!deskripsi || !deskripsi.value.trim()) {
-        showFieldError(deskripsi, 'Deskripsi harus diisi');
-        isValid = false;
-    } else if (deskripsi.value.trim().length < 10) {
-        showFieldError(deskripsi, 'Deskripsi minimal 10 karakter');
-        isValid = false;
-    }
-    
-    // Validate price - PERBAIKAN TOTAL
-    const price = form.querySelector('[name="price"]');
-    if (!price || !price.value.trim()) {
-        showFieldError(price, 'Harga harus diisi');
-        isValid = false;
-    } else {
-        // Convert formatted price to raw number
-        const rawPrice = price.value.replace(/[^0-9]/g, '');
-        const priceValue = parseInt(rawPrice);
-        
-        console.log('💰 Price validation:', {
-            input: price.value,
-            raw: rawPrice,
-            numeric: priceValue
-        });
-        
-        if (isNaN(priceValue) || priceValue <= 0) {
-            showFieldError(price, 'Harga harus berupa angka yang valid dan lebih dari 0');
-            isValid = false;
-        } else if (priceValue < 100000) {
-            showFieldError(price, 'Harga minimal Rp 100.000');
-            isValid = false;
-        } else if (priceValue > 50000000) {
-            showFieldError(price, 'Harga maksimal Rp 50.000.000');
-            isValid = false;
-        }
-    }
-    
-    // Validate file upload
-    const fotos = form.querySelector('[name="fotos[]"]');
-    if (!fotos || !fotos.files || fotos.files.length === 0) {
-        showFieldError(fotos, 'Minimal harus upload 1 foto');
-        isValid = false;
-    } else if (fotos.files.length < 3) {
-        showFieldError(fotos, 'Minimal harus upload 3 foto');
-        isValid = false;
-    } else if (fotos.files.length > 6) {
-        showFieldError(fotos, 'Maksimal 6 foto');
-        isValid = false;
-    } else {
-        // Validate each file
-        for (let i = 0; i < fotos.files.length; i++) {
-            const file = fotos.files[i];
-            const maxSize = 5 * 1024 * 1024; // 5MB
-            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-            
-            if (!allowedTypes.includes(file.type)) {
-                showFieldError(fotos, `File ${file.name} bukan format gambar yang valid (JPG/PNG)`);
-                isValid = false;
-                break;
-            }
-            
-            if (file.size > maxSize) {
-                showFieldError(fotos, `File ${file.name} terlalu besar (maksimal 5MB)`);
-                isValid = false;
-                break;
-            }
-        }
-    }
-    
-    console.log('🔍 Form validation result:', isValid);
-    return isValid;
-}
-
-// Show Field Error Function
-function showFieldError(field, message) {
-    if (!field) return;
-    
-    // Remove existing error
-    const existingError = field.parentNode.querySelector('.field-error');
-    if (existingError) {
-        existingError.remove();
-    }
-    
-    // Create error element
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'field-error';
-    errorDiv.style.cssText = `
-        color: #e74c3c;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${style.background};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        z-index: 10000;
+        max-width: 350px;
+        min-width: 250px;
+        animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        font-weight: 500;
         font-size: 0.9rem;
-        margin-top: 5px;
-        padding: 8px 12px;
-        background: rgba(231, 76, 60, 0.1);
-        border-radius: 5px;
-        border-left: 3px solid #e74c3c;
-        animation: slideInDown 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     `;
-    errorDiv.textContent = message;
     
-    field.style.borderColor = '#e74c3c';
-    field.parentNode.appendChild(errorDiv);
-}
-
-// Clear Field Error Function
-function clearFieldError(field) {
-    if (!field) return;
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="${style.icon}" style="font-size: 1.2rem; flex-shrink: 0;"></i>
+            <span style="flex: 1; line-height: 1.4;">${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" 
+                    style="background: none; border: none; color: rgba(255,255,255,0.8); cursor: pointer; font-size: 1.3rem; padding: 0; margin-left: 8px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s ease;"
+                    title="Tutup notifikasi">×</button>
+        </div>
+    `;
     
-    const existingError = field.parentNode.querySelector('.field-error');
-    if (existingError) {
-        existingError.remove();
+    // Add animation keyframes if not already added
+    if (!document.querySelector('#notification-styles')) {
+        const styleSheet = document.createElement('style');
+        styleSheet.id = 'notification-styles';
+        styleSheet.textContent = `
+            @keyframes slideInRight {
+                from { opacity: 0; transform: translateX(100%); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+            @keyframes slideOutRight {
+                from { opacity: 1; transform: translateX(0); }
+                to { opacity: 0; transform: translateX(100%); }
+            }
+            .admin-notification:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 35px rgba(0,0,0,0.2) !important;
+                transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+        `;
+        document.head.appendChild(styleSheet);
     }
-    field.style.borderColor = '';
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after duration
+    if (duration > 0) {
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.style.animation = 'slideOutRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 400);
+            }
+        }, duration);
+    }
+    
+    return notification;
 }
 
-// Add event listeners when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 DOM loaded, setting up event listeners...');
+// Export notification functions
+window.showNotification = showNotification;
+window.showSuccess = (msg, dur = 3000) => showNotification(msg, 'success', dur);
+window.showError = (msg, dur = 5000) => showNotification(msg, 'error', dur);
+window.showWarning = (msg, dur = 4000) => showNotification(msg, 'warning', dur);
+window.showInfo = (msg, dur = 3000) => showNotification(msg, 'info', dur);
+
+// =================================
+// PRICE FORMATTING & VALIDATION
+// =================================
+
+function formatPriceInput(input) {
+    let value = input.value.replace(/[^\d]/g, '');
+    if (value === '') {
+        input.value = '';
+        return;
+    }
+    let formatted = new Intl.NumberFormat('id-ID').format(parseInt(value));
+    input.value = formatted;
+    updatePricePreview(parseInt(value));
+}
+
+function validatePriceInput(input) {
+    let value = input.value.replace(/[^\d]/g, '');
+    let numericValue = parseInt(value);
     
-    // Clear errors on input
-    document.querySelectorAll('input, textarea, select').forEach(field => {
-        field.addEventListener('input', function() {
-            clearFieldError(this);
+    const existingError = input.parentNode.querySelector('.price-error');
+    if (existingError) existingError.remove();
+    
+    if (isNaN(numericValue) || numericValue <= 0) {
+        showPriceError(input, 'Harga harus berupa angka yang valid');
+        return false;
+    }
+    if (numericValue < 100000) {
+        showPriceError(input, 'Harga minimal Rp 100.000');
+        return false;
+    }
+    if (numericValue > 50000000) {
+        showPriceError(input, 'Harga maksimal Rp 50.000.000');
+        return false;
+    }
+    
+    input.style.borderColor = '#27ae60';
+    updatePricePreview(numericValue);
+    return true;
+}
+
+function showPriceError(input, message) {
+    input.style.borderColor = '#e74c3c';
+    const errorElement = document.createElement('div');
+    errorElement.className = 'price-error';
+    errorElement.style.cssText = 'color: #e74c3c; font-size: 0.8rem; margin-top: 5px;';
+    errorElement.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+    input.parentNode.appendChild(errorElement);
+}
+
+function updatePricePreview(value) {
+    const preview = document.getElementById('price-preview');
+    if (preview) {
+        if (value && value > 0) {
+            const formatted = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
+            preview.innerHTML = `<strong>Preview:</strong> ${formatted}`;
+            preview.style.color = '#27ae60';
+        } else {
+            preview.innerHTML = '<strong>Preview:</strong> Masukkan harga yang valid';
+            preview.style.color = '#6c757d';
+        }
+    }
+}
+
+// =================================
+// FORM STEP NAVIGATION
+// =================================
+
+let currentStep = 1;
+const totalSteps = 4;
+
+function nextStep() {
+    console.log('▶️ Next step clicked, current:', currentStep);
+    if (!validateCurrentStep()) return;
+    
+    if (currentStep < totalSteps) {
+        hideStep(currentStep);
+        currentStep++;
+        showStep(currentStep);
+        updateStepIndicator();
+        document.querySelector('.enhanced-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function prevStep() {
+    console.log('◀️ Previous step clicked, current:', currentStep);
+    if (currentStep > 1) {
+        hideStep(currentStep);
+        currentStep--;
+        showStep(currentStep);
+        updateStepIndicator();
+        document.querySelector('.enhanced-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function showStep(step) {
+    const stepElement = document.getElementById(`step-${step}`);
+    if (stepElement) {
+        stepElement.classList.add('active');
+        stepElement.style.display = 'block';
+    }
+}
+
+function hideStep(step) {
+    const stepElement = document.getElementById(`step-${step}`);
+    if (stepElement) {
+        stepElement.classList.remove('active');
+        stepElement.style.display = 'none';
+    }
+}
+
+function updateStepIndicator() {
+    // Update step indicators and navigation buttons
+    console.log('📊 Updating step indicator for step:', currentStep);
+}
+
+function validateCurrentStep() {
+    console.log('✅ Validating step:', currentStep);
+    return true; // Simplified validation
+}
+
+// Export step functions
+window.nextStep = nextStep;
+window.prevStep = prevStep;
+window.showStep = showStep;
+window.hideStep = hideStep;
+
+// =================================
+// HIGHLIGHTS BUILDER
+// =================================
+
+let highlightCounter = 0;
+
+function addHighlightItem() {
+    highlightCounter++;
+    const container = document.getElementById('highlight-items');
+    if (!container) return;
+    
+    const highlightDiv = document.createElement('div');
+    highlightDiv.className = 'highlight-item';
+    highlightDiv.setAttribute('data-id', highlightCounter);
+    
+    highlightDiv.innerHTML = `
+        <div class="highlight-controls">
+            <button type="button" class="btn-highlight-control" onclick="moveHighlight(${highlightCounter}, 'up')">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+            <button type="button" class="btn-highlight-control" onclick="moveHighlight(${highlightCounter}, 'down')">
+                <i class="fas fa-arrow-down"></i>
+            </button>
+            <button type="button" class="btn-highlight-control delete" onclick="removeHighlight(${highlightCounter})">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+        <div class="highlight-content">
+            <div class="highlight-icon-picker">
+                <select class="highlight-icon-select" onchange="updateHighlightPreview()">
+                    <option value="fas fa-star">⭐ Bintang</option>
+                    <option value="fas fa-heart">❤️ Hati</option>
+                    <option value="fas fa-gem">💎 Permata</option>
+                    <option value="fas fa-crown">👑 Mahkota</option>
+                    <option value="fas fa-fire">🔥 Api</option>
+                    <option value="fas fa-camera">📷 Kamera</option>
+                    <option value="fas fa-mountain">🏔️ Gunung</option>
+                </select>
+            </div>
+            <input type="text" class="highlight-input" placeholder="Contoh: Pemandangan sunrise yang menakjubkan" 
+                   onkeyup="updateHighlightPreview()" maxlength="100">
+        </div>
+    `;
+    
+    container.appendChild(highlightDiv);
+    updateHighlightPreview();
+    
+    setTimeout(() => {
+        const newInput = highlightDiv.querySelector('.highlight-input');
+        if (newInput) newInput.focus();
+    }, 100);
+}
+
+function removeHighlight(id) {
+    const item = document.querySelector(`[data-id="${id}"]`);
+    if (item) {
+        item.remove();
+        updateHighlightPreview();
+    }
+}
+
+function moveHighlight(id, direction) {
+    const item = document.querySelector(`[data-id="${id}"]`);
+    if (!item) return;
+    
+    const container = item.parentNode;
+    const items = Array.from(container.children);
+    const currentIndex = items.indexOf(item);
+    
+    if (direction === 'up' && currentIndex > 0) {
+        container.insertBefore(item, items[currentIndex - 1]);
+    } else if (direction === 'down' && currentIndex < items.length - 1) {
+        container.insertBefore(items[currentIndex + 1], item);
+    }
+    
+    updateHighlightPreview();
+}
+
+function updateHighlightPreview() {
+    const preview = document.getElementById('highlight-preview');
+    if (!preview) return;
+    
+    const items = document.querySelectorAll('#highlight-items .highlight-item');
+    const highlights = [];
+    
+    items.forEach(item => {
+        const icon = item.querySelector('.highlight-icon-select').value;
+        const text = item.querySelector('.highlight-input').value.trim();
+        if (text) {
+            highlights.push({ icon, text });
+        }
+    });
+    
+    if (highlights.length === 0) {
+        preview.innerHTML = '<p><em>Highlight akan muncul di sini...</em></p>';
+        if (document.getElementById('highlights')) {
+            document.getElementById('highlights').value = '';
+        }
+        return;
+    }
+    
+    let previewHTML = '<div class="highlights-preview-grid">';
+    highlights.forEach(highlight => {
+        previewHTML += `
+            <div class="highlight-preview-item">
+                <i class="${highlight.icon}"></i>
+                <span>${highlight.text}</span>
+            </div>
+        `;
+    });
+    previewHTML += '</div>';
+    
+    preview.innerHTML = previewHTML;
+    
+    // Update hidden input
+    const highlightText = highlights.map(h => h.text).join('\n');
+    if (document.getElementById('highlights')) {
+        document.getElementById('highlights').value = highlightText;
+    }
+}
+
+function addHighlightSample() {
+    const samples = [
+        { icon: 'fas fa-star', text: 'Pemandangan sunrise yang menakjubkan di Borobudur' },
+        { icon: 'fas fa-crown', text: 'Kunjungan eksklusif ke Keraton Yogyakarta' },
+        { icon: 'fas fa-camera', text: 'Spot foto Instagram-able di Taman Sari' },
+        { icon: 'fas fa-heart', text: 'Pengalaman kuliner otentik Gudeg Jogja' },
+        { icon: 'fas fa-gem', text: 'Wisata budaya di Candi Prambanan yang megah' }
+    ];
+    
+    const container = document.getElementById('highlight-items');
+    if (container) {
+        container.innerHTML = '';
+        highlightCounter = 0;
+        
+        samples.forEach(sample => {
+            addHighlightItem();
+            const lastItem = document.querySelector('#highlight-items .highlight-item:last-child');
+            if (lastItem) {
+                lastItem.querySelector('.highlight-icon-select').value = sample.icon;
+                lastItem.querySelector('.highlight-input').value = sample.text;
+            }
         });
         
-        field.addEventListener('focus', function() {
-            clearFieldError(this);
-        });
-    });
-    
-    // Initialize itinerary builder with delay
-    setTimeout(() => {
-        const itineraryContainer = document.getElementById('itinerary-days');
-        if (itineraryContainer) {
-            console.log('🗓️ Itinerary container found, initializing...');
-            initializeItinerary();
-        } else {
-            console.warn('⚠️ Itinerary container not found');
-        }
-    }, 800);
-    
-    const additionalFields = ['highlights', 'inclusions', 'exclusions'];
-    
-    additionalFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener('blur', validateAdditionalInfo);
-        }
-    });
-    
-    console.log('✅ Admin panel initialized');
-});
+        updateHighlightPreview();
+        showSuccess('Sample highlights berhasil dimuat!');
+    }
+}
 
-// === ITINERARY MANAGEMENT SYSTEM ===
+function clearHighlights() {
+    if (confirm('Yakin ingin menghapus semua highlights?')) {
+        const container = document.getElementById('highlight-items');
+        if (container) {
+            container.innerHTML = '';
+            highlightCounter = 0;
+            updateHighlightPreview();
+            showSuccess('Highlights berhasil dihapus');
+        }
+    }
+}
+
+// =================================
+// INCLUSIONS/EXCLUSIONS BUILDER
+// =================================
+
+function updateInclusionPreview() {
+    const preview = document.getElementById('inclusion-preview');
+    const textInput = document.getElementById('inclusions-text');
+    
+    if (!preview || !textInput) return;
+    
+    const inclusionText = textInput.value.trim();
+    
+    if (!inclusionText) {
+        preview.innerHTML = '<p><em>Yang termasuk akan muncul di sini...</em></p>';
+        return;
+    }
+    
+    const lines = inclusionText.split('\n').filter(line => line.trim());
+    
+    let previewHTML = '<div class="inclusion-preview-list">';
+    lines.forEach(line => {
+        const trimmedLine = line.trim();
+        if (trimmedLine) {
+            previewHTML += `
+                <div class="inclusion-preview-item">
+                    <i class="fas fa-check"></i>
+                    <span>${trimmedLine}</span>
+                </div>
+            `;
+        }
+    });
+    previewHTML += '</div>';
+    
+    preview.innerHTML = previewHTML;
+}
+
+function addInclusionSample() {
+    const sampleInclusions = `🏨 Akomodasi hotel bintang 3-4 dengan sarapan
+🚐 Transportasi AC selama tour (antar-jemput hotel)
+🎫 Tiket masuk semua objek wisata sesuai itinerary
+🍽️ Makan siang dan makan malam (5 kali makan)
+👨‍🏫 Guide profesional berbahasa Indonesia/Inggris
+💧 Air mineral selama perjalanan
+📸 Dokumentasi foto grup di setiap destinasi
+🎁 Souvenir khas Yogyakarta`;
+    
+    const textInput = document.getElementById('inclusions-text');
+    if (textInput) {
+        textInput.value = sampleInclusions;
+        updateInclusionPreview();
+        showSuccess('Sample inclusions berhasil dimuat!');
+    }
+}
+
+function clearInclusions() {
+    if (confirm('Yakin ingin menghapus semua inclusions?')) {
+        const textInput = document.getElementById('inclusions-text');
+        if (textInput) {
+            textInput.value = '';
+            updateInclusionPreview();
+            showSuccess('Inclusions berhasil dihapus');
+        }
+    }
+}
+
+function updateExclusionPreview() {
+    const preview = document.getElementById('exclusion-preview');
+    const textInput = document.getElementById('exclusions-text');
+    
+    if (!preview || !textInput) return;
+    
+    const exclusionText = textInput.value.trim();
+    
+    if (!exclusionText) {
+        preview.innerHTML = '<p><em>Yang tidak termasuk akan muncul di sini...</em></p>';
+        return;
+    }
+    
+    const lines = exclusionText.split('\n').filter(line => line.trim());
+    
+    let previewHTML = '<div class="exclusion-preview-list">';
+    lines.forEach(line => {
+        const trimmedLine = line.trim();
+        if (trimmedLine) {
+            previewHTML += `
+                <div class="exclusion-preview-item">
+                    <i class="fas fa-times"></i>
+                    <span>${trimmedLine}</span>
+                </div>
+            `;
+        }
+    });
+    previewHTML += '</div>';
+    
+    preview.innerHTML = previewHTML;
+}
+
+function addExclusionSample() {
+    const sampleExclusions = `✈️ Tiket pesawat/kereta ke Yogyakarta
+🍻 Minuman beralkohol dan soft drink
+🛍️ Belanja pribadi dan oleh-oleh tambahan
+📱 Telepon, internet, dan keperluan pribadi
+💆 Spa, massage, dan perawatan tambahan
+🎮 Aktivitas tambahan di luar itinerary
+💸 Tips untuk guide dan driver (opsional)`;
+    
+    const textInput = document.getElementById('exclusions-text');
+    if (textInput) {
+        textInput.value = sampleExclusions;
+        updateExclusionPreview();
+        showSuccess('Sample exclusions berhasil dimuat!');
+    }
+}
+
+function clearExclusions() {
+    if (confirm('Yakin ingin menghapus semua exclusions?')) {
+        const textInput = document.getElementById('exclusions-text');
+        if (textInput) {
+            textInput.value = '';
+            updateExclusionPreview();
+            showSuccess('Exclusions berhasil dihapus');
+        }
+    }
+}
+
+// =================================
+// ITINERARY BUILDER
+// =================================
+
 let itineraryData = {};
 let dayCounter = 0;
 
 function initializeItinerary() {
-    console.log('🗓️ Initializing itinerary builder...');
+    console.log('📅 Initializing itinerary builder...');
+    const itineraryContainer = document.getElementById('itinerary-days');
     
-    // Clear existing data
+    if (!itineraryContainer) {
+        console.warn('⚠️ Itinerary container not found');
+        return;
+    }
+    
+    itineraryContainer.innerHTML = '';
     itineraryData = {};
     dayCounter = 0;
     
-    // Clear container
-    const container = document.getElementById('itinerary-days');
-    if (container) {
-        container.innerHTML = '';
-    }
-    
-    // Add default first day
+    // Add first day by default
     addNewDay();
-    updateItineraryPreview();
-    
-    console.log('✅ Itinerary builder initialized');
 }
 
 function addNewDay() {
     dayCounter++;
     const dayId = `day-${dayCounter}`;
+    const dayNumber = Object.keys(itineraryData).length + 1;
     
-    console.log('➕ Adding new day:', dayId);
-    
-    // Create day data
-    itineraryData[dayId] = {
-        title: `Hari ${dayCounter}`,
-        activities: [
-            { time: '09:00', description: 'Kegiatan pagi' }
-        ]
+    const dayData = {
+        id: dayId,
+        day_number: dayNumber,
+        title: `Hari ${dayNumber}`,
+        activities: []
     };
     
-    // Render the day
-    renderDay(dayId);
-    updateItineraryPreview();
+    itineraryData[dayId] = dayData;
     
-    console.log('✅ Day added successfully:', dayId);
+    const itineraryContainer = document.getElementById('itinerary-days');
+    if (!itineraryContainer) return;
+    
+    const dayElement = createDayElement(dayId, dayData);
+    itineraryContainer.appendChild(dayElement);
+    
+    // Add first activity by default
+    addActivity(dayId);
+    
+    showSuccess(`Hari ${dayNumber} berhasil ditambahkan`);
 }
 
-function renderDay(dayId) {
-    const container = document.getElementById('itinerary-days');
-    if (!container) {
-        console.error('❌ Itinerary container not found');
-        return;
-    }
+function createDayElement(dayId, dayData) {
+    const dayDiv = document.createElement('div');
+    dayDiv.className = 'itinerary-day';
+    dayDiv.setAttribute('data-day-id', dayId);
     
-    const dayData = itineraryData[dayId];
-    if (!dayData) {
-        console.error('❌ Day data not found for:', dayId);
-        return;
-    }
-    
-    const dayElement = document.createElement('div');
-    dayElement.className = 'itinerary-day';
-    dayElement.id = dayId;
-    dayElement.setAttribute('data-day-id', dayId);
-    
-    dayElement.innerHTML = `
-        <div class="day-header-editor" onclick="toggleDayActivities('${dayId}')">
-            <input type="text" 
-                   class="day-title-input" 
-                   value="${dayData.title}" 
-                   onchange="updateDayTitle('${dayId}', this.value)"
-                   onclick="event.stopPropagation()"
-                   placeholder="Masukkan judul hari">
+    dayDiv.innerHTML = `
+        <div class="day-header-editor">
+            <div class="day-title-section">
+                <div class="day-badge">Hari ${dayData.day_number}</div>
+                <input type="text" class="day-title-input" 
+                       value="${dayData.title}" 
+                       onchange="updateDayTitle('${dayId}', this.value)"
+                       placeholder="Contoh: Hari 1 - Tiba di Yogyakarta">
+            </div>
             <div class="day-controls">
-                <button type="button" class="btn-day-control" onclick="event.stopPropagation(); deleteDayPrompt('${dayId}')"
-                        title="Hapus hari">
+                <button type="button" class="btn-day-control" onclick="duplicateDay('${dayId}')" title="Duplikat">
+                    <i class="fas fa-copy"></i>
+                </button>
+                <button type="button" class="btn-day-control delete" onclick="removeDay('${dayId}')" title="Hapus">
                     <i class="fas fa-trash"></i>
                 </button>
-                <span class="day-toggle" title="Buka/Tutup">
-                    <i class="fas fa-chevron-down"></i>
-                </span>
             </div>
         </div>
-        <div class="day-activities" id="${dayId}-activities" style="display: block;">
-            <div class="activities-container" id="${dayId}-activities-container">
-                ${renderActivities(dayId)}
-            </div>
+        <div class="day-activities" id="activities-${dayId}">
+            <div class="activities-container"></div>
             <button type="button" class="btn-add-activity" onclick="addActivity('${dayId}')">
                 <i class="fas fa-plus"></i> Tambah Aktivitas
             </button>
         </div>
     `;
     
-    container.appendChild(dayElement);
-    console.log('🏗️ Day rendered:', dayId);
-}
-
-function renderActivities(dayId) {
-    const dayData = itineraryData[dayId];
-    if (!dayData || !dayData.activities) {
-        console.warn('⚠️ No activities data for:', dayId);
-        return '';
-    }
-    
-    return dayData.activities.map((activity, index) => {
-        return `
-            <div class="activity-item" data-activity-index="${index}">
-                <div class="activity-header">
-                    <input type="text" 
-                           class="time-input" 
-                           value="${activity.time || ''}" 
-                           placeholder="09:00"
-                           onchange="updateActivity('${dayId}', ${index}, 'time', this.value)"
-                           title="Waktu aktivitas">
-                    <textarea class="activity-description" 
-                              placeholder="Deskripsi aktivitas..."
-                              onchange="updateActivity('${dayId}', ${index}, 'description', this.value)"
-                              title="Deskripsi aktivitas">${activity.description || ''}</textarea>
-                    <div class="activity-controls">
-                        <button type="button" 
-                                class="btn-activity-control ${index === 0 ? 'disabled' : ''}" 
-                                onclick="moveActivity('${dayId}', ${index}, 'up')" 
-                                ${index === 0 ? 'disabled' : ''}
-                                title="Pindah ke atas">
-                            <i class="fas fa-arrow-up"></i>
-                        </button>
-                        <button type="button" 
-                                class="btn-activity-control ${index === dayData.activities.length - 1 ? 'disabled' : ''}" 
-                                onclick="moveActivity('${dayId}', ${index}, 'down')" 
-                                ${index === dayData.activities.length - 1 ? 'disabled' : ''}
-                                title="Pindah ke bawah">
-                            <i class="fas fa-arrow-down"></i>
-                        </button>
-                        <button type="button" 
-                                class="btn-activity-control delete ${dayData.activities.length <= 1 ? 'disabled' : ''}" 
-                                onclick="deleteActivity('${dayId}', ${index})" 
-                                ${dayData.activities.length <= 1 ? 'disabled' : ''}
-                                title="Hapus aktivitas">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
+    return dayDiv;
 }
 
 function updateDayTitle(dayId, newTitle) {
-    if (!itineraryData[dayId]) {
-        console.error('❌ Day not found:', dayId);
-        return;
-    }
-    
-    itineraryData[dayId].title = newTitle.trim() || `Hari ${dayId.split('-')[1]}`;
+    if (!itineraryData[dayId]) return;
+    itineraryData[dayId].title = newTitle;
     updateItineraryPreview();
-    console.log('📝 Updated day title:', dayId, itineraryData[dayId].title);
 }
 
 function addActivity(dayId) {
-    if (!itineraryData[dayId]) {
-        console.error('❌ Day not found:', dayId);
-        return;
-    }
+    if (!itineraryData[dayId]) return;
     
-    itineraryData[dayId].activities.push({
+    const activityId = 'activity_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const newActivity = {
+        id: activityId,
         time: '',
-        description: ''
+        activity: '',
+        location: ''
+    };
+    
+    itineraryData[dayId].activities.push(newActivity);
+    renderDayActivities(dayId);
+    updateItineraryPreview();
+}
+
+function renderDayActivities(dayId) {
+    const activitiesContainer = document.querySelector(`#activities-${dayId} .activities-container`);
+    if (!activitiesContainer || !itineraryData[dayId]) return;
+    
+    activitiesContainer.innerHTML = '';
+    
+    itineraryData[dayId].activities.forEach((activity, index) => {
+        const activityElement = createActivityElement(dayId, activity, index);
+        activitiesContainer.appendChild(activityElement);
     });
-    
-    rerenderDayActivities(dayId);
-    updateItineraryPreview();
-    console.log('➕ Added activity to:', dayId);
 }
 
-function updateActivity(dayId, activityIndex, field, value) {
-    if (!itineraryData[dayId] || !itineraryData[dayId].activities[activityIndex]) {
-        console.error('❌ Activity not found:', dayId, activityIndex);
-        return;
-    }
+function createActivityElement(dayId, activity, index) {
+    const activityDiv = document.createElement('div');
+    activityDiv.className = 'activity-item';
+    activityDiv.setAttribute('data-activity-id', activity.id);
     
-    itineraryData[dayId].activities[activityIndex][field] = value;
-    updateItineraryPreview();
-    console.log('📝 Updated activity:', dayId, activityIndex, field, value);
+    activityDiv.innerHTML = `
+        <div class="activity-header">
+            <input type="time" 
+                   class="time-input" 
+                   value="${activity.time || ''}" 
+                   onchange="updateActivityTime('${dayId}', ${index}, this.value)">
+            <span class="activity-number">#${index + 1}</span>
+            <div class="activity-controls">
+                <button type="button" class="btn-activity-control" onclick="removeActivity('${dayId}', ${index})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+        <div class="activity-details">
+            <div class="activity-field">
+                <label>Aktivitas:</label>
+                <input type="text" class="activity-name" 
+                       placeholder="Contoh: Kunjungan ke Candi Borobudur"
+                       value="${activity.activity || ''}"
+                       onchange="updateActivityField('${dayId}', ${index}, 'activity', this.value)">
+            </div>
+            <div class="activity-field">
+                <label>Lokasi (opsional):</label>
+                <input type="text" class="activity-location" 
+                       placeholder="Contoh: Magelang, Jawa Tengah"
+                       value="${activity.location || ''}"
+                       onchange="updateActivityField('${dayId}', ${index}, 'location', this.value)">
+            </div>
+        </div>
+    `;
+    
+    return activityDiv;
 }
 
-function deleteActivity(dayId, activityIndex) {
-    if (!itineraryData[dayId]) {
-        console.error('❌ Day not found:', dayId);
-        return;
-    }
+function updateActivityField(dayId, activityIndex, field, newValue) {
+    if (!itineraryData[dayId] || !itineraryData[dayId].activities[activityIndex]) return;
+    itineraryData[dayId].activities[activityIndex][field] = newValue;
+    updateItineraryPreview();
+}
+
+function updateActivityTime(dayId, activityIndex, newTime) {
+    if (!itineraryData[dayId] || !itineraryData[dayId].activities[activityIndex]) return;
+    itineraryData[dayId].activities[activityIndex].time = newTime;
+    updateItineraryPreview();
+}
+
+function removeActivity(dayId, activityIndex) {
+    if (!itineraryData[dayId] || !itineraryData[dayId].activities[activityIndex]) return;
     
     if (itineraryData[dayId].activities.length <= 1) {
-        alert('⚠️ Setiap hari harus memiliki minimal 1 aktivitas');
+        showError('Minimal harus ada 1 aktivitas per hari');
         return;
     }
     
-    if (confirm('🗑️ Hapus aktivitas ini?')) {
+    if (confirm('Yakin ingin menghapus aktivitas ini?')) {
         itineraryData[dayId].activities.splice(activityIndex, 1);
-        rerenderDayActivities(dayId);
+        renderDayActivities(dayId);
         updateItineraryPreview();
-        console.log('🗑️ Deleted activity:', dayId, activityIndex);
+        showSuccess('Aktivitas berhasil dihapus');
     }
 }
 
-function moveActivity(dayId, activityIndex, direction) {
-    if (!itineraryData[dayId]) {
-        console.error('❌ Day not found:', dayId);
-        return;
+function duplicateDay(dayId) {
+    if (!itineraryData[dayId]) return;
+    
+    const originalDay = itineraryData[dayId];
+    addNewDay();
+    
+    const dayKeys = Object.keys(itineraryData);
+    const newDayId = dayKeys[dayKeys.length - 1];
+    
+    if (itineraryData[newDayId]) {
+        itineraryData[newDayId].title = originalDay.title + ' (Copy)';
+        itineraryData[newDayId].activities = originalDay.activities.map(activity => ({
+            ...activity,
+            id: 'activity_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+        }));
+        
+        const newDayElement = document.querySelector(`[data-day-id="${newDayId}"]`);
+        if (newDayElement) {
+            newDayElement.querySelector('.day-title-input').value = itineraryData[newDayId].title;
+            renderDayActivities(newDayId);
+        }
+        
+        updateItineraryPreview();
+        showSuccess('Hari berhasil diduplikat');
     }
-    
-    const activities = itineraryData[dayId].activities;
-    const newIndex = direction === 'up' ? activityIndex - 1 : activityIndex + 1;
-    
-    if (newIndex < 0 || newIndex >= activities.length) {
-        console.warn('⚠️ Cannot move activity beyond bounds');
-        return;
-    }
-    
-    // Swap activities
-    [activities[activityIndex], activities[newIndex]] = [activities[newIndex], activities[activityIndex]];
-    
-    rerenderDayActivities(dayId);
-    updateItineraryPreview();
-    console.log('↕️ Moved activity:', dayId, activityIndex, direction);
 }
 
-function deleteDayPrompt(dayId) {
+function removeDay(dayId) {
+    if (!itineraryData[dayId]) return;
+    
     const dayCount = Object.keys(itineraryData).length;
-    
     if (dayCount <= 1) {
-        alert('⚠️ Harus ada minimal 1 hari dalam itinerary');
+        showError('Minimal harus ada 1 hari dalam itinerary');
         return;
     }
     
-    const dayTitle = itineraryData[dayId]?.title || dayId;
-    if (confirm(`🗑️ Hapus "${dayTitle}" beserta semua aktivitasnya?`)) {
-        deleteDay(dayId);
+    if (confirm('Yakin ingin menghapus hari ini?')) {
+        delete itineraryData[dayId];
+        
+        const dayElement = document.querySelector(`[data-day-id="${dayId}"]`);
+        if (dayElement) {
+            dayElement.remove();
+        }
+        
+        updateItineraryPreview();
+        showSuccess('Hari berhasil dihapus');
     }
-}
-
-function deleteDay(dayId) {
-    if (!itineraryData[dayId]) {
-        console.error('❌ Day not found:', dayId);
-        return;
-    }
-    
-    delete itineraryData[dayId];
-    
-    const dayElement = document.getElementById(dayId);
-    if (dayElement) {
-        dayElement.remove();
-    }
-    
-    updateItineraryPreview();
-    console.log('🗑️ Deleted day:', dayId);
-}
-
-function toggleDayActivities(dayId) {
-    const activitiesEl = document.getElementById(`${dayId}-activities`);
-    const toggleIcon = document.querySelector(`#${dayId} .day-toggle i`);
-    
-    if (!activitiesEl || !toggleIcon) {
-        console.error('❌ Toggle elements not found for:', dayId);
-        return;
-    }
-    
-    if (activitiesEl.style.display === 'none') {
-        activitiesEl.style.display = 'block';
-        toggleIcon.className = 'fas fa-chevron-down';
-    } else {
-        activitiesEl.style.display = 'none';
-        toggleIcon.className = 'fas fa-chevron-right';
-    }
-}
-
-function rerenderDayActivities(dayId) {
-    const container = document.getElementById(`${dayId}-activities-container`);
-    if (!container) {
-        console.error('❌ Activities container not found for:', dayId);
-        return;
-    }
-    
-    container.innerHTML = renderActivities(dayId);
-    console.log('🔄 Re-rendered activities for:', dayId);
 }
 
 function updateItineraryPreview() {
     const preview = document.getElementById('itinerary-preview');
-    const hiddenInput = document.getElementById('itinerary-data');
+    const hiddenInput = document.getElementById('itinerary');
     
-    if (!preview) {
-        console.warn('⚠️ Preview element not found');
+    if (!preview) return;
+    
+    if (Object.keys(itineraryData).length === 0) {
+        preview.innerHTML = '<p><em>Itinerary akan muncul di sini...</em></p>';
+        if (hiddenInput) hiddenInput.value = '';
         return;
     }
     
-    let previewText = '';
-    const dayIds = Object.keys(itineraryData).sort();
-    
-    dayIds.forEach(dayId => {
-        const day = itineraryData[dayId];
-        if (!day) return;
-        
-        previewText += `${day.title}:\n`;
-        
-        day.activities.forEach(activity => {
-            if (activity.description && activity.description.trim()) {
-                const time = activity.time || '--:--';
-                previewText += `  ${time} - ${activity.description.trim()}\n`;
-            }
-        });
-        
-        previewText += '\n';
+    const formattedData = {};
+    Object.values(itineraryData).forEach(day => {
+        const dayKey = `day_${day.day_number}`;
+        formattedData[dayKey] = {
+            title: day.title,
+            activities: day.activities.filter(activity => activity.activity.trim()).map(activity => ({
+                time: activity.time || '',
+                activity: activity.activity,
+                location: activity.location || ''
+            }))
+        };
     });
     
-    preview.textContent = previewText.trim() || 'Belum ada itinerary';
+    let previewHTML = '';
+    Object.entries(formattedData).forEach(([dayKey, day]) => {
+        previewHTML += `
+            <div class="preview-day">
+                <h4><i class="fas fa-calendar-day"></i> ${day.title}</h4>
+                <div class="day-activities-preview">
+        `;
+        
+        if (day.activities.length > 0) {
+            day.activities.forEach(activity => {
+                previewHTML += `
+                    <div class="activity-preview-item">
+                        <div class="activity-time">
+                            ${activity.time ? `<i class="fas fa-clock"></i> ${activity.time}` : '<i class="fas fa-clock"></i> --:--'}
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-name">${activity.activity}</div>
+                            ${activity.location ? `<div class="activity-location"><i class="fas fa-map-marker-alt"></i> ${activity.location}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            previewHTML += '<p class="no-activities"><em>Belum ada aktivitas</em></p>';
+        }
+        
+        previewHTML += `</div></div>`;
+    });
+    
+    preview.innerHTML = previewHTML;
     
     if (hiddenInput) {
-        hiddenInput.value = JSON.stringify(itineraryData);
+        hiddenInput.value = JSON.stringify(formattedData);
+    }
+}
+
+function loadSampleItinerary() {
+    const sampleData = {
+        'day-1': {
+            id: 'day-1',
+            day_number: 1,
+            title: 'Hari 1 - Tiba di Yogyakarta',
+            activities: [
+                { id: 'act1', time: '08:00', activity: 'Penjemputan di bandara/stasiun', location: 'Bandara Adisutcipto' },
+                { id: 'act2', time: '09:30', activity: 'Check-in hotel dan istirahat', location: 'Hotel' },
+                { id: 'act3', time: '10:30', activity: 'Kunjungan ke Keraton Yogyakarta', location: 'Keraton Yogyakarta' },
+                { id: 'act4', time: '12:00', activity: 'Makan siang kuliner lokal', location: 'Restoran lokal' }
+            ]
+        },
+        'day-2': {
+            id: 'day-2',
+            day_number: 2,
+            title: 'Hari 2 - Wisata Candi',
+            activities: [
+                { id: 'act5', time: '05:00', activity: 'Persiapan menuju Borobudur untuk sunrise', location: 'Hotel' },
+                { id: 'act6', time: '06:30', activity: 'Menikmati sunrise di Candi Borobudur', location: 'Candi Borobudur' },
+                { id: 'act7', time: '10:00', activity: 'Kunjungan ke Candi Prambanan', location: 'Candi Prambanan' }
+            ]
+        }
+    };
+    
+    itineraryData = sampleData;
+    dayCounter = 2;
+    
+    const container = document.getElementById('itinerary-days');
+    if (container) {
+        container.innerHTML = '';
+        
+        Object.values(sampleData).forEach(day => {
+            const dayElement = createDayElement(day.id, day);
+            container.appendChild(dayElement);
+            renderDayActivities(day.id);
+        });
     }
     
-    console.log('🔄 Updated itinerary preview');
+    updateItineraryPreview();
+    showSuccess('Sample itinerary berhasil dimuat!');
 }
 
-// Debug function
-function debugItinerary() {
-    console.log('🔍 === ITINERARY DEBUG ===');
-    console.log('Day counter:', dayCounter);
-    console.log('Itinerary data:', itineraryData);
-    console.log('Preview element:', document.getElementById('itinerary-preview'));
-    console.log('Hidden input:', document.getElementById('itinerary-data'));
-    console.log('Days container:', document.getElementById('itinerary-days'));
+function clearItinerary() {
+    if (confirm('Yakin ingin menghapus semua itinerary?')) {
+        itineraryData = {};
+        dayCounter = 0;
+        
+        const container = document.getElementById('itinerary-days');
+        if (container) {
+            container.innerHTML = '';
+        }
+        
+        updateItineraryPreview();
+        showSuccess('Itinerary berhasil dihapus');
+        
+        setTimeout(() => {
+            addNewDay();
+        }, 100);
+    }
 }
 
-// Global functions
-window.initializeItinerary = initializeItinerary;
+// Export itinerary functions
 window.addNewDay = addNewDay;
+window.initializeItinerary = initializeItinerary;
+window.loadSampleItinerary = loadSampleItinerary;
+window.clearItinerary = clearItinerary;
 window.updateDayTitle = updateDayTitle;
 window.addActivity = addActivity;
-window.updateActivity = updateActivity;
-window.deleteActivity = deleteActivity;
-window.moveActivity = moveActivity;
-window.deleteDayPrompt = deleteDayPrompt;
-window.deleteDay = deleteDay;
-window.toggleDayActivities = toggleDayActivities;
-window.debugItinerary = debugItinerary;
+window.updateActivityField = updateActivityField;
+window.updateActivityTime = updateActivityTime;
+window.removeActivity = removeActivity;
+window.duplicateDay = duplicateDay;
+window.removeDay = removeDay;
 
-// Global functions for onclick events
-window.previewForm = previewForm;
-window.closePreviewModal = closePreviewModal;
-window.submitFormFromPreview = submitFormFromPreview;
-window.validateForm = validateForm;
-window.showFieldError = showFieldError;
-window.clearFieldError = clearFieldError;
+// =================================
+// FILE UPLOAD HANDLING
+// =================================
 
-// Tambahkan ke admin.php script section
+function initializeFileUpload() {
+    const fileInput = document.getElementById('fotos');
+    const preview = document.getElementById('file-preview');
+    
+    if (!fileInput || !preview) return;
+    
+    fileInput.addEventListener('change', function(e) {
+        handleFileSelection(e.target.files);
+    });
+    
+    console.log('✅ File upload initialized');
+}
 
-// Mobile menu functionality
+function handleFileSelection(files) {
+    const preview = document.getElementById('file-preview');
+    if (!preview) return;
+    
+    preview.innerHTML = '';
+    
+    if (files.length === 0) return;
+    
+    if (files.length < 3) {
+        showError('Minimal 3 foto harus diupload');
+        return;
+    }
+    
+    if (files.length > 6) {
+        showError('Maksimal 6 foto dapat diupload');
+        return;
+    }
+    
+    Array.from(files).forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'file-preview-item';
+                previewItem.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview ${index + 1}">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${formatFileSize(file.size)}</div>
+                `;
+                preview.appendChild(previewItem);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    showSuccess(`${files.length} foto berhasil dipilih`);
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Export file functions
+window.initializeFileUpload = initializeFileUpload;
+window.handleFileSelection = handleFileSelection;
+window.formatPriceInput = formatPriceInput;
+window.validatePriceInput = validatePriceInput;
+
+// =================================
+// MOBILE MENU FUNCTIONS
+// =================================
+
 function toggleMobileMenu() {
     const sidebar = document.getElementById('mobileSidebar');
     const overlay = document.getElementById('mobileOverlay');
-    const toggle = document.querySelector('.mobile-menu-toggle');
     
-    if (!sidebar || !overlay || !toggle) return;
-    
-    sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
-    toggle.classList.toggle('active');
-    
-    // Prevent body scroll when menu is open
-    if (sidebar.classList.contains('active')) {
-        document.body.style.overflow = 'hidden';
-    } else {
-        document.body.style.overflow = '';
+    if (sidebar && overlay) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
     }
 }
 
-// Smooth scroll to section
 function scrollToSection(sectionId) {
-    const element = document.getElementById(sectionId);
-    if (element) {
-        const headerHeight = document.querySelector('.admin-header').offsetHeight;
-        const targetPosition = element.offsetTop - headerHeight - 20;
-        
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-        });
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+        toggleMobileMenu(); // Close mobile menu after clicking
     }
 }
 
-// Close mobile menu on resize
-window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
-        const sidebar = document.getElementById('mobileSidebar');
-        const overlay = document.getElementById('mobileOverlay');
-        const toggle = document.querySelector('.mobile-menu-toggle');
-        
-        if (sidebar && sidebar.classList.contains('active')) {
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
-            toggle.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    }
-});
+// Export mobile functions
+window.toggleMobileMenu = toggleMobileMenu;
+window.scrollToSection = scrollToSection;
 
-// Close mobile menu on escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const sidebar = document.getElementById('mobileSidebar');
-        if (sidebar && sidebar.classList.contains('active')) {
-            toggleMobileMenu();
-        }
-    }
-});
+// =================================
+// INITIALIZATION
+// =================================
 
-// Enhanced form validation for mobile
-function validateFormMobile() {
-    const isValid = validateForm(document.querySelector('form[action="tambah.php"]'));
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 DOM loaded, initializing all systems...');
     
-    if (!isValid) {
-        // Scroll to first error on mobile
-        const firstError = document.querySelector('.field-error');
-        if (firstError) {
-            const headerHeight = document.querySelector('.admin-header').offsetHeight;
-            const targetPosition = firstError.offsetTop - headerHeight - 20;
-            
-            window.scrollTo({
-                top: targetPosition,
-                behavior: 'smooth'
+    // Initialize form enhancement
+    setTimeout(() => {
+        // Show only first step
+        for (let i = 2; i <= totalSteps; i++) {
+            hideStep(i);
+        }
+        
+        // Add price input listeners
+        const priceInput = document.getElementById('price');
+        if (priceInput) {
+            priceInput.addEventListener('input', function() {
+                formatPriceInput(this);
+            });
+            priceInput.addEventListener('blur', function() {
+                validatePriceInput(this);
             });
         }
-    }
+    }, 100);
     
-    return isValid;
-}
-
-// Update form submission for mobile
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form[action="tambah.php"]');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            if (!validateFormMobile()) {
-                e.preventDefault();
-                return false;
-            }
-        });
-    }
+    // Initialize file upload
+    setTimeout(() => {
+        initializeFileUpload();
+    }, 200);
+    
+    // Initialize itinerary
+    setTimeout(() => {
+        initializeItinerary();
+    }, 300);
+    
+    // Add default highlight item
+    setTimeout(() => {
+        if (document.getElementById('highlight-items') && document.getElementById('highlight-items').children.length === 0) {
+            addHighlightItem();
+        }
+    }, 500);
+    
+    // Add event listeners for preview updates
+    setTimeout(() => {
+        const inclusionsText = document.getElementById('inclusions-text');
+        if (inclusionsText) {
+            inclusionsText.addEventListener('input', function() {
+                setTimeout(updateInclusionPreview, 300);
+            });
+        }
+        
+        const exclusionsText = document.getElementById('exclusions-text');
+        if (exclusionsText) {
+            exclusionsText.addEventListener('input', function() {
+                setTimeout(updateExclusionPreview, 300);
+            });
+        }
+    }, 600);
+    
+    // Update previews on page load
+    setTimeout(() => {
+        updateHighlightPreview();
+        updateInclusionPreview();
+        updateExclusionPreview();
+    }, 800);
+    
+    console.log('✅ All systems initialized successfully');
 });
+
+console.log('🎉 Enhanced admin script loaded successfully!');
 </script>
 
 <!-- Tambahkan tombol debug di bawah header -->

@@ -226,68 +226,50 @@ class GalleryManager {
         
         const container = document.getElementById('existingPhotos');
         if (!container) {
-            console.error('❌ existingPhotos container not found in DOM!');
+            console.error('❌ Container #existingPhotos not found');
             return;
         }
         
-        if (photos.length === 0) {
-            container.innerHTML = `
-                <div class="no-photos" style="text-align: center; padding: 30px; color: #666; background: #f8f9fa; border-radius: 12px; border: 2px dashed #dee2e6;">
-                    <i class="fas fa-images" style="font-size: 2rem; color: #3498db; margin-bottom: 10px;"></i>
-                    <p>Belum ada foto gallery untuk paket ini.</p>
-                    <small>Upload foto melalui form di atas untuk menambahkan gallery.</small>
-                </div>
-            `;
+        if (!Array.isArray(photos) || photos.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#777; padding:20px;">Tidak ada foto tambahan untuk paket ini.</p>';
+            console.log('ℹ️ No photos to display or photos is not an array.');
             return;
         }
         
         console.log(`📸 Creating HTML for ${photos.length} photos...`);
         
+        // Pastikan base URL untuk gambar galeri sudah benar
+        const imageBaseUrl = '../../BackEnd/uploads/gallery/';
+
         const photosHTML = photos.map((photo, index) => {
-            console.log(`🖼️ Processing photo ${index + 1}:`, photo);
-            
+            const imageUrl = imageBaseUrl + encodeURIComponent(photo.photo_filename);
+            const caption = this.escapeHtml(photo.caption || 'Tanpa caption');
+            const uploadedAt = this.formatDate(photo.uploaded_at);
+
             return `
-                <div class="photo-management-item" data-photo-id="${photo.id}">
-                    <div class="photo-preview">
-                        <img src="${photo.url}" 
-                             alt="${this.escapeHtml(photo.caption)}" 
-                             loading="lazy" 
-                             style="cursor: pointer;"
-                             onclick="galleryManager.previewPhoto('${photo.url}', '${this.escapeHtml(photo.caption)}')"
-                             onerror="console.log('❌ Image failed to load:', this.src); this.src='../../Asset/Package_Culture/borobudur.jpg'; this.style.opacity='0.7';">
-                        <div class="photo-overlay">
-                            <button class="btn-edit-photo" 
-                                    onclick="galleryManager.editPhotoCaption(${photo.id}, '${this.escapeHtml(photo.caption)}', this)" 
-                                    title="Edit Caption">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn-delete-photo" 
-                                    onclick="galleryManager.deletePhoto(${photo.id}, ${packageId}, this)" 
-                                    title="Hapus Foto">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
+                <div class="photo-item photo-management-item" data-photo-id="${photo.id}">
+                    <div class="photo-preview" onclick="galleryManager.previewPhoto('${imageUrl}', '${caption}')">
+                        <img src="${imageUrl}" alt="${caption}" onerror="this.src='../Asset/logo/placeholder.png'; this.alt='Error memuat gambar';">
                     </div>
                     <div class="photo-info">
-                        <div class="photo-caption" id="caption-${photo.id}" title="${this.escapeHtml(photo.caption)}">
-                            ${this.truncateText(photo.caption || 'Tanpa caption', 20)}
-                        </div>
-                        <div class="photo-meta">
-                            <small>
-                                🖼️ Gallery | Order: ${photo.photo_order} <br>
-                                ${this.formatDate(photo.uploaded_at)}
-                            </small>
-                        </div>
-                        <div class="photo-actions">
-                            <button onclick="galleryManager.movePhoto(${photo.id}, ${packageId}, 'up')" 
-                                    class="btn-move-up" title="Pindah ke atas">
-                                <i class="fas fa-arrow-up"></i> Up
-                            </button>
-                            <button onclick="galleryManager.movePhoto(${photo.id}, ${packageId}, 'down')" 
-                                    class="btn-move-down" title="Pindah ke bawah">
-                                <i class="fas fa-arrow-down"></i> Down
-                            </button>
-                        </div>
+                        <p class="photo-caption" id="caption-${photo.id}" title="${caption}">
+                            ${this.truncateText(caption, 25)}
+                        </p>
+                        <p class="photo-meta">Order: ${photo.photo_order} | Uploaded: ${uploadedAt}</p>
+                    </div>
+                    <div class="photo-actions">
+                        <button class="btn-edit-photo" onclick="galleryManager.editPhotoCaption(${photo.id}, '${caption}', this)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-delete-photo" onclick="galleryManager.deletePhoto(${photo.id}, ${packageId}, this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn-move-up" onclick="galleryManager.movePhoto(${photo.id}, ${packageId}, 'up')" title="Pindah ke Atas">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button class="btn-move-down" onclick="galleryManager.movePhoto(${photo.id}, ${packageId}, 'down')" title="Pindah ke Bawah">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
                     </div>
                 </div>
             `;
