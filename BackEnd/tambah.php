@@ -41,18 +41,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     $itinerary_json = trim($_POST['itinerary'] ?? '');
-    $highlights = trim($_POST['highlights'] ?? '');
-    $inclusions = trim($_POST['inclusions'] ?? '');
-    $exclusions = trim($_POST['exclusions'] ?? '');
+    $highlights = isset($_POST['highlights']) ? json_encode(array_filter($_POST['highlights'])) : '[]';
+    $inclusions = isset($_POST['inclusions']) ? json_encode(array_combine(
+        $_POST['inclusion_icons'] ?? [],
+        $_POST['inclusions'] ?? []
+    )) : '[]';
+    $exclusions = isset($_POST['exclusions']) ? json_encode(array_combine(
+        $_POST['exclusion_icons'] ?? [],
+        $_POST['exclusions'] ?? []
+    )) : '[]';
     
-    // Process itinerary JSON to readable format
-    $processed_itinerary = '';
-    if (!empty($itinerary_json)) {
-        $itinerary_data = json_decode($itinerary_json, true);
-        if ($itinerary_data && is_array($itinerary_data)) {
-            $processed_itinerary = processItineraryData($itinerary_data);
+    // Process itinerary
+    $itinerary = [];
+    if (isset($_POST['itinerary_titles'])) {
+        foreach ($_POST['itinerary_titles'] as $dayIndex => $title) {
+            $activities = [];
+            if (isset($_POST['itinerary_times'][$dayIndex]) && isset($_POST['itinerary_activities'][$dayIndex])) {
+                foreach ($_POST['itinerary_times'][$dayIndex] as $actIndex => $time) {
+                    $activities[] = [
+                        'time' => $time,
+                        'activity' => $_POST['itinerary_activities'][$dayIndex][$actIndex] ?? ''
+                    ];
+                }
+            }
+            $itinerary[] = [
+                'day' => $dayIndex + 1,
+                'title' => $title,
+                'activities' => $activities
+            ];
         }
     }
+    $itinerary_json = json_encode($itinerary);
     
     // Validate input length
     if (strlen($nama) > 255 || strlen($deskripsi) > 1000) {
@@ -130,8 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Convert uploaded files array to JSON
         $fotosJson = json_encode($uploadedFiles);
         
-        $stmt = $koneksi->prepare("INSERT INTO paket (nama, deskripsi, fotos, duration, price, itinerary, highlights, inclusions, exclusions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssdssss", $nama, $deskripsi, $fotosJson, $duration, $price, $processed_itinerary, $highlights, $inclusions, $exclusions);
+        $stmt = $koneksi->prepare("INSERT INTO paket (nama, deskripsi, price, fotos, highlights, itinerary, inclusions, exclusions, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param("ssssssss", $nama, $deskripsi, $price, $fotosJson, $highlights, $itinerary_json, $inclusions, $exclusions);
         
         if ($stmt->execute()) {
             $package_id = $koneksi->insert_id;
