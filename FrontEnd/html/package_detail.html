@@ -401,30 +401,15 @@
                 return;
             }
             
-            if (!inclusions || !inclusions.trim()) {
-                inclusionsList.innerHTML = `
-                    <li><i class="fas fa-check"></i> Transportasi AC</li>
-                    <li><i class="fas fa-check"></i> Tiket masuk wisata</li>
-                    <li><i class="fas fa-check"></i> Makan sesuai program</li>
-                    <li><i class="fas fa-check"></i> Tour guide</li>
-                `;
-                return;
-            }
-            
-            // Split by newlines and create list items
-            const inclusionLines = inclusions.split('\n')
-                .map(line => line.trim())
-                .filter(line => line.length > 0);
-            
             let inclusionsHTML = '';
             
-            inclusionLines.forEach(line => {
-                // Remove bullet points from start of line
-                let cleanLine = line.replace(/^[•\-\*]\s*/, '').trim();
-                if (cleanLine) {
-                    inclusionsHTML += `<li><i class="fas fa-check"></i> ${cleanLine}</li>`;
-                }
-            });
+            if (inclusions && typeof inclusions === 'object') {
+                Object.entries(inclusions).forEach(([icon, text]) => {
+                    if (text && text.trim()) {
+                        inclusionsHTML += `<li><i class="${icon}"></i> ${text}</li>`;
+                    }
+                });
+            }
             
             if (!inclusionsHTML) {
                 inclusionsHTML = `
@@ -446,36 +431,21 @@
                 return;
             }
             
-            if (!exclusions || !exclusions.trim()) {
-                exclusionsList.innerHTML = `
-                    <li><i class="fas fa-times"></i> Tiket pesawat</li>
-                    <li><i class="fas fa-times"></i> Pengeluaran pribadi</li>
-                    <li><i class="fas fa-times"></i> Tips guide</li>
-                    <li><i class="fas fa-times"></i> Asuransi perjalanan</li>
-                `;
-                return;
-            }
-            
-            // Split by newlines and create list items
-            const exclusionLines = exclusions.split('\n')
-                .map(line => line.trim())
-                .filter(line => line.length > 0);
-            
             let exclusionsHTML = '';
             
-            exclusionLines.forEach(line => {
-                // Remove bullet points from start of line
-                let cleanLine = line.replace(/^[•\-\*]\s*/, '').trim();
-                if (cleanLine) {
-                    exclusionsHTML += `<li><i class="fas fa-times"></i> ${cleanLine}</li>`;
-                }
-            });
+            if (exclusions && typeof exclusions === 'object') {
+                Object.entries(exclusions).forEach(([icon, text]) => {
+                    if (text && text.trim()) {
+                        exclusionsHTML += `<li><i class="${icon}"></i> ${text}</li>`;
+                    }
+                });
+            }
             
             if (!exclusionsHTML) {
                 exclusionsHTML = `
                     <li><i class="fas fa-times"></i> Tiket pesawat</li>
                     <li><i class="fas fa-times"></i> Pengeluaran pribadi</li>
-                    <li><i class="fas fa-times"></i> Tips guide</li>
+                    <li><i class="fas fa-times"></i> Minuman beralkohol</li>
                 `;
             }
             
@@ -491,45 +461,34 @@
                 return;
             }
             
-            if (!highlights || !highlights.trim()) {
-                highlightsContent.innerHTML = `
-                    <div class="highlight-item">
-                        <h3><i class="fas fa-star"></i> Paket Wisata Yogyakarta</h3>
-                        <p>Jelajahi keindahan budaya dan sejarah Yogyakarta.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Split by newlines and process each line
-            const highlightLines = highlights.split('\n')
-                .map(line => line.trim())
-                .filter(line => line.length > 0);
-            
             let highlightsHTML = '';
             
-            highlightLines.forEach((line, index) => {
-                // Remove bullet points (•, -, *) from start of line
-                let cleanLine = line.replace(/^[•\-\*]\s*/, '').trim();
-                
-                if (cleanLine) {
-                    // Create a simple title from the line (first 30 chars)
-                    const title = cleanLine.length > 30 ? cleanLine.substring(0, 30) + '...' : cleanLine;
-                    
-                    highlightsHTML += `
-                        <div class="highlight-item">
-                            <h3><i class="fas fa-star"></i> ${title}</h3>
-                            <p>${cleanLine}</p>
-                        </div>
-                    `;
-                }
-            });
+            if (Array.isArray(highlights) && highlights.length > 0) {
+                highlights.forEach(highlight => {
+                    if (highlight && highlight.trim()) {
+                        highlightsHTML += `
+                            <div class="highlight-item">
+                                <i class="fas fa-star"></i>
+                                <span>${highlight}</span>
+                            </div>
+                        `;
+                    }
+                });
+            }
             
             if (!highlightsHTML) {
                 highlightsHTML = `
                     <div class="highlight-item">
-                        <h3><i class="fas fa-star"></i> Paket Wisata Spesial</h3>
-                        <p>Nikmati pengalaman wisata yang tak terlupakan.</p>
+                        <i class="fas fa-star"></i>
+                        <span>Pengalaman wisata yang tak terlupakan</span>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-star"></i>
+                        <span>Guide berpengalaman dan ramah</span>
+                    </div>
+                    <div class="highlight-item">
+                        <i class="fas fa-star"></i>
+                        <span>Destinasi wisata terpopuler</span>
                     </div>
                 `;
             }
@@ -546,8 +505,36 @@
                 return;
             }
             
-            if (!itinerary || !itinerary.trim()) {
-                itineraryContent.innerHTML = `
+            // PERBAIKI: Handle itinerary data dengan benar
+            let itineraryHTML = '';
+            
+            if (Array.isArray(itinerary) && itinerary.length > 0) {
+                // Data sudah dalam format array dari database
+                itinerary.forEach((day, index) => {
+                    const dayTitle = day.title || `Hari ${index + 1}`;
+                    const activities = day.activities || [];
+                    
+                    itineraryHTML += `
+                        <div class="day-itinerary">
+                            <div class="day-header" onclick="toggleDay(this)">
+                                ${dayTitle}
+                            </div>
+                            <div class="day-content">
+                                ${activities.map(activity => `
+                                    <div class="activity">
+                                        <div class="activity-time">${activity.time || '--:--'}</div>
+                                        <div class="activity-desc">
+                                            <p>${activity.description || activity.desc || 'Aktivitas tidak dijelaskan'}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                // Fallback untuk data string atau kosong
+                itineraryHTML = `
                     <div class="day-itinerary">
                         <div class="day-header">Jadwal Tidak Tersedia</div>
                         <div class="day-content">
@@ -560,72 +547,9 @@
                         </div>
                     </div>
                 `;
-                return;
             }
             
-            // Parse itinerary format dari form admin
-            console.log('🔍 Raw itinerary:', itinerary);
-            
-            // Split by double newlines to get days
-            const dayBlocks = itinerary.split('\n\n').filter(block => block.trim());
-            
-            if (dayBlocks.length === 0) {
-                updateItinerary(''); // Fallback
-                return;
-            }
-            
-            const dayHTML = dayBlocks.map((block, index) => {
-                // Parse each day block
-                const lines = block.split('\n').filter(line => line.trim());
-                
-                if (lines.length === 0) return '';
-                
-                // First line should be "Day Title: Activities"
-                const firstLine = lines[0].trim();
-                let dayTitle, activitiesText;
-                
-                if (firstLine.includes(':')) {
-                    const colonIndex = firstLine.indexOf(':');
-                    dayTitle = firstLine.substring(0, colonIndex).trim();
-                    activitiesText = firstLine.substring(colonIndex + 1).trim();
-                } else {
-                    dayTitle = `Hari ${index + 1}`;
-                    activitiesText = firstLine;
-                }
-                
-                // Add remaining lines to activities
-                if (lines.length > 1) {
-                    activitiesText += ' ' + lines.slice(1).join(' ').trim();
-                }
-                
-                // Parse activities (split by | delimiter)
-                let activities = [];
-                if (activitiesText) {
-                    activities = activitiesText.split('|').map(act => act.trim()).filter(act => act);
-                }
-                
-                if (activities.length === 0) {
-                    activities = ['Aktivitas akan diinformasikan'];
-                }
-                
-                console.log(`📋 Day ${index + 1}: "${dayTitle}" with ${activities.length} activities`);
-                
-                return createDayItinerary(dayTitle, activities, index === 0);
-            }).filter(html => html).join('');
-            
-            itineraryContent.innerHTML = dayHTML || `
-                <div class="day-itinerary">
-                    <div class="day-header">Format Jadwal Tidak Valid</div>
-                    <div class="day-content">
-                        <div class="activity">
-                            <div class="activity-time">--:--</div>
-                            <div class="activity-desc">
-                                <p>Format jadwal tidak dapat dibaca dengan benar</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            itineraryContent.innerHTML = itineraryHTML;
         }
 
         function createDayItinerary(dayTitle, activities, isExpanded = false) {

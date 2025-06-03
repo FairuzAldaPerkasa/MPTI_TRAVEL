@@ -88,7 +88,7 @@ try {
         SELECT photo_filename, caption, photo_order 
         FROM package_gallery 
         WHERE package_id = ? 
-        ORDER BY photo_order ASC, uploaded_at ASC
+        ORDER BY photo_order ASC
     ");
     
     if ($galleryStmt) {
@@ -106,7 +106,7 @@ try {
             if (file_exists($galleryPath) && is_readable($galleryPath)) {
                 $processedFotos[] = [
                     'url' => $galleryBaseUrl . $galleryPhoto['photo_filename'],
-                    'caption' => $galleryPhoto['caption'] ?: 'Foto Gallery',
+                    'caption' => $galleryPhoto['caption'] ?: 'Galeri Foto',
                     'type' => 'gallery'
                 ];
             }
@@ -134,22 +134,15 @@ try {
         'nama' => trim($package['nama'] ?? ''),
         'deskripsi' => trim($package['deskripsi'] ?? ''),
         'fotos' => $processedFotos,
-        'itinerary' => trim($package['itinerary'] ?? ''),
-        'highlights' => trim($package['highlights'] ?? ''),
-        'inclusions' => trim($package['inclusions'] ?? ''),
-        'exclusions' => trim($package['exclusions'] ?? ''),
+        'itinerary' => $package['itinerary'] ? json_decode($package['itinerary'], true) : null,
+        'itinerary_raw' => trim($package['itinerary'] ?? ''),
+        'highlights' => $package['highlights'] ? json_decode($package['highlights'], true) : [],
+        'inclusions' => $package['inclusions'] ? json_decode($package['inclusions'], true) : [],
+        'exclusions' => $package['exclusions'] ? json_decode($package['exclusions'], true) : [],
         'price' => $package['price'] ? (float)$package['price'] : null,
-        'price_raw' => $package['price'], // Raw value dari database
         'formatted_price' => $package['price'] ? 'Rp ' . number_format($package['price'], 0, ',', '.') : null,
         'duration' => trim($package['duration'] ?? '2D1N'),
-        'debug_price' => [
-            'db_value' => $package['price'],
-            'db_type' => gettype($package['price']),
-            'cast_float' => (float)$package['price'],
-            'formatted' => number_format($package['price'], 0, ',', '.')
-        ],
-        'total_photos' => count($processedFotos),
-        'load_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms'
+        'total_photos' => count($processedFotos)
     ];
     
     $stmt->close();
@@ -166,9 +159,7 @@ try {
     http_response_code(404);
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage(),
-        'id' => $_GET['id'] ?? null,
-        'load_time' => round((microtime(true) - $startTime) * 1000, 2) . 'ms'
+        'error' => $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
 }
 

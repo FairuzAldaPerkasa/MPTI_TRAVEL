@@ -783,71 +783,237 @@ function showItineraryTemplateModal(templates) {
 }
 
 function selectItineraryTemplate(templateName) {
-    // Implementation for applying itinerary template
+    const templates = getItineraryTemplates();
+    const selectedTemplate = templates[templateName];
+    
+    if (!selectedTemplate) {
+        showNotification('Template tidak ditemukan', 'error');
+        return;
+    }
+    
+    // Clear existing itinerary
+    const container = document.getElementById('itineraryContainer');
+    container.innerHTML = '';
+    
+    // Reset counters
+    dayCounter = 0;
+    activityCounters = [];
+    
+    // Add template days
+    selectedTemplate.days.forEach((day, index) => {
+        addDayFromTemplate(day, index);
+    });
+    
     showNotification(`Template "${templateName}" berhasil diterapkan!`, 'success');
     closeTemplateModal();
 }
 
-function showInclusionExclusionTemplateModal(title, templates, type) {
-    const modal = document.getElementById('templateModal');
-    const content = document.getElementById('templateContent');
+function addDayFromTemplate(dayData, dayIndex) {
+    const container = document.getElementById('itineraryContainer');
+    const dayNum = dayIndex + 1;
+    dayCounter = dayNum;
+    activityCounters[dayIndex] = dayData.activities ? dayData.activities.length : 0;
     
-    modal.querySelector('.modal-header h3').innerHTML = `<i class="fas fa-magic"></i> ${title}`;
-    
-    let html = '<div class="template-grid">';
-    Object.entries(templates).forEach(([name, items]) => {
-        html += `
-            <div class="template-item" onclick="selectInclusionExclusionTemplate('${name}', '${type}')">
-                <h4>${name}</h4>
-                <div class="template-preview">
-                    <ul>
-                        ${items.slice(0, 3).map(item => `<li>${item.text}</li>`).join('')}
-                        ${items.length > 3 ? `<li>... dan ${items.length - 3} lainnya</li>` : ''}
-                    </ul>
-                </div>
+    const dayElement = document.createElement('div');
+    dayElement.className = 'itinerary-day';
+    dayElement.innerHTML = `
+        <div class="day-header">
+            <h4><i class="fas fa-calendar-day"></i> Hari ${dayNum}</h4>
+            <button type="button" class="btn-remove-day" onclick="removeDay(this)" title="Hapus Hari">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+        <div class="day-content">
+            <div class="form-group">
+                <label>Judul Hari</label>
+                <input type="text" name="itinerary_titles[]" value="${dayData.title || ''}" placeholder="Contoh: Kedatangan & City Tour" maxlength="100">
             </div>
-        `;
-    });
-    html += '</div>';
+            <div class="activities-list" id="activities-${dayIndex}">
+                <!-- Activities will be added here -->
+            </div>
+            <button type="button" class="btn-add-activity" onclick="addActivity(this)">
+                <i class="fas fa-plus"></i> Tambah Aktivitas
+            </button>
+        </div>
+    `;
     
-    content.innerHTML = html;
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
+    container.appendChild(dayElement);
+    
+    // Add activities if they exist
+    if (dayData.activities && dayData.activities.length > 0) {
+        const activitiesList = dayElement.querySelector('.activities-list');
+        dayData.activities.forEach((activity, actIndex) => {
+            const activityElement = createActivityElement(dayIndex, actIndex);
+            activitiesList.appendChild(activityElement);
+            
+            // Fill in activity data
+            const timeInput = activityElement.querySelector('input[type="time"]');
+            const descTextarea = activityElement.querySelector('textarea');
+            
+            if (timeInput && activity.time) {
+                timeInput.value = activity.time;
+            }
+            if (descTextarea && activity.desc) {
+                descTextarea.value = activity.desc;
+            }
+        });
+    }
 }
 
 function selectInclusionExclusionTemplate(templateName, type) {
-    // Implementation for applying inclusion/exclusion template
+    const templates = type === 'inclusions' ? getInclusionTemplates() : getExclusionTemplates();
+    const selectedTemplate = templates[templateName];
+    
+    if (!selectedTemplate) {
+        showNotification('Template tidak ditemukan', 'error');
+        return;
+    }
+    
+    // Clear existing items
+    const containerId = type === 'inclusions' ? 'inclusionsContainer' : 'exclusionsContainer';
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    
+    // Add template items
+    selectedTemplate.forEach(item => {
+        const nameAttr = type === 'inclusions' ? 'inclusions[]' : 'exclusions[]';
+        const iconAttr = type === 'inclusions' ? 'inclusion_icons[]' : 'exclusion_icons[]';
+        
+        const listItem = createInclusionExclusionItem(nameAttr, iconAttr, type);
+        
+        // Fill in data
+        const iconSelect = listItem.querySelector('.icon-select');
+        const textInput = listItem.querySelector('input[type="text"]');
+        
+        if (iconSelect && item.icon) {
+            iconSelect.value = item.icon;
+        }
+        if (textInput && item.text) {
+            textInput.value = item.text;
+        }
+        
+        container.appendChild(listItem);
+    });
+    
     showNotification(`Template "${templateName}" berhasil diterapkan!`, 'success');
     closeTemplateModal();
 }
 
-function closeTemplateModal() {
-    const modal = document.getElementById('templateModal');
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
+function getItineraryTemplates() {
+    return {
+        '2D1N City Tour': {
+            description: 'Template untuk wisata kota 2 hari 1 malam',
+            days: [
+                {
+                    title: 'Kedatangan & City Tour',
+                    activities: [
+                        { time: '08:00', desc: 'Penjemputan di bandara/stasiun' },
+                        { time: '10:00', desc: 'Check-in hotel & istirahat' },
+                        { time: '13:00', desc: 'Makan siang di restoran lokal' },
+                        { time: '14:30', desc: 'City tour mengunjungi tempat bersejarah' },
+                        { time: '17:00', desc: 'Shopping di pusat oleh-oleh' },
+                        { time: '19:00', desc: 'Makan malam & kembali ke hotel' }
+                    ]
+                },
+                {
+                    title: 'Wisata Alam & Kepulangan',
+                    activities: [
+                        { time: '06:00', desc: 'Sarapan di hotel & check-out' },
+                        { time: '08:00', desc: 'Perjalanan ke objek wisata alam' },
+                        { time: '10:00', desc: 'Trekking & foto-foto' },
+                        { time: '12:00', desc: 'Makan siang di warung lokal' },
+                        { time: '14:00', desc: 'Perjalanan kembali' },
+                        { time: '16:00', desc: 'Pengantaran ke bandara/stasiun' }
+                    ]
+                }
+            ]
+        },
+        '3D2N Adventure': {
+            description: 'Template untuk wisata petualangan 3 hari 2 malam',
+            days: [
+                {
+                    title: 'Kedatangan & Persiapan',
+                    activities: [
+                        { time: '07:00', desc: 'Penjemputan & perjalanan ke basecamp' },
+                        { time: '10:00', desc: 'Briefing & persiapan equipment' },
+                        { time: '12:00', desc: 'Makan siang & check-in penginapan' },
+                        { time: '15:00', desc: 'Eksplorasi area sekitar' },
+                        { time: '18:00', desc: 'BBQ dinner & api unggun' }
+                    ]
+                },
+                {
+                    title: 'Petualangan Utama',
+                    activities: [
+                        { time: '05:00', desc: 'Sunrise hunting & sarapan' },
+                        { time: '07:00', desc: 'Trekking ke puncak/air terjun' },
+                        { time: '12:00', desc: 'Lunch box di lokasi' },
+                        { time: '14:00', desc: 'Aktivitas adventure (rafting/flying fox)' },
+                        { time: '17:00', desc: 'Kembali ke penginapan & istirahat' },
+                        { time: '19:00', desc: 'Makan malam & sharing session' }
+                    ]
+                },
+                {
+                    title: 'Eksplorasi & Kepulangan',
+                    activities: [
+                        { time: '06:00', desc: 'Sarapan & check-out' },
+                        { time: '08:00', desc: 'Kunjungan ke desa wisata' },
+                        { time: '10:00', desc: 'Workshop kerajinan lokal' },
+                        { time: '12:00', desc: 'Makan siang khas daerah' },
+                        { time: '14:00', desc: 'Perjalanan pulang' },
+                        { time: '17:00', desc: 'Tiba di kota & pengantaran' }
+                    ]
+                }
+            ]
+        }
+    };
 }
 
-// Global functions
-window.showSection = showSection;
-window.openGallery = openGallery;
-window.closeGallery = closeGallery;
-window.editPackage = editPackage;
-window.deletePackage = deletePackage;
-window.deleteGalleryPhoto = deleteGalleryPhoto;
-window.editPhotoCaption = editPhotoCaption;
-window.showNotification = showNotification;
-window.addHighlight = addHighlight;
-window.loadHighlightTemplates = loadHighlightTemplates;
-window.addDay = addDay;
-window.removeDay = removeDay;
-window.addActivity = addActivity;
-window.removeActivity = removeActivity;
-window.loadItineraryTemplates = loadItineraryTemplates;
-window.addInclusion = addInclusion;
-window.addExclusion = addExclusion;
-window.loadInclusionTemplates = loadInclusionTemplates;
-window.loadExclusionTemplates = loadExclusionTemplates;
-window.removeListItem = removeListItem;
-window.closeTemplateModal = closeTemplateModal;
-window.selectItineraryTemplate = selectItineraryTemplate;
-window.selectInclusionExclusionTemplate = selectInclusionExclusionTemplate;
+function getInclusionTemplates() {
+    return {
+        'Paket Lengkap': [
+            { icon: 'fas fa-hotel', text: 'Hotel bintang 4 dengan breakfast' },
+            { icon: 'fas fa-car', text: 'Transport AC selama tour' },
+            { icon: 'fas fa-utensils', text: 'Makan siang dan malam sesuai program' },
+            { icon: 'fas fa-ticket-alt', text: 'Tiket masuk semua objek wisata' },
+            { icon: 'fas fa-user-tie', text: 'Tour guide berpengalaman' },
+            { icon: 'fas fa-camera', text: 'Dokumentasi foto selama perjalanan' },
+            { icon: 'fas fa-shield-alt', text: 'Asuransi perjalanan' }
+        ],
+        'Paket Hemat': [
+            { icon: 'fas fa-hotel', text: 'Hotel budget dengan AC' },
+            { icon: 'fas fa-car', text: 'Transport sharing dengan AC' },
+            { icon: 'fas fa-utensils', text: 'Makan siang sesuai program' },
+            { icon: 'fas fa-ticket-alt', text: 'Tiket masuk objek wisata utama' },
+            { icon: 'fas fa-user-tie', text: 'Local guide' }
+        ],
+        'Paket Premium': [
+            { icon: 'fas fa-hotel', text: 'Hotel bintang 5 dengan full board' },
+            { icon: 'fas fa-car', text: 'Private car dengan driver' },
+            { icon: 'fas fa-utensils', text: 'All meals dengan menu premium' },
+            { icon: 'fas fa-ticket-alt', text: 'VIP ticket semua destinasi' },
+            { icon: 'fas fa-user-tie', text: 'Professional tour guide' },
+            { icon: 'fas fa-camera', text: 'Professional photographer' },
+            { icon: 'fas fa-gift', text: 'Welcome gift & souvenir eksklusif' },
+            { icon: 'fas fa-spa', text: 'Spa treatment session' }
+        ]
+    };
+}
+
+function getExclusionTemplates() {
+    return {
+        'Standard Exclusions': [
+            { icon: 'fas fa-plane', text: 'Tiket pesawat ke/dari destinasi' },
+            { icon: 'fas fa-shopping-bag', text: 'Pengeluaran pribadi dan belanja' },
+            { icon: 'fas fa-utensils', text: 'Makan di luar program' },
+            { icon: 'fas fa-cocktail', text: 'Minuman beralkohol' },
+            { icon: 'fas fa-hand-holding-usd', text: 'Tip untuk guide dan driver' }
+        ],
+        'Adventure Exclusions': [
+            { icon: 'fas fa-tshirt', text: 'Perlengkapan outdoor pribadi' },
+            { icon: 'fas fa-phone', text: 'Biaya komunikasi' },
+            { icon: 'fas fa-spa', text: 'Massage dan spa treatment' },
+            { icon: 'fas fa-shopping-bag', text: 'Souvenir dan oleh-oleh' },
+            { icon: 'fas fa-hand-holding-usd', text: 'Pengeluaran di luar itinerary' }
+        ]
+    };
+}
