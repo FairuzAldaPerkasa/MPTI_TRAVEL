@@ -297,10 +297,10 @@ function getLatestPackageDate($koneksi) {
                         <div id="highlightsContainer" class="dynamic-list">
                             <div class="list-item">
                                 <div class="item-content">
-                                    <input type="text" name="highlights[]" placeholder="Contoh: Pemandangan sunrise di Gunung Bromo" maxlength="150">
+                                    <input type="text" name="highlights[]" placeholder="Masukkan highlight menarik..." required>
                                 </div>
                                 <div class="item-actions">
-                                    <button type="button" class="btn-remove" onclick="removeListItem(this)" title="Hapus">
+                                    <button type="button" class="btn-remove" onclick="removeListItem(this)">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
@@ -310,9 +310,6 @@ function getLatestPackageDate($koneksi) {
                         <div class="list-actions">
                             <button type="button" class="btn-add" onclick="addHighlight()">
                                 <i class="fas fa-plus"></i> Tambah Highlight
-                            </button>
-                            <button type="button" class="btn-template" onclick="loadHighlightTemplates()">
-                                <i class="fas fa-magic"></i> Gunakan Template
                             </button>
                         </div>
                     </div>
@@ -326,6 +323,8 @@ function getLatestPackageDate($koneksi) {
                         <p class="section-desc">Susun jadwal aktivitas per hari</p>
                         
                         <div id="itineraryContainer" class="itinerary-container">
+                            <!-- Hari pertama akan ditambahkan oleh JavaScript jika kosong, -->
+                            <!-- atau Anda bisa meletakkan struktur hari pertama yang lengkap di sini -->
                             <div class="itinerary-day">
                                 <div class="day-header">
                                     <h4><i class="fas fa-calendar-day"></i> Hari 1</h4>
@@ -336,7 +335,7 @@ function getLatestPackageDate($koneksi) {
                                 <div class="day-content">
                                     <div class="form-group">
                                         <label>Judul Hari</label>
-                                        <input type="text" name="itinerary_titles[]" placeholder="Contoh: Kedatangan & City Tour" maxlength="100">
+                                        <input type="text" name="itinerary_titles[]" placeholder="Contoh: Eksplorasi Kota & Kuliner Tour" maxlength="100">
                                     </div>
                                     <div class="activities-list">
                                         <div class="activity-item">
@@ -364,9 +363,6 @@ function getLatestPackageDate($koneksi) {
                             <button type="button" class="btn-add" onclick="addDay()">
                                 <i class="fas fa-plus"></i> Tambah Hari
                             </button>
-                            <button type="button" class="btn-template" onclick="loadItineraryTemplates()">
-                                <i class="fas fa-magic"></i> Gunakan Template
-                            </button>
                         </div>
                     </div>
 
@@ -393,7 +389,7 @@ function getLatestPackageDate($koneksi) {
                                     </select>
                                 </div>
                                 <div class="item-content">
-                                    <input type="text" name="inclusions[]" placeholder="Contoh: Hotel bintang 4 dengan breakfast" maxlength="150">
+                                    <input type="text" name="inclusions[]" placeholder="Contoh: Hotel bintang 3 selama tour" maxlength="150">
                                 </div>
                                 <div class="item-actions">
                                     <button type="button" class="btn-remove" onclick="removeListItem(this)">
@@ -406,9 +402,6 @@ function getLatestPackageDate($koneksi) {
                         <div class="list-actions">
                             <button type="button" class="btn-add" onclick="addInclusion()">
                                 <i class="fas fa-plus"></i> Tambah Item
-                            </button>
-                            <button type="button" class="btn-template" onclick="loadInclusionTemplates()">
-                                <i class="fas fa-magic"></i> Gunakan Template
                             </button>
                         </div>
                     </div>
@@ -449,9 +442,6 @@ function getLatestPackageDate($koneksi) {
                         <div class="list-actions">
                             <button type="button" class="btn-add" onclick="addExclusion()">
                                 <i class="fas fa-plus"></i> Tambah Item
-                            </button>
-                            <button type="button" class="btn-template" onclick="loadExclusionTemplates()">
-                                <i class="fas fa-magic"></i> Gunakan Template
                             </button>
                         </div>
                     </div>

@@ -754,8 +754,7 @@ body {
     border-top: 1px solid var(--border);
 }
 
-.btn-add,
-.btn-template {
+.btn-add {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -765,24 +764,12 @@ body {
     cursor: pointer;
     transition: var(--transition);
     font-weight: 500;
-}
-
-.btn-add {
     background: var(--success);
     color: var(--white);
 }
 
 .btn-add:hover {
     background: #059669;
-}
-
-.btn-template {
-    background: var(--warning);
-    color: var(--white);
-}
-
-.btn-template:hover {
-    background: #d97706;
 }
 
 /* Itinerary Styles */
@@ -910,52 +897,6 @@ body {
 
 .btn-add-activity:hover {
     background: #059669;
-}
-
-/* Template Modal */
-.template-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-}
-
-.template-item {
-    border: 2px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: var(--transition);
-    text-align: center;
-}
-
-.template-item:hover {
-    border-color: var(--primary);
-    background: rgb(59 130 246 / 0.05);
-}
-
-.template-item h4 {
-    color: var(--dark);
-    margin-bottom: 0.5rem;
-}
-
-.template-item p {
-    color: var(--gray);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-}
-
-.template-item .template-preview {
-    background: var(--light-gray);
-    padding: 1rem;
-    border-radius: var(--radius);
-    font-size: 0.8rem;
-    color: var(--gray);
-    text-align: left;
-}
-
-.template-item .template-preview ul {
-    margin: 0;
-    padding-left: 1rem;
 }
 
 /* Responsive */
