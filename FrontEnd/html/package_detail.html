@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id" data-lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">Package Detail | Vacationland</title>
+    <title id="page-title" data-translate="packageDetail.pageTitle">Detail Paket | Vacationland</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">    <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/Package_1.css">
     <link rel="stylesheet" href="../../assets/css/package-cards-fix.css">
     <link rel="stylesheet" href="../../assets/css/package-detail-fix.css">
     <link rel="stylesheet" href="../../assets/css/responsive-utilities.css">
+    <link rel="stylesheet" href="../../assets/css/language-switcher.css">
 </head>
 
 <body>
@@ -18,41 +18,39 @@
         <div class="logo">
             <img src="../../assets/images/logompti.png" alt="Vacationland Logo">
             <span>Vacationland</span>
-        </div>
-        <nav class="desktop-nav">
-            <a href="Index.html">🏠 Home</a>
-            <a href="Index.html#paket">✈️ Packages</a>
-            <a href="profile.html">👤 Profile</a>
+        </div>        <nav class="desktop-nav">
+            <a href="Index.html" data-translate="nav.home">🏠 Beranda</a>
+            <a href="Index.html#paket" data-translate="nav.packages">✈️ Paket Wisata</a>
+            <a href="profile.html" data-translate="nav.profile">👤 Profil</a>
         </nav>
+
+        <!-- Language Switcher will be inserted here by translations.js -->
+        
         <div class="mobile-menu-toggle">
             <span></span>
             <span></span>
             <span></span>
         </div>
-    </header>
-
-    <div class="mobile-sidebar">
+    </header>    <div class="mobile-sidebar">
         <nav class="sidebar-nav">
-            <a href="Index.html">🏠 Home</a>
-            <a href="Index.html#paket">✈️ Packages</a>
-            <a href="profile.html">👤 Profile</a>
+            <a href="Index.html" data-translate="nav.home">🏠 Beranda</a>
+            <a href="Index.html#paket" data-translate="nav.packages">✈️ Paket Wisata</a>
+            <a href="profile.html" data-translate="nav.profile">👤 Profil</a>
         </nav>
     </div>
-    <div class="sidebar-overlay"></div>
-
-    <!-- Loading State -->
+    <div class="sidebar-overlay"></div>    <!-- Loading State -->
     <div id="loading" class="loading-container">
         <div class="spinner"></div>
-        <h3>Memuat Detail Paket...</h3>
-        <p>Mohon tunggu sebentar</p>
+        <h3 data-translate="packageDetail.loading.title">Memuat Detail Paket...</h3>
+        <p data-translate="packageDetail.loading.message">Mohon tunggu sebentar</p>
     </div>
 
     <!-- Error State -->
     <div id="error" class="error-container" style="display: none;">
         <i class="fas fa-exclamation-triangle"></i>
-        <h3>Terjadi Kesalahan</h3>
-        <p id="error-message">Tidak dapat memuat detail paket</p>
-        <button onclick="location.reload()" class="cta-button">Coba Lagi</button>
+        <h3 data-translate="packageDetail.error.title">Terjadi Kesalahan</h3>
+        <p id="error-message" data-translate="packageDetail.error.message">Tidak dapat memuat detail paket</p>
+        <button onclick="location.reload()" class="cta-button" data-translate="packageDetail.error.retry">Coba Lagi</button>
     </div>
 
     <!-- Package Content -->
@@ -68,80 +66,70 @@
                 <div class="badge-container">
                     <span id="duration-badge" class="duration-badge">2D1N</span>
                     <span id="price-badge" class="price-badge">Mulai Rp 1,500,000</span>
-                </div>
-                <h1 id="package-title">Paket Wisata Yogyakarta</h1>
+                </div>                <h1 id="package-title">Paket Wisata Yogyakarta</h1>
                 <p id="package-subtitle">Jelajahi keindahan budaya dan sejarah Yogyakarta</p>
-                <a href="#book-now" class="cta-button">Book Now</a>
+                <a href="#book-now" class="cta-button" data-translate="packageDetail.bookNow">Pesan Sekarang</a>
             </div>
         </section>
 
         <div class="package-container">
             <div class="package-overview">
-                <div class="package-details">
-                    <!-- Overview Section -->
+                <div class="package-details">                    <!-- Overview Section -->
                     <div class="package-section">
-                        <h2><i class="fas fa-info-circle"></i> Deskripsi Paket</h2>
-                        <p id="package-description">Deskripsi paket akan dimuat...</p>
+                        <h2><i class="fas fa-info-circle"></i> <span data-translate="packageDetail.sections.description">Deskripsi Paket</span></h2>
+                        <p id="package-description" data-translate="packageDetail.loading.description">Deskripsi paket akan dimuat...</p>
                         
                         <div class="price-box" id="book-now">
-                            <h3>Harga Paket</h3>
+                            <h3 data-translate="packageDetail.price.title">Harga Paket</h3>
                             <div id="price-display" class="price-amount">Rp 1,500,000</div>
-                            <p>per orang (minimal 2 peserta)</p>
-                            <a href="#" class="cta-button" onclick="bookTour()">Pesan Sekarang</a>
+                            <p data-translate="packageDetail.price.note">per orang (minimal 2 peserta)</p>
+                            <a href="#" class="cta-button" onclick="bookTour()" data-translate="packageDetail.bookNow">Pesan Sekarang</a>
                         </div>
-                    </div>
-
-                    <!-- Itinerary Section - DIPERBAIKI LENGKAP -->
+                    </div>                    <!-- Itinerary Section - DIPERBAIKI LENGKAP -->
                     <div class="package-section">
-                        <h2><i class="fas fa-calendar-alt"></i> Jadwal Perjalanan</h2>
+                        <h2><i class="fas fa-calendar-alt"></i> <span data-translate="packageDetail.sections.itinerary">Jadwal Perjalanan</span></h2>
                         <div id="itinerary-content">
                             <!-- Default loading state -->
                             <div class="day-itinerary">
-                                <div class="day-header">Memuat jadwal...</div>
+                                <div class="day-header" data-translate="packageDetail.loading.itinerary">Memuat jadwal...</div>
                                 <div class="day-content">
                                     <div class="activity">
                                         <div class="activity-time">--:--</div>
                                         <div class="activity-desc">
-                                            <p>Memuat aktivitas...</p>
+                                            <p data-translate="packageDetail.loading.activities">Memuat aktivitas...</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- What's Included -->
+                    </div>                    <!-- What's Included -->
                     <div class="package-section">
-                        <h2><i class="fas fa-check-circle"></i> Yang Termasuk</h2>
+                        <h2><i class="fas fa-check-circle"></i> <span data-translate="packageDetail.sections.included">Yang Termasuk</span></h2>
                         <ul id="inclusions-list" class="inclusion-list">
-                            <li><i class="fas fa-check-circle"></i> Memuat...</li>
+                            <li><i class="fas fa-check-circle"></i> <span data-translate="common.loading">Memuat...</span></li>
                         </ul>
                     </div>
 
                     <!-- What's Not Included -->
                     <div class="package-section">
-                        <h2><i class="fas fa-times-circle"></i> Yang Tidak Termasuk</h2>
+                        <h2><i class="fas fa-times-circle"></i> <span data-translate="packageDetail.sections.excluded">Yang Tidak Termasuk</span></h2>
                         <ul id="exclusions-list" class="exclusion-list">
-                            <li><i class="fas fa-times-circle"></i> Memuat...</li>
+                            <li><i class="fas fa-times-circle"></i> <span data-translate="common.loading">Memuat...</span></li>
                         </ul>
                     </div>
-                </div>
-
-                <!-- Package Highlights - DIPERBAIKI -->
+                </div>                <!-- Package Highlights - DIPERBAIKI -->
                 <div class="package-highlights" id="package-highlights">
-                    <h2>Tour Highlights</h2>
+                    <h2 data-translate="packageDetail.sections.highlights">Highlight Tour</h2>
                     <div id="highlights-content">
                         <!-- Highlights will be populated here -->
                     </div>
 
                     
                 </div>
-            </div>
-
-            <!-- Gallery Section - DIPERBAIKI -->
+            </div>            <!-- Gallery Section - DIPERBAIKI -->
             <div class="gallery-section">
-                <h2><i class="fas fa-images"></i> Galeri Foto</h2>
-                <p>Lihat foto-foto destinasi yang akan Anda kunjungi</p>
+                <h2><i class="fas fa-images"></i> <span data-translate="packageDetail.sections.gallery">Galeri Foto</span></h2>
+                <p data-translate="packageDetail.gallery.description">Lihat foto-foto destinasi yang akan Anda kunjungi</p>
 
                 <div class="main-image-container">
                     <img id="main-image" src="../../assets/images/borobudur.jpg" alt="Main Gallery Image">
@@ -152,15 +140,193 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Footer -->
+    </div>    <!-- Footer -->
     <footer class="site-footer">
-        <!-- Footer content sama seperti sebelumnya -->
-    </footer>
+        <div class="footer-wave">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path
+                    d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+                    opacity=".25" fill="#87CEEB"></path>
+                <path
+                    d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
+                    opacity=".5" fill="#87CEEB"></path>
+                <path
+                    d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
+                    fill="#87CEEB"></path>
+            </svg>
+        </div>
 
-    <script src="../js/mobile-nav-package.js"></script>
-    <script>
+        <div class="footer-container">
+            <div class="footer-column">
+                <div class="logo-container">
+                    <h3 class="footer-logo">Vacationland</h3>
+                    <p class="tagline" data-translate="footer.tagline">"Temukan Keindahan Yogyakarta Bersama Kami"</p>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+62 812 3456 7890</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>+62 812 3456 7890</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Vacationland@email.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-globe"></i>
+                        <span>Vacationland.co.id</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-instagram"></i>
+                        <span>@Vacationland</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>Vacationland</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span data-translate="footer.address">Jl. Malioboro No. 123, Yogyakarta</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="hours-section">
+                    <h3><i class="far fa-clock"></i> <span data-translate="footer.operatingHours">Jam Operasional</span></h3>
+                    <div class="hours-item">
+                        <span data-translate="footer.mondayFriday">Senin - Jumat</span>
+                        <span>09.00 - 17.00 WIB</span>
+                    </div>
+                    <div class="hours-item">
+                        <span data-translate="footer.saturday">Sabtu</span>
+                        <span>09.00 - 14.00 WIB</span>
+                    </div>
+                    <div class="hours-item">
+                        <span data-translate="footer.sundayHoliday">Minggu & Hari Libur</span>
+                        <span data-translate="footer.closed">Tutup</span>
+                    </div>
+                </div>
+
+                <div class="services-section">
+                    <h3><i class="fas fa-concierge-bell"></i> <span data-translate="footer.ourServices">Layanan Kami</span></h3>
+                    <ul>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.cultural">Paket Wisata Budaya</span></li>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.historical">Wisata Sejarah</span></li>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.adventure">Petualangan Alam</span></li>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.culinary">Tur Kuliner</span></li>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.transport">Transportasi Wisata</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <div class="payment-section">
+                    <h3><i class="fas fa-credit-card"></i> <span data-translate="footer.paymentMethods">Metode Pembayaran</span></h3>
+                    <div class="payment-methods">
+                        <div class="payment-item">VISA</div>
+                        <div class="payment-item">Mastercard</div>
+                        <div class="payment-item">BCA</div>
+                        <div class="payment-item">Mandiri</div>
+                        <div class="payment-item">GoPay</div>
+                        <div class="payment-item">OVO</div>
+                    </div>
+                </div>
+
+                <div class="newsletter-section">
+                    <h3><i class="fas fa-envelope-open-text"></i> <span data-translate="footer.newsletter">Newsletter</span></h3>
+                    <p data-translate="footer.newsletterDesc">Dapatkan penawaran spesial dengan berlangganan</p>
+                    <form class="newsletter-form">
+                        <input type="email" data-translate="footer.emailPlaceholder" placeholder="Alamat email Anda">
+                        <button type="submit" data-translate="footer.subscribe">Berlangganan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+            </div>
+            <p data-translate="footer.copyright">Copyright ©2025 Vacationland | All rights reserved | Created with ❤️ by ARK</p>
+        </div>
+    </footer><script src="../js/mobile-nav-package.js"></script>
+    <script src="../../assets/js/translations.js" defer></script>
+    <script defer>// Force translation system initialization
+        console.log('🔧 Forcing translation system initialization...');
+        
+        // Wait for translation system to be available
+        function waitForTranslationSystem() {
+            return new Promise((resolve) => {
+                if (window.translationSystem) {
+                    resolve(window.translationSystem);
+                } else {
+                    setTimeout(() => {
+                        waitForTranslationSystem().then(resolve);
+                    }, 100);
+                }
+            });
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', async function() {
+            console.log('🌐 Window loaded, initializing translations...');
+            try {
+                const translationSystem = await waitForTranslationSystem();
+                console.log('✅ Translation system ready, applying translations...');
+                translationSystem.applyTranslations();
+                
+                // Setup mutation observer to watch for dynamic content
+                setupTranslationObserver();
+            } catch (error) {
+                console.error('❌ Translation system initialization failed:', error);
+            }
+        });
+        
+        // Function to setup translation observer for dynamic content
+        function setupTranslationObserver() {
+            const observer = new MutationObserver((mutations) => {
+                let needsTranslation = false;
+                
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach((node) => {
+                            if (node.nodeType === Node.ELEMENT_NODE) {
+                                // Check if new node has translation attributes
+                                if (node.hasAttribute && (
+                                    node.hasAttribute('data-translate') ||
+                                    node.querySelector('[data-translate]')
+                                )) {
+                                    needsTranslation = true;
+                                }
+                            }
+                        });
+                    }
+                });
+                
+                if (needsTranslation && window.translationSystem) {
+                    console.log('🔄 Applying translations to new content...');
+                    setTimeout(() => {
+                        window.translationSystem.applyTranslations();
+                    }, 50);
+                }
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            console.log('👁️ Translation observer setup complete');
+        }
+        
         // Debug: Check initial state
         console.log('🔍 Script loaded, checking initial state...');
         console.log('Current URL:', window.location.href);
@@ -168,10 +334,36 @@
         const urlParams = new URLSearchParams(window.location.search);
         const packageId = urlParams.get('id');
 
-        console.log('📦 Package ID from URL:', packageId);
-
-        document.addEventListener('DOMContentLoaded', function() {
+        console.log('📦 Package ID from URL:', packageId);        document.addEventListener('DOMContentLoaded', function() {
             console.log('📄 DOM loaded, checking elements...');
+              // Initialize translation system first
+            console.log('🌐 Initializing translation system...');
+            if (window.translationSystem) {
+                console.log('✅ Translation system found, applying translations...');
+                window.translationSystem.applyTranslations();
+                
+                // Debug translation keys
+                const testKey = 'packageDetail.sections.description';
+                const testTranslation = window.translationSystem.getTranslation(testKey);
+                console.log(`🧪 Test translation for "${testKey}":`, testTranslation);
+            } else {
+                console.log('⚠️ Translation system not found, waiting for it to load...');
+                setTimeout(() => {
+                    if (window.translationSystem) {                        console.log('✅ Translation system loaded, applying translations...');
+                        window.translationSystem.applyTranslations();
+                        
+                        // Debug translation keys
+                        const testKey = 'packageDetail.sections.description';
+                        const testTranslation = window.translationSystem.getTranslation(testKey);
+                        console.log(`🧪 Test translation for "${testKey}":`, testTranslation);
+                        
+                        // Force translate all package elements
+                        forceTranslatePackageElements();
+                    } else {
+                        console.error('❌ Translation system failed to load');
+                    }
+                }, 500);
+            }
             
             if (!packageId) {
                 showError('ID paket tidak ditemukan dalam URL');
@@ -273,11 +465,20 @@
             
             // Update page title
             document.title = `${data.nama} | Vacationland`;
-            
-            try {
+              try {
                 updateHeroSection(data);
                 updateMainContent(data); // Ini akan memanggil updateItinerary
                 updateGallery(data.fotos);
+                  // Re-apply translations after content is loaded
+                setTimeout(() => {
+                    if (window.translationSystem) {
+                        console.log('🔄 Re-applying translations after content load...');
+                        window.translationSystem.applyTranslations();
+                        
+                        // Force translate specific package detail elements
+                        forceTranslatePackageElements();
+                    }
+                }, 100);
             } catch (updateError) {
                 console.error('❌ Error updating content:', updateError);
                 showError('Error menampilkan data paket');
@@ -332,14 +533,14 @@
             
             const priceDisplayEl = document.getElementById('price-display');
             const priceBadge = document.getElementById('price-badge');
-            
-            if (data.price && data.price > 0) {
+              if (data.price && data.price > 0) {
                 const formattedPrice = data.formatted_price || formatPrice(data.price);
+                const priceNote = data.price_note || getTranslation('packageDetail.price.note') || 'per orang (minimal 2 peserta)';
                 
                 if (priceDisplayEl) {
                     priceDisplayEl.innerHTML = `
                         <span class="price-amount">${formattedPrice}</span>
-                        <span class="price-note">per person</span>
+                        <span class="price-note">${priceNote}</span>
                     `;
                 }
                 
@@ -349,7 +550,7 @@
                 
                 console.log('✅ Price updated to:', formattedPrice);
             } else {
-                const defaultText = 'Hubungi untuk harga';
+                const defaultText = getTranslation('packageDetail.price.contact') || data.formatted_price || 'Hubungi untuk harga';
                 
                 if (priceDisplayEl) {
                     priceDisplayEl.innerHTML = `<span class="price-amount">${defaultText}</span>`;
@@ -361,12 +562,18 @@
                 
                 console.log('⚠️ No price data, showing default text');
             }
-        }
-
-        function formatPrice(price) {
-            if (!price || price <= 0) return 'Hubungi untuk harga';
+        }        function formatPrice(price) {
+            if (!price || price <= 0) return getTranslation('packageDetail.price.contact') || 'Hubungi untuk harga';
             
             return 'Rp ' + new Intl.NumberFormat('id-ID').format(price);
+        }
+
+        // Helper function to get translation
+        function getTranslation(key) {
+            if (window.translationSystem) {
+                return window.translationSystem.translate(key);
+            }
+            return null;
         }
 
         function updateHeroSection(data) {
@@ -380,18 +587,15 @@
             if (titleEl) titleEl.textContent = data.nama || 'Paket Wisata';
             if (subtitleEl) subtitleEl.textContent = data.deskripsi ? data.deskripsi.substring(0, 100) + '...' : 'Jelajahi keindahan Yogyakarta';
             if (durationBadge) durationBadge.textContent = data.duration || '2D1N';
-            
-            // Update price badge
+              // Update price badge
             if (priceBadge) {
                 if (data.price && data.price > 0) {
                     priceBadge.textContent = data.formatted_price || formatPrice(data.price);
                 } else {
-                    priceBadge.textContent = 'Hubungi untuk harga';
+                    priceBadge.textContent = getTranslation('packageDetail.price.contact') || 'Hubungi untuk harga';
                 }
             }
-        }
-
-        function updateInclusions(inclusions) {
+        }        function updateInclusions(inclusions) {
             console.log('✅ Updating inclusions:', inclusions);
             
             const inclusionsList = document.getElementById('inclusions-list');
@@ -402,26 +606,39 @@
             
             let inclusionsHTML = '';
             
-            if (inclusions && typeof inclusions === 'object') {
+            // Handle different data formats
+            if (Array.isArray(inclusions)) {
+                // If it's an array, treat each item as text
+                inclusions.forEach(text => {
+                    if (text && text.trim()) {
+                        inclusionsHTML += `<li><i class="fas fa-check"></i> ${text}</li>`;
+                    }
+                });
+            } else if (inclusions && typeof inclusions === 'object') {
+                // If it's an object, use key as icon and value as text
                 Object.entries(inclusions).forEach(([icon, text]) => {
                     if (text && text.trim()) {
-                        inclusionsHTML += `<li><i class="${icon}"></i> ${text}</li>`;
+                        const iconClass = icon.includes('fa-') ? icon : 'fas fa-check';
+                        inclusionsHTML += `<li><i class="${iconClass}"></i> ${text}</li>`;
                     }
                 });
             }
-            
+              // Fallback to default content using translations
             if (!inclusionsHTML) {
-                inclusionsHTML = `
-                    <li><i class="fas fa-check"></i> Transportasi AC</li>
-                    <li><i class="fas fa-check"></i> Tiket masuk wisata</li>
-                    <li><i class="fas fa-check"></i> Makan sesuai program</li>
-                `;
+                const fallbackInclusions = getTranslation('packageDetail.fallback.inclusions') || [
+                    'Transportasi AC',
+                    'Tiket masuk wisata', 
+                    'Makan sesuai program',
+                    'Guide berpengalaman'
+                ];
+                
+                fallbackInclusions.forEach(text => {
+                    inclusionsHTML += `<li><i class="fas fa-check"></i> ${text}</li>`;
+                });
             }
             
             inclusionsList.innerHTML = inclusionsHTML;
-        }
-
-        function updateExclusions(exclusions) {
+        }        function updateExclusions(exclusions) {
             console.log('❌ Updating exclusions:', exclusions);
             
             const exclusionsList = document.getElementById('exclusions-list');
@@ -432,26 +649,38 @@
             
             let exclusionsHTML = '';
             
-            if (exclusions && typeof exclusions === 'object') {
+            // Handle different data formats
+            if (Array.isArray(exclusions)) {
+                // If it's an array, treat each item as text
+                exclusions.forEach(text => {
+                    if (text && text.trim()) {
+                        exclusionsHTML += `<li><i class="fas fa-times"></i> ${text}</li>`;
+                    }
+                });
+            } else if (exclusions && typeof exclusions === 'object') {
+                // If it's an object, use key as icon and value as text
                 Object.entries(exclusions).forEach(([icon, text]) => {
                     if (text && text.trim()) {
-                        exclusionsHTML += `<li><i class="${icon}"></i> ${text}</li>`;
+                        const iconClass = icon.includes('fa-') ? icon : 'fas fa-times';
+                        exclusionsHTML += `<li><i class="${iconClass}"></i> ${text}</li>`;
                     }
                 });
             }
-            
+              // Fallback to default content using translations
             if (!exclusionsHTML) {
-                exclusionsHTML = `
-                    <li><i class="fas fa-times"></i> Tiket pesawat</li>
-                    <li><i class="fas fa-times"></i> Pengeluaran pribadi</li>
-                    <li><i class="fas fa-times"></i> Minuman beralkohol</li>
-                `;
+                const fallbackExclusions = getTranslation('packageDetail.fallback.exclusions') || [
+                    'Tiket pesawat',
+                    'Pengeluaran pribadi',
+                    'Minuman beralkohol',
+                    'Tips guide (optional)'
+                ];
+                
+                fallbackExclusions.forEach(text => {
+                    exclusionsHTML += `<li><i class="fas fa-times"></i> ${text}</li>`;
+                });
             }
             
-            exclusionsList.innerHTML = exclusionsHTML;
-        }
-
-        function updateHighlights(highlights) {
+            exclusionsList.innerHTML = exclusionsHTML;        }        function updateHighlights(highlights) {
             console.log('⭐ Updating highlights:', highlights);
             
             const highlightsContent = document.getElementById('highlights-content');
@@ -462,6 +691,7 @@
             
             let highlightsHTML = '';
             
+            // Handle different data formats
             if (Array.isArray(highlights) && highlights.length > 0) {
                 highlights.forEach(highlight => {
                     if (highlight && highlight.trim()) {
@@ -473,27 +703,48 @@
                         `;
                     }
                 });
-            }
-            
+            } else if (highlights && typeof highlights === 'object') {
+                // If it's an object, use values as highlight text
+                Object.values(highlights).forEach(highlight => {
+                    if (highlight && highlight.trim()) {
+                        highlightsHTML += `
+                            <div class="highlight-item">
+                                <i class="fas fa-star"></i>
+                                <span>${highlight}</span>
+                            </div>
+                        `;
+                    }
+                });
+            }            // Fallback to default content using translations
             if (!highlightsHTML) {
-                highlightsHTML = `
-                    <div class="highlight-item">
-                        <i class="fas fa-star"></i>
-                        <span>Pengalaman wisata yang tak terlupakan</span>
-                    </div>
-                    <div class="highlight-item">
-                        <i class="fas fa-star"></i>
-                        <span>Guide berpengalaman dan ramah</span>
-                    </div>
-                    <div class="highlight-item">
-                        <i class="fas fa-star"></i>
-                        <span>Destinasi wisata terpopuler</span>
-                    </div>
-                `;
+                let fallbackHighlights;
+                if (window.translationSystem) {
+                    fallbackHighlights = window.translationSystem.getTranslation('packageDetail.fallback.highlights');
+                }
+                
+                if (!fallbackHighlights || !Array.isArray(fallbackHighlights)) {
+                    fallbackHighlights = [
+                        'Pengalaman wisata yang tak terlupakan',
+                        'Guide berpengalaman dan ramah', 
+                        'Destinasi wisata terpopuler',
+                        'Fasilitas lengkap dan nyaman'
+                    ];
+                }
+                
+                fallbackHighlights.forEach(text => {
+                    highlightsHTML += `
+                        <div class="highlight-item">
+                            <i class="fas fa-star"></i>
+                            <span>${text}</span>
+                        </div>
+                    `;
+                });
             }
             
             highlightsContent.innerHTML = highlightsHTML;
-        }        function updateItinerary(itinerary) {
+        }
+
+        function updateItinerary(itinerary) {
             console.log('📅 Updating itinerary with data:', {
                 itinerary: itinerary,
                 type: typeof itinerary,
@@ -796,14 +1047,83 @@
             document.querySelectorAll('.thumb-container').forEach(container => 
                 container.classList.remove('active'));
             thumbElement.closest('.thumb-container').classList.add('active');
-        }
-
-        function bookTour() {
+        }        function bookTour() {
             const packageName = document.getElementById('package-title')?.textContent || 'Paket Tour';
             const message = `Halo! Saya tertarik dengan paket tour "${packageName}". Bisa info lebih lanjut?`;
             const whatsappURL = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`;
             window.open(whatsappURL, '_blank');
         }
+          // Force translate package detail specific elements
+        function forceTranslatePackageElements() {
+            console.log('🎯 Force translating package detail elements...');
+            
+            // List of specific elements to translate
+            const elementsToTranslate = [
+                { selector: '[data-translate="packageDetail.sections.description"]', key: 'packageDetail.sections.description' },
+                { selector: '[data-translate="packageDetail.sections.itinerary"]', key: 'packageDetail.sections.itinerary' },
+                { selector: '[data-translate="packageDetail.sections.included"]', key: 'packageDetail.sections.included' },
+                { selector: '[data-translate="packageDetail.sections.excluded"]', key: 'packageDetail.sections.excluded' },
+                { selector: '[data-translate="packageDetail.sections.highlights"]', key: 'packageDetail.sections.highlights' },
+                { selector: '[data-translate="packageDetail.sections.gallery"]', key: 'packageDetail.sections.gallery' },
+                { selector: '[data-translate="packageDetail.price.title"]', key: 'packageDetail.price.title' },
+                { selector: '[data-translate="packageDetail.price.note"]', key: 'packageDetail.price.note' },
+                { selector: '[data-translate="packageDetail.bookNow"]', key: 'packageDetail.bookNow' },
+                { selector: '[data-translate="packageDetail.gallery.description"]', key: 'packageDetail.gallery.description' }
+            ];
+            
+            let translatedCount = 0;
+            
+            elementsToTranslate.forEach(({ selector, key }) => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(element => {
+                    if (window.translationSystem) {
+                        const translation = window.translationSystem.getTranslation(key);
+                        if (translation && translation !== key) {
+                            element.textContent = translation;
+                            translatedCount++;
+                            console.log(`✅ Translated "${key}" to "${translation}"`);
+                        } else {
+                            console.warn(`⚠️ No translation found for "${key}"`);
+                        }
+                    }
+                });
+            });
+            
+            console.log(`🎯 Force translated ${translatedCount} package elements`);
+        }
+
+        // Test function to debug translations - accessible from browser console
+        window.testTranslations = function() {
+            console.log('🧪 Testing translation system...');
+            
+            if (!window.translationSystem) {
+                console.error('❌ Translation system not available');
+                return;
+            }
+            
+            console.log('✅ Translation system available');
+            console.log('🌐 Current language:', window.translationSystem.currentLanguage);
+            
+            // Test key translations
+            const testKeys = [
+                'packageDetail.sections.description',
+                'packageDetail.sections.itinerary',
+                'packageDetail.sections.included',
+                'packageDetail.sections.excluded',
+                'packageDetail.sections.highlights',
+                'packageDetail.sections.gallery'
+            ];
+            
+            testKeys.forEach(key => {
+                const translation = window.translationSystem.getTranslation(key);
+                console.log(`🔑 "${key}" => "${translation}"`);
+            });
+            
+            // Force apply translations
+            console.log('🔄 Force applying translations...');
+            window.translationSystem.applyTranslations();
+            forceTranslatePackageElements();
+        };
     </script>
 </body>
 </html>

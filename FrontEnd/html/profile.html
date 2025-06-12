@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id" data-lang="id">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Vacationland Company Profile</title>    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="../../assets/css/main.css" />
+    <title data-translate="profile.pageTitle">Tentang Kami | Vacationland</title><link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />    <link rel="stylesheet" href="../../assets/css/main.css" />
     <link rel="stylesheet" href="../../assets/css/profile.css" />
+    <link rel="stylesheet" href="../../assets/css/language-switcher.css" />
 </head>
 
-<body>
-    <header>
+<body>    <header>
         <div class="logo">
             <img src="../../assets/images/logompti.png" alt="Vacationland Logo" />
             <span>Vacationland</span>
         </div>
+
         <!-- Navigation for Desktop (hidden on mobile) -->
         <nav class="desktop-nav">
-            <a href="Index.html">🏠 Home</a>
-            <a href="Index.html#paket">✈️ Packages</a>
-            <a href="profile.html">👤 Profile</a>
+            <a href="Index.html" data-translate="nav.home">🏠 Beranda</a>
+            <a href="Index.html#paket" data-translate="nav.packages">✈️ Paket Wisata</a>
+            <a href="profile.html" data-translate="nav.profile">👤 Tentang Kami</a>
         </nav>
+
+        <!-- Language Switcher will be inserted here by translations.js -->
 
         <!-- Mobile Menu Toggle -->
         <div class="mobile-menu-toggle">
@@ -30,48 +32,143 @@
         </div>
     </header>
 
-    <!-- Tambahkan sidebar mobile dan overlay di sini -->
-    <nav class="mobile-sidebar">
-        <a href="Index.html">🏠 Home</a>
-        <a href="Index.html#paket">✈️ Packages</a>
-        <a href="profile.html">👤 Profile</a>
-    </nav>
-
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar">
+        <nav class="sidebar-nav">
+            <a href="Index.html" style="--i: 1" data-translate="nav.home">🏠 Beranda</a>
+            <a href="Index.html#paket" style="--i: 2" data-translate="nav.packages">✈️ Paket Wisata</a>
+            <a href="profile.html" style="--i: 3" data-translate="nav.profile">👤 Tentang Kami</a>
+        </nav>
+    </div>
     <div class="sidebar-overlay"></div>
 
-    <main class="container">
-        <!-- Konten utama -->
+    <main class="container">        <!-- Konten utama -->
         <section class="profile-header">
-            <h1>Vacationland - Explore the World with Us</h1>
-            <p>
-                Vacationland is a travel company committed to delivering unforgettable holiday experiences with the best service,
-                comprehensive tour packages, and friendly customer care. We combine local cultural beauty and popular travel destinations for you.
+            <h1 data-translate="profile.title">Vacationland - Jelajahi Dunia Bersama Kami</h1>
+            <p data-translate="profile.description">
+                Vacationland adalah perusahaan travel yang berkomitmen memberikan pengalaman liburan tak terlupakan dengan layanan terbaik,
+                paket wisata lengkap, dan customer care yang ramah. Kami memadukan keindahan budaya lokal dan destinasi wisata populer untuk Anda.
             </p>
-        </section>
-
-        <section class="gallery">
+        </section>        <section class="gallery">
             <div class="gallery-background"></div>
             <div class="gallery-main">
                 <img id="main-photo" src="../../assets/images/borobudur.jpg" alt="Main Gallery Photo" />
             </div>
         </section>
-    </main>
 
-    <button id="admin-login-btn">Admin Login</button>
+        <!-- About Us Section -->
+        <section class="about-section">
+            <div class="container">
+                <h2 data-translate="profile.sections.about.title">Tentang Kami</h2>
+                <p data-translate="profile.sections.about.content">
+                    Vacationland adalah perusahaan travel dengan pengalaman lebih dari 10 tahun di industri pariwisata Indonesia. 
+                    Kami mengkhususkan diri dalam memberikan pengalaman perjalanan yang tak terlupakan dengan standar pelayanan tertinggi.
+                </p>
+            </div>
+        </section>
+
+        <!-- Vision Section -->
+        <section class="vision-section">
+            <div class="container">
+                <h2 data-translate="profile.sections.vision.title">Visi Kami</h2>
+                <p data-translate="profile.sections.vision.content">
+                    Menjadi perusahaan travel terdepan di Indonesia yang memberikan pengalaman wisata berkualitas tinggi dan berkelanjutan.
+                </p>
+            </div>
+        </section>        <!-- Mission Section -->
+        <section class="mission-section">
+            <div class="container">
+                <h2 data-translate="profile.sections.mission.title">Misi Kami</h2>
+                <ul class="mission-list">
+                    <li data-mission-item="0">Memberikan pelayanan wisata terbaik dengan standar internasional</li>
+                    <li data-mission-item="1">Mempromosikan keindahan dan budaya Indonesia ke dunia</li>
+                    <li data-mission-item="2">Menciptakan lapangan kerja dan memberdayakan masyarakat lokal</li>
+                    <li data-mission-item="3">Melestarikan alam dan budaya di setiap destinasi</li>
+                </ul>
+            </div>
+        </section>
+    </main><button id="admin-login-btn" data-translate="admin.login">Login Admin</button>
 
     <div id="login-modal">
         <div class="login-box">
             <span class="login-close" id="login-close">&times;</span>
-            <h2>Admin Login</h2>
+            <h2 data-translate="admin.login">Login Admin</h2>
             <form id="login-form" action="../../BackEnd/loginadmin.php" method="POST">
                 <input type="email" name="email" placeholder="Email" required />
                 <input type="password" name="password" placeholder="Password" required />
-                <button type="submit">Log In</button>
-            </form>        <div id="login-error" style="display: none; color: red; margin-top: 10px;"></div>
+                <button type="submit" data-translate="nav.login">Log In</button>
+            </form>
+            <div id="login-error" style="display: none; color: red; margin-top: 10px;"></div>
         </div>
-    </div>
-
-    <script src="../../assets/js/main.js"></script>
+    </div>    <script src="../../assets/js/main.js"></script>
+    <script src="../js/mobile-nav.js"></script>
+    <script src="../../assets/js/translations.js"></script>
+    
+    <script>
+        // Profile-specific translation handler
+        window.addEventListener('load', async function() {
+            console.log('🌐 Profile page loaded, waiting for translation system...');
+            
+            // Wait for translation system
+            function waitForTranslationSystem() {
+                return new Promise((resolve) => {
+                    if (window.translationSystem) {
+                        resolve(window.translationSystem);
+                    } else {
+                        setTimeout(() => {
+                            waitForTranslationSystem().then(resolve);
+                        }, 100);
+                    }
+                });
+            }
+            
+            try {
+                const translationSystem = await waitForTranslationSystem();
+                console.log('✅ Translation system ready for profile page');
+                
+                // Apply general translations
+                translationSystem.applyTranslations();
+                
+                // Handle mission items specifically
+                updateMissionItems();
+                
+                // Listen for language changes
+                document.addEventListener('languageChanged', updateMissionItems);
+                
+            } catch (error) {
+                console.error('❌ Profile translation initialization failed:', error);
+            }
+        });
+        
+        function updateMissionItems() {
+            if (!window.translationSystem) return;
+            
+            const missionItems = document.querySelectorAll('[data-mission-item]');
+            missionItems.forEach((item, index) => {
+                const key = `profile.sections.mission.items`;
+                const missionData = window.translationSystem.getTranslation(key);
+                
+                if (Array.isArray(missionData) && missionData[index]) {
+                    item.textContent = missionData[index];
+                    console.log(`✅ Updated mission item ${index}: ${missionData[index]}`);
+                } else {
+                    console.warn(`⚠️ Mission item ${index} not found in translations`);
+                }
+            });
+        }
+        
+        // Test function for console debugging
+        window.testProfileTranslations = function() {
+            console.log('🧪 Testing profile translations...');
+            if (window.translationSystem) {
+                console.log('Current language:', window.translationSystem.currentLanguage);
+                console.log('Profile title:', window.translationSystem.getTranslation('profile.title'));
+                console.log('Profile description:', window.translationSystem.getTranslation('profile.description'));
+                console.log('Mission items:', window.translationSystem.getTranslation('profile.sections.mission.items'));
+                updateMissionItems();
+            }
+        };
+    </script>
 </body>
 
 

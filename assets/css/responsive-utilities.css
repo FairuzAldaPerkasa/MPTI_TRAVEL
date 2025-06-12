@@ -244,3 +244,101 @@ img {
         padding: 30px 15px;
     }
 }
+
+/* =================================
+   HEADER RESPONSIVENESS WITH LANGUAGE SWITCHER
+   ================================= */
+
+/* Desktop header layout */
+@media (min-width: 769px) {
+    header {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    header .logo {
+        flex-shrink: 0;
+    }
+    
+    header .desktop-nav {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        gap: 2rem;
+    }
+    
+    header .language-switcher {
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+    
+    header .mobile-menu-toggle {
+        display: none;
+    }
+}
+
+/* Tablet and mobile header layout */
+@media (max-width: 768px) {
+    header {
+        padding: 12px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        gap: 10px;
+    }
+    
+    header .logo {
+        flex: 1;
+        min-width: 0; /* Allow text truncation if needed */
+    }
+    
+    header .desktop-nav {
+        display: none;
+    }
+    
+    header .language-switcher {
+        flex-shrink: 0;
+        order: 2;
+    }
+    
+    header .mobile-menu-toggle {
+        flex-shrink: 0;
+        order: 3;
+        display: flex;
+    }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+    header {
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    
+    header .logo span {
+        font-size: 1.2em;
+    }
+    
+    header .logo img {
+        height: 28px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+    header {
+        padding: 8px 10px;
+        gap: 6px;
+    }
+    
+    header .logo span {
+        font-size: 1.1em;
+    }
+    
+    header .logo img {
+        height: 26px;
+    }
+}

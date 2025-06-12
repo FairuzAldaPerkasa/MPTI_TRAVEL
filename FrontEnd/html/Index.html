@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-lang="id">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Vacationland</title>
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacationland - MPTI Travel</title>    <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/style.css">
     <link rel="stylesheet" href="../../assets/css/package-cards-fix.css">
     <link rel="stylesheet" href="../../assets/css/responsive-utilities.css">
+    <link rel="stylesheet" href="../../assets/css/language-switcher.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lora:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -181,34 +182,33 @@
     </style>
 </head>
 
-<body>
-    <header>
+<body>    <header>
         <div class="logo">
             <img src="../../assets/images/logompti.png" alt="Vacationland Logo">
             <span>Vacationland</span>
         </div>
-
+        
         <!-- Navigation for Desktop (hidden on mobile) -->
         <nav class="desktop-nav">
-            <a href="Index.html">🏠 Home</a>
-            <a href="#paket">✈️ Packages</a>
-            <a href="profile.html">👤 Profile</a>
+            <a href="Index.html" data-translate="nav.home">🏠 Beranda</a>
+            <a href="#paket" data-translate="nav.packages">✈️ Paket Wisata</a>
+            <a href="profile.html" data-translate="nav.about">👤 Tentang Kami</a>
         </nav>
 
+        <!-- Language Switcher will be inserted here by translations.js -->
+        
         <!-- Mobile Menu Toggle -->
         <div class="mobile-menu-toggle">
             <span></span>
             <span></span>
             <span></span>
         </div>
-    </header>
-
-    <!-- Mobile Sidebar -->
+    </header><!-- Mobile Sidebar -->
     <div class="mobile-sidebar">
         <nav class="sidebar-nav">
-            <a href="Index.html" style="--i: 1">🏠 Home</a>
-            <a href="#paket" style="--i: 2">✈️ Packages</a>
-            <a href="profile.html" style="--i: 4">👤 Profile</a>
+            <a href="Index.html" style="--i: 1" data-translate="nav.home">🏠 Beranda</a>
+            <a href="#paket" style="--i: 2" data-translate="nav.packages">✈️ Paket Wisata</a>
+            <a href="profile.html" style="--i: 4" data-translate="nav.about">👤 Tentang Kami</a>
         </nav>
     </div>
     <div class="sidebar-overlay"></div>
@@ -218,15 +218,19 @@
             <source src="../../assets/video/video1.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+        <div class="hero-content">
+            <h1 class="hero-title" data-translate="hero.title">Jelajahi Keindahan Indonesia</h1>
+            <p class="hero-subtitle" data-translate="hero.subtitle">Nikmati pengalaman tak terlupakan dengan paket wisata terbaik kami</p>
+            <button class="hero-cta" data-translate="hero.cta">Mulai Petualangan</button>
+        </div>
     </section>
 
     <section class="tour-section" id="paket">
         <div class="section-header" style="text-align: center; margin-bottom: 30px;">
-            <h2 style="font-family: 'Lora', serif; font-size: 2.5rem; color: #2c3e50; margin-bottom: 10px;">
-                Paket Wisata Kami
+            <h2 style="font-family: 'Lora', serif; font-size: 2.5rem; color: #2c3e50; margin-bottom: 10px;" data-translate="packages.title">
+                Paket Wisata Unggulan
             </h2>
-            <p style="color: #666; font-size: 1.1rem;">Jelajahi keindahan Yogyakarta dengan paket tour terbaik
-            </p>
+            <p style="color: #666; font-size: 1.1rem;" data-translate="packages.subtitle">Pilihan destinasi terbaik untuk liburan sempurna Anda</p>
         </div>
 
         <div class="slider" id="packages-container">
@@ -234,7 +238,7 @@
             <div class="loading" style="text-align: center; padding: 40px; color: #666;">
                 <div class="spinner"
                     style="border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
-                <p>Memuat paket wisata...</p>
+                <p data-translate="common.loading">Memuat paket wisata...</p>
                 <p><small>Jika loading terlalu lama, <a href="javascript:window.debugPackages()"
                             style="color: #3498db;">klik di sini untuk debug</a></small></p>
             </div>
@@ -260,11 +264,10 @@
             </svg>
         </div>
 
-        <div class="footer-container">
-            <div class="footer-column">
+        <div class="footer-container">            <div class="footer-column">
                 <div class="logo-container">
                     <h3 class="footer-logo">Vacationland</h3>
-                    <p class="tagline">"Temukan Keindahan Yogyakarta Bersama Kami"</p>
+                    <p class="tagline" data-translate="footer.tagline">"Temukan Keindahan Yogyakarta Bersama Kami"</p>
                 </div>
                 <div class="contact-info">
                     <div class="contact-item">
@@ -293,43 +296,40 @@
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>Jl. Malioboro No. 123, Yogyakarta</span>
+                        <span data-translate="footer.address">Jl. Malioboro No. 123, Yogyakarta</span>
                     </div>
                 </div>
             </div>
 
             <div class="footer-column">
                 <div class="hours-section">
-                    <h3><i class="far fa-clock"></i> Jam Operasional</h3>
+                    <h3><i class="far fa-clock"></i> <span data-translate="footer.operatingHours">Jam Operasional</span></h3>
                     <div class="hours-item">
-                        <span>Senin - Jumat</span>
+                        <span data-translate="footer.mondayFriday">Senin - Jumat</span>
                         <span>09.00 - 17.00 WIB</span>
-                    </div>
-                    <div class="hours-item">
-                        <span>Sabtu</span>
+                    </div>                    <div class="hours-item">
+                        <span data-translate="footer.saturday">Sabtu</span>
                         <span>09.00 - 14.00 WIB</span>
                     </div>
                     <div class="hours-item">
-                        <span>Minggu & Hari Libur</span>
-                        <span>Tutup</span>
+                        <span data-translate="footer.sundayHoliday">Minggu & Hari Libur</span>
+                        <span data-translate="footer.closed">Tutup</span>
                     </div>
                 </div>
 
                 <div class="services-section">
-                    <h3><i class="fas fa-concierge-bell"></i> Layanan Kami</h3>
+                    <h3><i class="fas fa-concierge-bell"></i> <span data-translate="footer.ourServices">Layanan Kami</span></h3>
                     <ul>
-                        <li><i class="fas fa-chevron-right"></i> Paket Wisata Budaya</li>
-                        <li><i class="fas fa-chevron-right"></i> Wisata Sejarah</li>
-                        <li><i class="fas fa-chevron-right"></i> Petualangan Alam</li>
-                        <li><i class="fas fa-chevron-right"></i> Tur Kuliner</li>
-                        <li><i class="fas fa-chevron-right"></i> Transportasi Wisata</li>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.cultural">Paket Wisata Budaya</span></li>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.historical">Wisata Sejarah</span></li>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.adventure">Petualangan Alam</span></li>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.culinary">Tur Kuliner</span></li>
+                        <li><i class="fas fa-chevron-right"></i> <span data-translate="footer.services.transport">Transportasi Wisata</span></li>
                     </ul>
                 </div>
-            </div>
-
-            <div class="footer-column">
+            </div>            <div class="footer-column">
                 <div class="payment-section">
-                    <h3><i class="fas fa-credit-card"></i> Metode Pembayaran</h3>
+                    <h3><i class="fas fa-credit-card"></i> <span data-translate="footer.paymentMethods">Metode Pembayaran</span></h3>
                     <div class="payment-methods">
                         <div class="payment-item">VISA</div>
                         <div class="payment-item">Mastercard</div>
@@ -341,11 +341,11 @@
                 </div>
 
                 <div class="newsletter-section">
-                    <h3><i class="fas fa-envelope-open-text"></i> Newsletter</h3>
-                    <p>Dapatkan penawaran spesial dengan berlangganan</p>
+                    <h3><i class="fas fa-envelope-open-text"></i> <span data-translate="footer.newsletter">Newsletter</span></h3>
+                    <p data-translate="footer.newsletterDesc">Dapatkan penawaran spesial dengan berlangganan</p>
                     <form class="newsletter-form">
-                        <input type="email" placeholder="Alamat email Anda">
-                        <button type="submit">Berlangganan</button>
+                        <input type="email" data-translate="footer.emailPlaceholder" placeholder="Alamat email Anda">
+                        <button type="submit" data-translate="footer.subscribe">Berlangganan</button>
                     </form>
                 </div>
             </div>
@@ -359,10 +359,12 @@
                 <a href="#"><i class="fab fa-youtube"></i></a>
                 <a href="#"><i class="fab fa-tiktok"></i></a>
             </div>
-            <p>Copyright ©2025 Vacationland | All rights reserved | Created with ❤️ by ARK</p>
+            <p data-translate="footer.copyright">Copyright ©2025 Vacationland | All rights reserved | Created with ❤️ by ARK</p>
         </div>
     </footer>    <!-- JavaScript Files -->
+    <script src="../../assets/js/translations.js"></script>
     <script src="../../assets/js/main.js"></script>
+    <script src="../js/mobile-nav.js"></script>
     <script src="../js/package-loader.js"></script>
 </body>
 
