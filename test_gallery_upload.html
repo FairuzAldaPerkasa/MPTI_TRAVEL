@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Gallery Upload</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { border: 1px solid #ddd; padding: 20px; margin: 10px 0; }
+        button { padding: 10px 20px; margin: 5px; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Gallery Upload Test</h1>
+    
+    <div class="test-section">
+        <h3>Test 1: Check PHP Files</h3>
+        <button onclick="testPhpFiles()">Test PHP Files Accessibility</button>
+        <div id="phpResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 2: Get Gallery Photos</h3>
+        <button onclick="testGetPhotos()">Test Get Photos API</button>
+        <div id="photosResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 3: Upload Form Test</h3>
+        <form id="testUploadForm" enctype="multipart/form-data">
+            <input type="hidden" name="package_id" value="15">
+            <input type="file" name="photos[]" multiple accept="image/*" id="testFiles">
+            <input type="text" name="captions[]" placeholder="Caption 1">
+            <br><br>
+            <button type="submit">Test Upload</button>
+        </form>
+        <div id="uploadResult" class="result"></div>
+    </div>
+
+    <script>
+        function testPhpFiles() {
+            const files = [
+                'BackEnd/get_gallery_photos.php',
+                'BackEnd/upload_additional_photos.php',
+                'BackEnd/delete_gallery_photo.php',
+                'BackEnd/update_photo_caption.php'
+            ];
+            
+            const result = document.getElementById('phpResult');
+            result.innerHTML = 'Testing PHP files...<br>';
+            
+            files.forEach(file => {
+                fetch(file + '?test=1')
+                    .then(response => {
+                        result.innerHTML += `✅ ${file}: Status ${response.status}<br>`;
+                    })
+                    .catch(error => {
+                        result.innerHTML += `❌ ${file}: Error - ${error.message}<br>`;
+                    });
+            });
+        }
+        
+        function testGetPhotos() {
+            const result = document.getElementById('photosResult');
+            result.innerHTML = 'Testing get photos API...<br>';
+            
+            fetch('BackEnd/get_gallery_photos.php?package_id=15')
+                .then(response => response.json())
+                .then(data => {
+                    result.innerHTML += `✅ Response: ${JSON.stringify(data, null, 2)}<br>`;
+                })
+                .catch(error => {
+                    result.innerHTML += `❌ Error: ${error.message}<br>`;
+                });
+        }
+        
+        document.getElementById('testUploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const result = document.getElementById('uploadResult');
+            const formData = new FormData(this);
+            
+            result.innerHTML = 'Testing upload...<br>';
+            
+            fetch('BackEnd/upload_additional_photos.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                result.innerHTML += `Status: ${response.status}<br>`;
+                return response.json();
+            })
+            .then(data => {
+                result.innerHTML += `✅ Response: ${JSON.stringify(data, null, 2)}<br>`;
+            })
+            .catch(error => {
+                result.innerHTML += `❌ Error: ${error.message}<br>`;
+            });
+        });
+    </script>
+</body>
+</html>

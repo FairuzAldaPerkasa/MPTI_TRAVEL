@@ -1,0 +1,187 @@
+Folder PATH listing
+Volume serial number is 2C4E-9D76
+C:.
+¦   index.html
+¦   README.md
+¦   structure_final.txt
+¦   
++---admin
+¦   +---css
+¦   ¦       admin-clean.css
+¦   ¦       
+¦   +---js
+¦           admin-clean.js
+¦           
++---Asset
+¦   ¦   Layout_Awal.png
+¦   ¦   mobilhiace.jpg
+¦   ¦   mobilinnova.jpg
+¦   ¦   prambanan.jpg
+¦   ¦   
+¦   +---database
+¦   ¦       paket_travel.sql
+¦   ¦       
+¦   +---logo
+¦   ¦       logompti.png
+¦   ¦       
+¦   +---Package_Culture
+¦   ¦       borobudur.jpg
+¦   ¦       candimendut.jpg
+¦   ¦       keraton.jpg
+¦   ¦       prambanan1.jpg
+¦   ¦       restoranjogja.jpg
+¦   ¦       tamansari.jpg
+¦   ¦       
+¦   +---package_eastjava2
+¦   ¦       tumpaksewu.jpg
+¦   ¦       
+¦   +---video
+¦           video1.mp4
+¦           
++---assets
+¦   +---css
+¦   ¦       main.css
+¦   ¦       Package_1.css
+¦   ¦       profile.css
+¦   ¦       style.css
+¦   ¦       
+¦   +---images
+¦   ¦       borobudur.jpg
+¦   ¦       candimendut.jpg
+¦   ¦       keraton.jpg
+¦   ¦       logompti.png
+¦   ¦       prambanan1.jpg
+¦   ¦       restoranjogja.jpg
+¦   ¦       tamansari.jpg
+¦   ¦       
+¦   +---js
+¦           main.js
+¦           
++---BackEnd
+¦   ¦   admin.php
+¦   ¦   create_gallery_table.php
+¦   ¦   delete_gallery_photo.php
+¦   ¦   get_gallery_photos.php
+¦   ¦   get_package_detail.php
+¦   ¦   get_paket.php
+¦   ¦   loginadmin.php
+¦   ¦   move_photo_order.php
+¦   ¦   tambah.php
+¦   ¦   update_photo_caption.php
+¦   ¦   upload_additional_photos.php
+¦   ¦   ViewLoginAdmin.php
+¦   ¦   
+¦   +---uploads
+¦       ¦   .htaccess
+¦       ¦   1748611476_6839b194c8166.png
+¦       ¦   1748612156_6839b43ce5c52_1.png
+¦       ¦   1748612156_6839b43ce5d7d_2.png
+¦       ¦   1748612156_6839b43ce5ea3_3.jpg
+¦       ¦   1748854178_683d65a2d12d4_1.png
+¦       ¦   1748854178_683d65a2d1454_2.png
+¦       ¦   1748854178_683d65a2d15f4_3.jpg
+¦       ¦   1748855858_683d6c321732e_1.jpg
+¦       ¦   1748855858_683d6c3217598_2.jpg
+¦       ¦   1748855858_683d6c321788c_3.jpg
+¦       ¦   1748857398_683d723609b03_1.jpg
+¦       ¦   1748857398_683d723609e2d_2.jpg
+¦       ¦   1748857398_683d72360a059_3.jpg
+¦       ¦   1749570561_6848540122d1c_1.png
+¦       ¦   1749570561_68485401234c7_2.png
+¦       ¦   1749570561_6848540123717_3.jpg
+¦       ¦   
+¦       +---gallery
+¦               gallery_15_1748621719_0.png
+¦               gallery_15_1748621818_0.jpg
+¦               gallery_15_1748621830_0.jpg
+¦               gallery_15_1748621833_0.jpg
+¦               gallery_15_1748622035_6839dad33db43.png
+¦               gallery_15_1748622218_6839db8aeddbc.png
+¦               gallery_15_1748667224_683a8b587c1c0.png
+¦               gallery_15_1748667224_683a8b58840f6.png
+¦               gallery_15_1748667324_683a8bbc078db.png
+¦               gallery_15_1748667324_683a8bbc0c8b1.png
+¦               gallery_23_1748854189_683d65ada6036.png
+¦               
++---backup_20250612_192808
+¦   +---BackEnd_backup
+¦       ¦   admin-clean.css
+¦       ¦   admin-clean.js
+¦       ¦   admin-gallery.js
+¦       ¦   admin-styles.css
+¦       ¦   admin.php
+¦       ¦   create_gallery_table.php
+¦       ¦   delete_gallery_photo.php
+¦       ¦   get_gallery_photos.php
+¦       ¦   get_package_detail.php
+¦       ¦   get_paket.php
+¦       ¦   loginadmin.php
+¦       ¦   move_photo_order.php
+¦       ¦   tambah.php
+¦       ¦   update_photo_caption.php
+¦       ¦   upload_additional_photos.php
+¦       ¦   ViewLoginAdmin.php
+¦       ¦   
+¦       +---uploads
+¦           ¦   .htaccess
+¦           ¦   1748611476_6839b194c8166.png
+¦           ¦   1748612156_6839b43ce5c52_1.png
+¦           ¦   1748612156_6839b43ce5d7d_2.png
+¦           ¦   1748612156_6839b43ce5ea3_3.jpg
+¦           ¦   1748854178_683d65a2d12d4_1.png
+¦           ¦   1748854178_683d65a2d1454_2.png
+¦           ¦   1748854178_683d65a2d15f4_3.jpg
+¦           ¦   1748855858_683d6c321732e_1.jpg
+¦           ¦   1748855858_683d6c3217598_2.jpg
+¦           ¦   1748855858_683d6c321788c_3.jpg
+¦           ¦   1748857398_683d723609b03_1.jpg
+¦           ¦   1748857398_683d723609e2d_2.jpg
+¦           ¦   1748857398_683d72360a059_3.jpg
+¦           ¦   1749570561_6848540122d1c_1.png
+¦           ¦   1749570561_68485401234c7_2.png
+¦           ¦   1749570561_6848540123717_3.jpg
+¦           ¦   
+¦           +---gallery
+¦                   gallery_15_1748621719_0.png
+¦                   gallery_15_1748621818_0.jpg
+¦                   gallery_15_1748621830_0.jpg
+¦                   gallery_15_1748621833_0.jpg
+¦                   gallery_15_1748622035_6839dad33db43.png
+¦                   gallery_15_1748622218_6839db8aeddbc.png
+¦                   gallery_15_1748667224_683a8b587c1c0.png
+¦                   gallery_15_1748667224_683a8b58840f6.png
+¦                   gallery_15_1748667324_683a8bbc078db.png
+¦                   gallery_15_1748667324_683a8bbc0c8b1.png
+¦                   gallery_23_1748854189_683d65ada6036.png
+¦                   
++---backup_20250612_192810
+¦   +---FrontEnd_backup
+¦       +---css
+¦       ¦       admin-login-modal.css
+¦       ¦       Package_1.css
+¦       ¦       profile.css
+¦       ¦       style.css
+¦       ¦       
+¦       +---html
+¦       ¦       Index.html
+¦       ¦       Package_1.html
+¦       ¦       package_detail.html
+¦       ¦       profile.html
+¦       ¦       
+¦       +---js
+¦               admin-auth.js
+¦               image-slideshow.js
+¦               load-packages.js
+¦               mobile-nav-package.js
+¦               mobile-nav.js
+¦               profile.js
+¦               rensposive-hero.js
+¦               slider.js
+¦               
++---FrontEnd
+    +---html
+            Index.html
+            Package_1.html
+            package_detail.html
+            profile.html
+            

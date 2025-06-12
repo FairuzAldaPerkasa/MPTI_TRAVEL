@@ -122,19 +122,22 @@ function getLatestPackageDate($koneksi) {
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Admin Panel | Vacationland</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Vacationland</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../admin/css/admin-clean.css">
+    <link rel="stylesheet" href="admin-clean.css">
 </head>
 <body>
     <!-- Header -->
     <header class="admin-header">
         <div class="header-content">
             <div class="header-left">
-                <img src="../assets/images/logompti.png" alt="Logo" class="logo">
+                <img src="../Asset/logo/logompti.png" alt="Logo" class="logo">
                 <h1>Vacationland Admin</h1>
-            </div>            <div class="header-right">
+            </div>
+            
+            <div class="header-right">
                 <div class="admin-welcome">
                     <i class="fas fa-user-circle"></i>
                     <span>Hi, <?= $_SESSION['admin_name'] ?? 'Admin' ?></span>
@@ -157,11 +160,12 @@ function getLatestPackageDate($koneksi) {
             <a href="#add-package" class="nav-link">
                 <i class="fas fa-plus-circle"></i>
                 Tambah Paket
-            </a>            <a href="#packages-list" class="nav-link">
+            </a>
+            <a href="#packages-list" class="nav-link">
                 <i class="fas fa-list"></i>
                 Daftar Paket
             </a>
-            <a href="../FrontEnd/html/Index.html" target="_blank" class="nav-link" onclick="window.open('../FrontEnd/html/Index.html', '_blank'); return false;">
+            <a href="../FrontEnd/html/Index.html" target="_blank" class="nav-link">
                 <i class="fas fa-external-link-alt"></i>
                 Lihat Website
             </a>
@@ -199,14 +203,16 @@ function getLatestPackageDate($koneksi) {
                         <p>Total Foto</p>
                     </div>
                 </div>
-                  <div class="stat-card">
+                
+                <div class="stat-card">
                     <div class="stat-icon date">
                         <i class="fas fa-calendar-check"></i>
                     </div>
                     <div class="stat-content">
                         <h3><?= getLatestPackageDate($koneksi) ?></h3>
                         <p>Paket Terbaru</p>
-                    </div>                </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -507,7 +513,7 @@ function getLatestPackageDate($koneksi) {
                         
                         echo '<div class="package-item">';
                         echo '<div class="package-image">';
-                        echo '<img src="uploads/' . htmlspecialchars($firstPhoto) . '" alt="' . htmlspecialchars($row['nama']) . '" onerror="this.src=\'../assets/images/default.jpg\'">';
+                        echo '<img src="uploads/' . htmlspecialchars($firstPhoto) . '" alt="' . htmlspecialchars($row['nama']) . '" onerror="this.src=\'../Asset/img/default.jpg\'">';
                         echo '</div>';
                         
                         echo '<div class="package-content">';
@@ -603,8 +609,10 @@ function getLatestPackageDate($koneksi) {
                 <div id="templateContent">
                     <!-- Template content will be loaded here -->
                 </div>
+            </div>
         </div>
-        </div>
-    </div>    <script src="../admin/js/admin-clean.js?v=<?= time() ?>"></script>
+    </div>
+
+    <script src="admin-clean.js"></script>
 </body>
 </html>

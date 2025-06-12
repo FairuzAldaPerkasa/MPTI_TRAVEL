@@ -81,27 +81,19 @@ try {
             'fotos_exist' => $fotosExist,
             'foto_count' => count($processedFotos)
         ];
-    }    $stmt->close();
+    }
+
+    $stmt->close();
     $koneksi->close();
     
     ob_end_clean();
-    
-    // Return proper structure expected by frontend
-    $response = [
-        'success' => true,
-        'packages' => $paket,
-        'total' => count($paket)
-    ];
-    
-    echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    echo json_encode($paket, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     
 } catch (Exception $e) {
     ob_end_clean();
     http_response_code(500);
     echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage(),
-        'packages' => []
+        'error' => $e->getMessage()
     ], JSON_UNESCAPED_UNICODE);
 }
 

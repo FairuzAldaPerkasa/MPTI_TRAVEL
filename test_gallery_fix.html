@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Layout Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin/css/admin-clean.css">
+    <style>
+        body {
+            padding: 2rem;
+            background: #f3f4f6;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .test-controls {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .test-btn {
+            padding: 0.75rem 1.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .test-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 2rem;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🖼️ Gallery Layout Test - Anti-Overlap Fix</h1>
+            <p>Test untuk memastikan gambar gallery tidak saling menutupi</p>
+        </div>
+        
+        <div class="test-controls">
+            <button class="test-btn" onclick="generateTestPhotos(3)">
+                <i class="fas fa-images"></i> 3 Photos
+            </button>
+            <button class="test-btn" onclick="generateTestPhotos(6)">
+                <i class="fas fa-images"></i> 6 Photos
+            </button>
+            <button class="test-btn" onclick="generateTestPhotos(12)">
+                <i class="fas fa-images"></i> 12 Photos
+            </button>
+            <button class="test-btn" onclick="clearPhotos()">
+                <i class="fas fa-trash"></i> Clear
+            </button>
+            <button class="test-btn" onclick="debugGalleryLayout()" style="background: #f59e0b;">
+                <i class="fas fa-bug"></i> Debug
+            </button>
+        </div>
+        
+        <div class="gallery-section">
+            <h4>Foto Gallery Test</h4>
+            <div id="existingPhotos" class="photos-grid">
+                <p style="text-align: center; color: #6b7280; padding: 2rem;">Klik tombol di atas untuk generate test photos</p>
+            </div>
+        </div>
+        
+        <div id="debug-output" class="debug-info" style="display: none;">
+            <h4>🔍 Debug Output:</h4>
+            <pre id="debug-text"></pre>
+        </div>
+    </div>
+
+    <script>
+        // Test data
+        const testPhotos = [
+            {
+                id: 1,
+                photo_filename: 'test1.jpg',
+                caption: 'Test Photo 1 - Caption yang agak panjang untuk test wrap text',
+                photo_order: 1,
+                uploaded_at: '2025-06-12 10:00:00'
+            },
+            {
+                id: 2,
+                photo_filename: 'test2.jpg',
+                caption: 'Test Photo 2',
+                photo_order: 2,
+                uploaded_at: '2025-06-12 10:15:00'
+            },
+            {
+                id: 3,
+                photo_filename: 'test3.jpg',
+                caption: 'Test Photo 3 - Caption dengan teks yang sangat panjang sekali untuk test responsive dan word wrapping functionality',
+                photo_order: 3,
+                uploaded_at: '2025-06-12 10:30:00'
+            },
+            {
+                id: 4,
+                photo_filename: 'test4.jpg',
+                caption: 'Test Photo 4',
+                photo_order: 4,
+                uploaded_at: '2025-06-12 10:45:00'
+            },
+            {
+                id: 5,
+                photo_filename: 'test5.jpg',
+                caption: 'Test Photo 5 - Medium length caption',
+                photo_order: 5,
+                uploaded_at: '2025-06-12 11:00:00'
+            },
+            {
+                id: 6,
+                photo_filename: 'test6.jpg',
+                caption: 'Test Photo 6',
+                photo_order: 6,
+                uploaded_at: '2025-06-12 11:15:00'
+            },
+            {
+                id: 7,
+                photo_filename: 'test7.jpg',
+                caption: 'Test Photo 7 - Another test caption',
+                photo_order: 7,
+                uploaded_at: '2025-06-12 11:30:00'
+            },
+            {
+                id: 8,
+                photo_filename: 'test8.jpg',
+                caption: 'Test Photo 8',
+                photo_order: 8,
+                uploaded_at: '2025-06-12 11:45:00'
+            },
+            {
+                id: 9,
+                photo_filename: 'test9.jpg',
+                caption: 'Test Photo 9 - Caption test untuk content yang berbeda-beda',
+                photo_order: 9,
+                uploaded_at: '2025-06-12 12:00:00'
+            },
+            {
+                id: 10,
+                photo_filename: 'test10.jpg',
+                caption: 'Test Photo 10',
+                photo_order: 10,
+                uploaded_at: '2025-06-12 12:15:00'
+            },
+            {
+                id: 11,
+                photo_filename: 'test11.jpg',
+                caption: 'Test Photo 11 - Caption yang cukup panjang untuk test layout',
+                photo_order: 11,
+                uploaded_at: '2025-06-12 12:30:00'
+            },
+            {
+                id: 12,
+                photo_filename: 'test12.jpg',
+                caption: 'Test Photo 12',
+                photo_order: 12,
+                uploaded_at: '2025-06-12 12:45:00'
+            }
+        ];
+
+        function generateTestPhotos(count) {
+            const container = document.getElementById('existingPhotos');
+            const photos = testPhotos.slice(0, count);
+            
+            console.log(`🎯 Generating ${count} test photos...`);
+            
+            let html = '';
+            photos.forEach((photo, index) => {
+                const imageUrl = `https://picsum.photos/400/300?random=${photo.id}`;
+                const safeCaption = photo.caption.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+                
+                html += `
+                    <div class="photo-item" data-photo-id="${photo.id}">
+                        <div class="photo-preview" onclick="previewPhoto('${imageUrl}', '${safeCaption}')">
+                            <img src="${imageUrl}" 
+                                 alt="${safeCaption}" 
+                                 loading="lazy"
+                                 onerror="this.src='https://via.placeholder.com/400x300/e5e7eb/9ca3af?text=Error'; this.classList.add('error-image');">
+                            <div class="photo-overlay">
+                                <button class="overlay-btn preview-btn" onclick="previewPhoto('${imageUrl}', '${safeCaption}')" title="Preview">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="photo-info">
+                            <div class="photo-caption" title="${safeCaption}">
+                                ${photo.caption.length > 30 ? photo.caption.substring(0, 30) + '...' : photo.caption}
+                            </div>
+                            <div class="photo-meta">
+                                Order: ${photo.photo_order} | 
+                                ${new Date(photo.uploaded_at).toLocaleDateString('id-ID')}
+                            </div>
+                            <div class="photo-actions">
+                                <button class="action-btn edit-btn" onclick="editPhoto(${photo.id})" title="Edit Caption">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="action-btn delete-btn" onclick="deletePhoto(${photo.id})" title="Hapus Foto">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Hapus</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // Initialize layout
+            setTimeout(() => {
+                if (typeof initGalleryLayout === 'function') {
+                    initGalleryLayout();
+                } else {
+                    forceGalleryLayout();
+                }
+            }, 100);
+            
+            console.log(`✅ Generated ${count} test photos successfully`);
+        }
+
+        function clearPhotos() {
+            const container = document.getElementById('existingPhotos');
+            container.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 2rem;">Gallery cleared</p>';
+            hideDebugInfo();
+        }
+
+        function forceGalleryLayout() {
+            const container = document.getElementById('existingPhotos');
+            if (!container) return;
+            
+            console.log('🔧 Forcing gallery layout...');
+            
+            // Force grid layout properties
+            container.style.cssText = `
+                display: grid !important;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+                gap: 2rem !important;
+                width: 100% !important;
+                padding: 1rem !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+                align-items: start !important;
+                justify-items: stretch !important;
+                overflow: visible !important;
+                min-height: 200px !important;
+            `;
+            
+            const photoItems = container.querySelectorAll('.photo-item');
+            photoItems.forEach((item, index) => {
+                item.style.cssText = `
+                    position: relative !important;
+                    display: flex !important;
+                    flex-direction: column !important;
+                    width: 100% !important;
+                    height: auto !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    float: none !important;
+                    clear: none !important;
+                    opacity: 0;
+                    transform: translateY(20px);
+                    transition: all 0.3s ease;
+                `;
+                
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, index * 50);
+            });
+        }
+
+        function debugGalleryLayout() {
+            console.log('🔍 === GALLERY LAYOUT DEBUG ===');
+            
+            const container = document.getElementById('existingPhotos');
+            if (!container) {
+                showDebugInfo('❌ Container #existingPhotos not found!');
+                return;
+            }
+            
+            const computedStyle = window.getComputedStyle(container);
+            const photoItems = container.querySelectorAll('.photo-item');
+            
+            let debugOutput = `📦 Container Properties:\n`;
+            debugOutput += `  Display: ${computedStyle.display}\n`;
+            debugOutput += `  Grid Template Columns: ${computedStyle.gridTemplateColumns}\n`;
+            debugOutput += `  Gap: ${computedStyle.gap}\n`;
+            debugOutput += `  Width: ${computedStyle.width}\n`;
+            debugOutput += `  Height: ${computedStyle.height}\n`;
+            debugOutput += `  Position: ${computedStyle.position}\n`;
+            debugOutput += `  Overflow: ${computedStyle.overflow}\n\n`;
+            
+            debugOutput += `📸 Found ${photoItems.length} photo items:\n\n`;
+            
+            let hasOverlap = false;
+            
+            photoItems.forEach((item, index) => {
+                const itemStyle = window.getComputedStyle(item);
+                const rect = item.getBoundingClientRect();
+                
+                debugOutput += `🖼️ Photo ${index + 1} (ID: ${item.dataset.photoId}):\n`;
+                debugOutput += `  Position: ${itemStyle.position}\n`;
+                debugOutput += `  Display: ${itemStyle.display}\n`;
+                debugOutput += `  Width: ${itemStyle.width}\n`;
+                debugOutput += `  Height: ${itemStyle.height}\n`;
+                debugOutput += `  Bounding Rect: ${Math.round(rect.x)}, ${Math.round(rect.y)}, ${Math.round(rect.width)}x${Math.round(rect.height)}\n`;
+                
+                // Check for overlap with other items
+                if (index > 0) {
+                    for (let i = 0; i < index; i++) {
+                        const otherItem = photoItems[i];
+                        const otherRect = otherItem.getBoundingClientRect();
+                        
+                        const isOverlapping = !(rect.right <= otherRect.left || 
+                                               rect.left >= otherRect.right || 
+                                               rect.bottom <= otherRect.top || 
+                                               rect.top >= otherRect.bottom);
+                        
+                        if (isOverlapping) {
+                            hasOverlap = true;
+                            debugOutput += `  ⚠️ OVERLAP DETECTED with Photo ${i + 1}!\n`;
+                            debugOutput += `    This: ${Math.round(rect.x)}, ${Math.round(rect.y)}, ${Math.round(rect.width)}x${Math.round(rect.height)}\n`;
+                            debugOutput += `    Other: ${Math.round(otherRect.x)}, ${Math.round(otherRect.y)}, ${Math.round(otherRect.width)}x${Math.round(otherRect.height)}\n`;
+                        }
+                    }
+                }
+                debugOutput += `\n`;
+            });
+            
+            if (!hasOverlap) {
+                debugOutput += `✅ NO OVERLAPS DETECTED! Gallery layout is working correctly.\n`;
+            } else {
+                debugOutput += `❌ OVERLAPS FOUND! There are layout issues that need fixing.\n`;
+            }
+            
+            showDebugInfo(debugOutput);
+            console.log(debugOutput);
+        }
+
+        function showDebugInfo(text) {
+            const debugDiv = document.getElementById('debug-output');
+            const debugText = document.getElementById('debug-text');
+            debugText.textContent = text;
+            debugDiv.style.display = 'block';
+            debugDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideDebugInfo() {
+            const debugDiv = document.getElementById('debug-output');
+            debugDiv.style.display = 'none';
+        }
+
+        // Mock functions for buttons
+        function previewPhoto(url, caption) {
+            console.log('🖼️ Preview photo:', url, caption);
+            alert(`Preview: ${caption}`);
+        }
+
+        function editPhoto(id) {
+            console.log('✏️ Edit photo:', id);
+            alert(`Edit photo ID: ${id}`);
+        }
+
+        function deletePhoto(id) {
+            console.log('🗑️ Delete photo:', id);
+            if (confirm(`Delete photo ID: ${id}?`)) {
+                alert(`Photo ${id} deleted (simulated)`);
+            }
+        }
+
+        // Auto-generate some test photos on load
+        window.addEventListener('load', () => {
+            console.log('🚀 Gallery Layout Test loaded');
+            generateTestPhotos(6);
+        });
+    </script>
+</body>
+</html>

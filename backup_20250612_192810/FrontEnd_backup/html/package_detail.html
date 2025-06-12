@@ -6,17 +6,13 @@
     <title id="page-title">Package Detail | Vacationland</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../../assets/css/main.css">
-    <link rel="stylesheet" href="../../assets/css/Package_1.css">
-    <link rel="stylesheet" href="../../assets/css/package-cards-fix.css">
-    <link rel="stylesheet" href="../../assets/css/package-detail-fix.css">
-    <link rel="stylesheet" href="../../assets/css/responsive-utilities.css">
+    <link rel="stylesheet" href="../css/Package_1.css">
 </head>
 
 <body>
     <header>
         <div class="logo">
-            <img src="../../assets/images/logompti.png" alt="Vacationland Logo">
+            <img src="../../Asset/logo/logompti.png" alt="Vacationland Logo">
             <span>Vacationland</span>
         </div>
         <nav class="desktop-nav">
@@ -60,7 +56,7 @@
         <!-- Hero Section -->
         <section class="hero package-hero">
             <video class="hero-video" autoplay muted loop playsinline>
-                <source src="../../assets/video/video1.mp4" type="video/mp4">
+                <source src="../../Asset/video/video1.mp4" type="video/mp4">
             </video>
             <div class="video-overlay"></div>
             <!-- Perbaiki hero section -->
@@ -134,7 +130,26 @@
                         <!-- Highlights will be populated here -->
                     </div>
 
-                    
+                    <h2>Package Details</h2>
+                    <div class="price-box" id="price-section">
+                        <span class="price-amount" id="price-display">Hubungi untuk harga</span>
+                    </div>
+
+                    <h3>What's Included</h3>
+                    <ul class="inclusion-list" id="inclusions-list">
+                        <!-- Inclusions will be populated here -->
+                    </ul>
+
+                    <h3>Not Included</h3>
+                    <ul class="exclusion-list" id="exclusions-list">
+                        <!-- Exclusions will be populated here -->
+                    </ul>
+
+                    <div style="margin-top: 30px;">
+                        <button onclick="bookTour()" class="cta-button">
+                            <i class="fas fa-calendar-check"></i> Book This Tour
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -144,11 +159,11 @@
                 <p>Lihat foto-foto destinasi yang akan Anda kunjungi</p>
 
                 <div class="main-image-container">
-                    <img id="main-image" src="../../assets/images/borobudur.jpg" alt="Main Gallery Image">
+                    <img id="main-image" src="../../Asset/Package_Culture/borobudur.jpg" alt="Main Gallery Image">
                 </div>
 
                 <div id="thumbnail-carousel" class="thumbnail-carousel">
-                    <img class="thumb active" src="../../assets/images/borobudur.jpg" alt="Gallery Image" onclick="changeMainImage(this.src, this)">
+                    <img class="thumb active" src="../../Asset/Package_Culture/borobudur.jpg" alt="Gallery Image" onclick="changeMainImage(this.src, this)">
                 </div>
             </div>
         </div>
@@ -282,17 +297,12 @@
                 console.error('❌ Error updating content:', updateError);
                 showError('Error menampilkan data paket');
             }
-        }        function updateMainContent(data) {
+        }
+
+        // Update function untuk display harga
+
+        function updateMainContent(data) {
             console.log('📝 Updating main content with data:', data);
-            
-            // Debug itinerary structure
-            console.log('🔍 Detailed itinerary debug:', {
-                itinerary: data.itinerary,
-                itinerary_raw: data.itinerary_raw,
-                itinerary_type: typeof data.itinerary,
-                itinerary_is_array: Array.isArray(data.itinerary),
-                itinerary_length: data.itinerary ? data.itinerary.length : 'null'
-            });
             
             // Update description
             const descEl = document.getElementById('package-description');
@@ -310,17 +320,8 @@
             // Update highlights
             if (data.highlights) updateHighlights(data.highlights);
             
-            // Update itinerary with enhanced debugging
-            if (data.itinerary) {
-                console.log('🚀 Calling updateItinerary with:', data.itinerary);
-                updateItinerary(data.itinerary);
-            } else if (data.itinerary_raw) {
-                console.log('🔄 Trying to use raw itinerary:', data.itinerary_raw);
-                updateItinerary(data.itinerary_raw);
-            } else {
-                console.log('⚠️ No itinerary data found, using default');
-                updateItinerary(null);
-            }
+            // Update itinerary
+            if (data.itinerary) updateItinerary(data.itinerary);
         }
 
         function updatePriceDisplay(data) {
@@ -493,13 +494,10 @@
             }
             
             highlightsContent.innerHTML = highlightsHTML;
-        }        function updateItinerary(itinerary) {
-            console.log('📅 Updating itinerary with data:', {
-                itinerary: itinerary,
-                type: typeof itinerary,
-                isArray: Array.isArray(itinerary),
-                length: itinerary ? itinerary.length : 'null'
-            });
+        }
+
+        function updateItinerary(itinerary) {
+            console.log('📅 Updating itinerary:', itinerary);
             
             const itineraryContent = document.getElementById('itinerary-content');
             if (!itineraryContent) {
@@ -507,31 +505,14 @@
                 return;
             }
             
+            // PERBAIKI: Handle itinerary data dengan benar
             let itineraryHTML = '';
             
-            // Handle berbagai format data itinerary
             if (Array.isArray(itinerary) && itinerary.length > 0) {
-                console.log('✅ Processing array itinerary:', itinerary);
-                
+                // Data sudah dalam format array dari database
                 itinerary.forEach((day, index) => {
-                    console.log(`🔍 Processing day ${index + 1}:`, day);
-                    
-                    // Handle berbagai struktur day object
-                    let dayTitle = `Hari ${day.day || index + 1}`;
-                    let activities = [];
-                    
-                    if (day.title) {
-                        dayTitle = day.title;
-                    }
-                    
-                    if (Array.isArray(day.activities)) {
-                        activities = day.activities;
-                    } else if (day.activities && typeof day.activities === 'object') {
-                        // Convert object to array
-                        activities = Object.values(day.activities);
-                    }
-                    
-                    console.log(`📝 Day "${dayTitle}" has ${activities.length} activities:`, activities);
+                    const dayTitle = day.title || `Hari ${index + 1}`;
+                    const activities = day.activities || [];
                     
                     itineraryHTML += `
                         <div class="day-itinerary">
@@ -539,51 +520,20 @@
                                 ${dayTitle}
                             </div>
                             <div class="day-content">
-                                ${activities.map(activity => {
-                                    let time = activity.time || '--:--';
-                                    let description = activity.activity || activity.description || activity.desc || 'Aktivitas tidak dijelaskan';
-                                    
-                                    return `
-                                        <div class="activity">
-                                            <div class="activity-time">${time}</div>
-                                            <div class="activity-desc">
-                                                <p>${description}</p>
-                                            </div>
+                                ${activities.map(activity => `
+                                    <div class="activity">
+                                        <div class="activity-time">${activity.time || '--:--'}</div>
+                                        <div class="activity-desc">
+                                            <p>${activity.description || activity.desc || 'Aktivitas tidak dijelaskan'}</p>
                                         </div>
-                                    `;
-                                }).join('')}
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
                     `;
                 });
-            } else if (itinerary && typeof itinerary === 'string') {
-                console.log('⚠️ String itinerary detected, trying to parse...');
-                try {
-                    const parsedItinerary = JSON.parse(itinerary);
-                    if (Array.isArray(parsedItinerary)) {
-                        return updateItinerary(parsedItinerary);
-                    }
-                } catch (e) {
-                    console.error('❌ Failed to parse string itinerary:', e);
-                }
-                
-                // Fallback: treat as plain text
-                itineraryHTML = `
-                    <div class="day-itinerary">
-                        <div class="day-header">Jadwal Perjalanan</div>
-                        <div class="day-content">
-                            <div class="activity">
-                                <div class="activity-time">--:--</div>
-                                <div class="activity-desc">
-                                    <p>${itinerary}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
             } else {
-                console.log('⚠️ No valid itinerary data, showing default');
-                // Fallback untuk data kosong atau invalid
+                // Fallback untuk data string atau kosong
                 itineraryHTML = `
                     <div class="day-itinerary">
                         <div class="day-header">Jadwal Tidak Tersedia</div>
@@ -591,7 +541,7 @@
                             <div class="activity">
                                 <div class="activity-time">--:--</div>
                                 <div class="activity-desc">
-                                    <p>Jadwal perjalanan akan diinformasikan lebih lanjut saat booking</p>
+                                    <p>Jadwal perjalanan akan diinformasikan lebih lanjut</p>
                                 </div>
                             </div>
                         </div>
@@ -599,7 +549,6 @@
                 `;
             }
             
-            console.log('🎨 Setting itinerary HTML:', itineraryHTML.substring(0, 200) + '...');
             itineraryContent.innerHTML = itineraryHTML;
         }
 
@@ -709,12 +658,13 @@
             
             const mainImage = document.getElementById('main-image');
             const thumbnailCarousel = document.getElementById('thumbnail-carousel');
-              if (!fotos || fotos.length === 0) {
+            
+            if (!fotos || fotos.length === 0) {
                 // Use default photos
                 const defaultPhotos = [
-                    { url: '../../assets/images/borobudur.jpg', caption: 'Candi Borobudur', type: 'default' },
-                    { url: '../../assets/images/prambanan1.jpg', caption: 'Candi Prambanan', type: 'default' },
-                    { url: '../../assets/images/keraton.jpg', caption: 'Keraton Yogyakarta', type: 'default' }
+                    { url: '../../Asset/Package_Culture/borobudur.jpg', caption: 'Candi Borobudur', type: 'default' },
+                    { url: '../../Asset/Package_Culture/prambanan.jpg', caption: 'Candi Prambanan', type: 'default' },
+                    { url: '../../Asset/Package_Culture/keraton.jpg', caption: 'Keraton Yogyakarta', type: 'default' }
                 ];
                 fotos = defaultPhotos;
             }
