@@ -151,7 +151,8 @@ class TranslationSystem {
                     delete: "Hapus",
                     confirm: "Konfirmasi",
                     yes: "Ya",
-                    no: "Tidak"
+                    no: "Tidak",
+                    language: "Bahasa / Language"
                 },                footer: {
                     tagline: "Temukan Keindahan Yogyakarta Bersama Kami",
                     operatingHours: "Jam Operasional",
@@ -291,7 +292,8 @@ class TranslationSystem {
                     delete: "Delete",
                     confirm: "Confirm",
                     yes: "Yes",
-                    no: "No"
+                    no: "No",
+                    language: "Language / Bahasa"
                 },                footer: {
                     tagline: "Discover the Beauty of Yogyakarta with Us",
                     operatingHours: "Operating Hours",
@@ -578,7 +580,7 @@ class TranslationSystem {
             color: white;
             padding: 12px 20px;
             border-radius: 25px;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 130, 246, 0.3);
             z-index: 10000;
             font-size: 0.9rem;
             font-weight: 500;
@@ -835,17 +837,9 @@ class TranslationSystem {
     }
 }
 
-// Initialize translation system
-let translationSystem;
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🌐 Initializing MPTI Travel Translation System...');
-    translationSystem = new TranslationSystem();
-    
-    // Make it globally available
-    window.translationSystem = translationSystem;
-    window.__ = (key, defaultValue) => translationSystem.getTranslation(key, defaultValue);
-    window.switchLanguage = (lang) => translationSystem.switchLanguage(lang);
+// Initialize and expose the translation system globally
+document.addEventListener('DOMContentLoaded', () => {
+    window.translationSystem = new TranslationSystem();
 });
 
 // Export for module systems
