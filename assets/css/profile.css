@@ -11,7 +11,8 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f8faff;
     color: #222;
-    padding-top: 80px;
+    padding-top: 0;
+    margin-top: 0;
     overflow-x: hidden;
     line-height: 1.6;
 }
@@ -229,7 +230,7 @@ body.sidebar-open {
 /* Container */
 .container {
     max-width: 1200px;
-    margin: 0 auto 100px;
+    margin: 80px auto 100px;
     padding: 30px 20px;
     background: white;
     border-radius: 12px;
@@ -859,3 +860,103 @@ body.sidebar-open {
         color: #8dc6ff;
     }
 }
+
+/* =================================
+   MOBILE RESPONSIVE FOR PROFILE PAGE
+   ================================= */
+
+@media screen and (max-width: 768px) {
+    /* Override profile header for mobile */
+    header {
+        padding: 10px 15px !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        min-height: 60px !important;
+    }
+    
+    /* Force mobile menu toggle to show on profile page */
+    .mobile-menu-toggle {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid rgba(0, 0, 0, 0.3) !important;
+        border-radius: 6px !important;
+        padding: 8px !important;
+        width: 44px !important;
+        height: 44px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        position: relative !important;
+        z-index: 1001 !important;
+        order: 3 !important;
+        margin-left: 0 !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .mobile-menu-toggle span {
+        display: block !important;
+        width: 22px !important;
+        height: 2px !important;
+        background: #333 !important;
+        margin: 3px 0 !important;
+        transition: all 0.3s ease !important;
+        border-radius: 1px !important;
+    }
+    
+    /* Hide desktop nav */
+    .desktop-nav {
+        display: none !important;
+    }
+    
+    /* Logo mobile styling */
+    header .logo {
+        flex: 1 !important;
+        order: 1 !important;
+        font-size: 1.3em !important;
+        min-width: 0 !important;
+    }
+    
+    header .logo img {
+        height: 30px !important;
+        width: auto !important;
+    }
+    
+    /* Language switcher mobile */
+    .language-switcher {
+        order: 2 !important;
+        margin-left: auto !important;
+        margin-right: 10px !important;
+        flex-shrink: 0 !important;
+        transform: scale(0.85) !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    header {
+        padding: 8px 12px !important;
+    }
+    
+    header .logo {
+        font-size: 1.1em !important;
+    }
+    
+    header .logo img {
+        height: 28px !important;
+    }
+    
+    .mobile-menu-toggle {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .mobile-menu-toggle span {
+        width: 18px !important;
+    }
+}
+
+/* =================================
+   END MOBILE RESPONSIVE
+   ================================= */

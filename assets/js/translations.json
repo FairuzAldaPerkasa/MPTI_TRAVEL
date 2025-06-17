@@ -1,0 +1,300 @@
+{
+  "id": {    "nav": {
+      "home": "Beranda",
+      "packages": "Paket Wisata",
+      "about": "Tentang Kami",
+      "contact": "Kontak",
+      "login": "Login",
+      "profile": "Tentang Kami"
+    },
+    "hero": {
+      "title": "Jelajahi Keindahan Indonesia",
+      "subtitle": "Nikmati pengalaman tak terlupakan dengan paket wisata terbaik kami",
+      "cta": "Mulai Petualangan",
+      "explore": "Jelajahi Paket"
+    },
+    "packages": {
+      "title": "Paket Wisata Unggulan",
+      "subtitle": "Pilihan destinasi terbaik untuk liburan sempurna Anda",
+      "viewAll": "Lihat Semua Paket",
+      "from": "Mulai dari",
+      "person": "per orang",
+      "days": "hari",
+      "nights": "malam",
+      "book": "Pesan Sekarang",
+      "details": "Lihat Detail"    },
+    "packageDetail": {
+      "pageTitle": "Detail Paket | Vacationland",
+      "loading": {
+        "title": "Memuat paket...",
+        "description": "Memuat deskripsi...",
+        "itinerary": "Memuat jadwal...",
+        "activities": "Memuat aktivitas...",
+        "gallery": "Memuat foto..."
+      },
+      "sections": {
+        "description": "Deskripsi Paket",
+        "itinerary": "Jadwal Perjalanan",
+        "included": "Yang Termasuk",
+        "excluded": "Yang Tidak Termasuk",
+        "highlights": "Highlight Tour",
+        "gallery": "Galeri Foto"
+      },
+      "price": {
+        "title": "Harga Paket",
+        "note": "per orang (minimal 2 peserta)",
+        "contact": "Hubungi untuk harga"
+      },
+      "gallery": {
+        "description": "Lihat foto destinasi yang akan Anda kunjungi"
+      },      "bookNow": "Pesan Sekarang",
+      "error": {
+        "title": "Terjadi Kesalahan",
+        "message": "Tidak dapat memuat detail paket",
+        "retry": "Coba Lagi"
+      },
+      "fallback": {
+        "inclusions": [
+          "Transportasi AC",
+          "Tiket masuk wisata",
+          "Makan sesuai program",
+          "Guide berpengalaman"
+        ],
+        "exclusions": [
+          "Tiket pesawat",
+          "Pengeluaran pribadi",
+          "Minuman beralkohol",
+          "Tips guide (optional)"
+        ],
+        "highlights": [
+          "Pengalaman wisata yang tak terlupakan",
+          "Guide berpengalaman dan ramah",
+          "Destinasi wisata terpopuler",
+          "Fasilitas lengkap dan nyaman"
+        ]
+      }
+    },
+    "about": {
+      "title": "Tentang MPTI Travel",
+      "subtitle": "Pengalaman dan dedikasi untuk liburan terbaik Anda",
+      "description": "MPTI Travel adalah perusahaan perjalanan yang berkomitmen memberikan pengalaman liburan tak terlupakan dengan pelayanan terbaik, paket wisata lengkap, dan customer care yang ramah.",
+      "features": {
+        "experience": "Pengalaman 10+ Tahun",
+        "destinations": "50+ Destinasi",
+        "customers": "1000+ Pelanggan Puas",
+        "guides": "Guide Berpengalaman"
+      }
+    },
+    "contact": {
+      "title": "Hubungi Kami",
+      "subtitle": "Siap membantu merencanakan liburan impian Anda",
+      "phone": "Telepon",
+      "email": "Email",
+      "address": "Alamat",
+      "hours": "Jam Operasional",
+      "form": {
+        "name": "Nama Lengkap",
+        "email": "Email",
+        "phone": "Nomor Telepon",
+        "message": "Pesan",
+        "send": "Kirim Pesan"
+      }
+    },
+    "footer": {
+      "tagline": "Temukan Keindahan Yogyakarta Bersama Kami",
+      "operatingHours": "Jam Operasional",
+      "mondayFriday": "Senin - Jumat",
+      "saturday": "Sabtu",
+      "sunday": "Minggu",
+      "ourServices": "Layanan Kami",
+      "services": {
+        "cultural": "Paket Wisata Budaya",
+        "historical": "Wisata Sejarah",
+        "culinary": "Wisata Kuliner",
+        "nature": "Wisata Alam",
+        "customized": "Paket Kustomisasi",
+        "groupTour": "Tour Grup"
+      },
+      "paymentMethods": "Metode Pembayaran",
+      "newsletter": {
+        "title": "Newsletter",
+        "description": "Dapatkan penawaran terbaru dan tips perjalanan",
+        "placeholder": "Masukkan email Anda",
+        "subscribe": "Berlangganan"
+      },
+      "copyright": "Hak Cipta © 2024 MPTI Travel. Semua hak dilindungi."
+    },    "profile": {
+      "pageTitle": "Tentang Kami | Vacationland",
+      "title": "Vacationland - Jelajahi Dunia Bersama Kami",
+      "description": "Vacationland adalah perusahaan travel yang berkomitmen memberikan pengalaman liburan tak terlupakan dengan pelayanan terbaik, paket wisata lengkap, dan customer care yang ramah. Kami menghadirkan keindahan budaya lokal dan destinasi wisata populer untuk Anda.",
+      "sections": {
+        "about": {
+          "title": "Tentang Kami",
+          "content": "Vacationland adalah perusahaan travel dengan pengalaman lebih dari 10 tahun di industri pariwisata Indonesia. Kami mengkhususkan diri dalam memberikan pengalaman perjalanan yang tak terlupakan dengan standar pelayanan tertinggi."
+        },
+        "vision": {
+          "title": "Visi Kami",
+          "content": "Menjadi perusahaan travel terdepan di Indonesia yang memberikan pengalaman wisata berkualitas tinggi dan berkelanjutan."
+        },
+        "mission": {
+          "title": "Misi Kami",
+          "items": [
+            "Memberikan pelayanan wisata terbaik dengan standar internasional",
+            "Mempromosikan keindahan dan budaya Indonesia ke dunia",
+            "Menciptakan lapangan kerja dan memberdayakan masyarakat lokal",
+            "Melestarikan alam dan budaya di setiap destinasi"
+          ]
+        }
+      }
+    }
+  },
+  "en": {
+    "nav": {
+      "home": "Home",
+      "packages": "Tour Packages",      "about": "About Us",
+      "contact": "Contact",
+      "login": "Login",
+      "profile": "About Us"
+    },
+    "hero": {
+      "title": "Explore the Beauty of Indonesia",
+      "subtitle": "Enjoy unforgettable experiences with our best tour packages",
+      "cta": "Start Adventure",
+      "explore": "Explore Packages"
+    },
+    "packages": {
+      "title": "Featured Tour Packages",
+      "subtitle": "Best destination choices for your perfect vacation",
+      "viewAll": "View All Packages",
+      "from": "Starting from",
+      "person": "per person",
+      "days": "days",
+      "nights": "nights",
+      "book": "Book Now",
+      "details": "View Details"    },
+    "packageDetail": {
+      "pageTitle": "Package Detail | Vacationland", 
+      "loading": {
+        "title": "Loading package...",
+        "description": "Loading description...",
+        "itinerary": "Loading schedule...",
+        "activities": "Loading activities...",
+        "gallery": "Loading photos..."
+      },
+      "sections": {
+        "description": "Package Description",
+        "itinerary": "Travel Itinerary",
+        "included": "What's Included",
+        "excluded": "What's Not Included",
+        "highlights": "Tour Highlights",
+        "gallery": "Photo Gallery"
+      },
+      "price": {
+        "title": "Package Price",
+        "note": "per person (minimum 2 participants)",
+        "contact": "Contact for price"
+      },
+      "gallery": {
+        "description": "View photos of destinations you will visit"
+      },      "bookNow": "Book Now",
+      "error": {
+        "title": "An Error Occurred",
+        "message": "Unable to load package details",
+        "retry": "Try Again"
+      },
+      "fallback": {
+        "inclusions": [
+          "AC transportation",
+          "Tourist attraction tickets",
+          "Meals as per program",
+          "Experienced guide"
+        ],
+        "exclusions": [
+          "Flight tickets",
+          "Personal expenses",
+          "Alcoholic beverages",
+          "Guide tips (optional)"
+        ],
+        "highlights": [
+          "Unforgettable travel experience",
+          "Experienced and friendly guide",
+          "Most popular tourist destinations",
+          "Complete and comfortable facilities"
+        ]
+      }
+    },
+    "about": {
+      "title": "About MPTI Travel",
+      "subtitle": "Experience and dedication for your best vacation",
+      "description": "MPTI Travel is a travel company committed to delivering unforgettable holiday experiences with the best service, comprehensive tour packages, and friendly customer care.",
+      "features": {
+        "experience": "10+ Years Experience",
+        "destinations": "50+ Destinations",
+        "customers": "1000+ Happy Customers",
+        "guides": "Professional Guides"
+      }
+    },
+    "contact": {
+      "title": "Contact Us",
+      "subtitle": "Ready to help plan your dream vacation",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "hours": "Operating Hours",
+      "form": {
+        "name": "Full Name",
+        "email": "Email",
+        "phone": "Phone Number",
+        "message": "Message",
+        "send": "Send Message"
+      }
+    },
+    "footer": {
+      "tagline": "Discover the Beauty of Yogyakarta with Us",
+      "operatingHours": "Operating Hours",
+      "mondayFriday": "Monday - Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "ourServices": "Our Services",
+      "services": {
+        "cultural": "Cultural Tour Packages",
+        "historical": "Historical Tourism",
+        "culinary": "Culinary Tourism",
+        "nature": "Nature Tourism",
+        "customized": "Customized Packages",
+        "groupTour": "Group Tours"
+      },
+      "paymentMethods": "Payment Methods",
+      "newsletter": {
+        "title": "Newsletter",
+        "description": "Get latest offers and travel tips",
+        "placeholder": "Enter your email",
+        "subscribe": "Subscribe"
+      },
+      "copyright": "Copyright © 2024 MPTI Travel. All rights reserved."
+    },    "profile": {
+      "pageTitle": "About Us | Vacationland",
+      "title": "Vacationland - Explore the World with Us",
+      "description": "Vacationland is a travel company committed to delivering unforgettable holiday experiences with the best service, comprehensive tour packages, and friendly customer care. We combine local cultural beauty and popular travel destinations for you.",
+      "sections": {
+        "about": {
+          "title": "Who We Are",
+          "content": "Vacationland is a travel company with more than 10 years of experience in the Indonesian tourism industry. We specialize in providing unforgettable travel experiences with the highest service standards."
+        },
+        "vision": {
+          "title": "Our Vision",
+          "content": "To become the leading travel company in Indonesia that provides high-quality and sustainable tourism experiences."
+        },
+        "mission": {
+          "title": "Our Mission",
+          "items": [
+            "Provide the best tourism services with international standards",
+            "Promote the beauty and culture of Indonesia to the world",
+            "Create jobs and empower local communities",
+            "Preserve nature and culture at every destination"
+          ]
+        }
+      }
+    }
+  }
+}

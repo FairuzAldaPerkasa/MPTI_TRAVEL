@@ -150,6 +150,81 @@
     }
 }
 
+@media screen and (max-width: 768px) {
+    .language-switcher {
+        transform: scale(0.85);
+        margin-right: 8px;
+    }
+    
+    .language-toggle {
+        padding: 3px;
+        border-radius: 20px;
+    }
+    
+    .lang-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-width: 50px;
+        gap: 4px;
+    }
+    
+    .lang-btn .flag {
+        font-size: 14px;
+    }
+    
+    .lang-btn .text {
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .lang-btn:hover {
+        transform: scale(1.02);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .language-switcher {
+        transform: scale(0.75);
+        margin-right: 6px;
+    }
+    
+    .lang-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+        min-width: 45px;
+    }
+    
+    .lang-btn .flag {
+        font-size: 12px;
+    }
+    
+    .lang-btn .text {
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .language-switcher {
+        transform: scale(0.7);
+        margin-right: 4px;
+    }
+}
+
+/* Enhanced touch targets for mobile */
+@media (pointer: coarse) {
+    .lang-btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 8px 12px;
+    }
+    
+    .mobile-lang-btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 10px 16px;
+    }
+}
+
 /* Integration with header */
 header {
     display: flex;

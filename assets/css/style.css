@@ -220,37 +220,47 @@ nav a:hover::after {
 
 .hero video {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: center center;
     z-index: -1;
-    transform-origin: center center;
 }
 
-@media (max-aspect-ratio: 16/9) {
-    .hero video {
-        width: 100%;
-        height: auto;
+/* Mobile video optimizations */
+@media screen and (max-width: 768px) {
+    .hero {
+        height: 70vh; /* Reduce height on mobile for better performance */
     }
-}
-
-@media (min-aspect-ratio: 16/9) {
+    
     .hero video {
-        width: auto;
-        height: 100%;
-    }
-}
-
-@media (min-width: 1200px) {
-    .hero video {
-        width: 100%;
-        height: 100%;
+        object-fit: cover;
         object-position: center;
+        width: 100%;
+        height: 100%;
+        /* Ensure proper aspect ratio maintenance */
+        max-width: none;
+        max-height: none;
+    }
+}
+
+/* Tablet optimizations */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .hero video {
+        object-fit: cover;
+        object-position: center;
+    }
+}
+
+/* Desktop optimizations */
+@media screen and (min-width: 1025px) {
+    .hero video {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+        height: 100%;
     }
 }
 
