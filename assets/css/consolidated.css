@@ -302,21 +302,60 @@ header.scrolled .logo img {
 }
 
 .hero-cta {
-    display: inline-block;
-    padding: 15px 35px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 40px;
     background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
     border: none;
     border-radius: 50px;
     font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--bg-white);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 25px rgba(0, 82, 212, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.hero-cta:hover::before {
+    left: 100%;
+}
+
+.hero-cta i {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
 }
 
 .hero-cta:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 15px 35px rgba(0, 82, 212, 0.4);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(0, 82, 212, 0.4);
+}
+
+.hero-cta:hover i {
+    transform: translateX(3px) rotate(15deg);
+}
+
+.hero-cta:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* Smooth scrolling */
+.smooth-scroll {
+    scroll-behavior: smooth;
 }
 
 /* =================================
@@ -2577,5 +2616,102 @@ main.container {
     
     .activity-time {
         align-self: center;
+    }
+}
+
+/* =================================
+   SCROLL ANIMATIONS & ENTRANCE EFFECTS
+   ================================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Animasi entrance untuk sections */
+section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+section.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hero content animation */
+.hero-content > * {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: heroContentFadeIn 0.8s ease forwards;
+}
+
+.hero-title {
+    animation-delay: 0.3s;
+}
+
+.hero-subtitle {
+    animation-delay: 0.6s;
+}
+
+.hero-cta {
+    animation-delay: 0.9s;
+}
+
+@keyframes heroContentFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Efek hover yang lebih halus untuk cards */
+.package-card, .tour-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.package-card:hover, .tour-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Button pulse animation */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 82, 212, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 20px rgba(0, 82, 212, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 82, 212, 0);
+    }
+}
+
+.hero-cta {
+    animation: pulse 2s infinite;
+}
+
+.hero-cta:hover {
+    animation: none;
+}
+
+/* =================================
+   RESPONSIVE ENHANCEMENTS
+   ================================= */
+
+@media (max-width: 768px) {
+    .hero-cta {
+        padding: 15px 30px;
+        font-size: 1rem;
+        gap: 8px;
+    }
+    
+    .hero-cta i {
+        font-size: 1.1rem;
+    }
+    
+    section {
+        transform: translateY(20px);
     }
 }
