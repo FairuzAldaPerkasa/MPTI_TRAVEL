@@ -4,13 +4,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title data-translate="profile.pageTitle">Tentang Kami | Vacationland</title><link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />    <link rel="stylesheet" href="../../assets/css/main.css" />
-    <link rel="stylesheet" href="../../assets/css/profile.css" />
-    <link rel="stylesheet" href="../../assets/css/language-switcher.css" />
-    <link rel="stylesheet" href="../../assets/css/mobile-force.css">
+    <title data-translate="profile.pageTitle">Tentang Kami | Vacationland</title>
+      <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">    <!-- Consolidated Stylesheet -->
+    <link rel="stylesheet" href="../../assets/css/consolidated.css?v=1.6" />
 </head>
 
-<body>    <header>
+<body>
+    <header>
         <div class="logo">
             <img src="../../assets/images/logompti.png" alt="Vacationland Logo" />
             <span>Vacationland</span>
@@ -43,58 +46,57 @@
     </div>
     <div class="sidebar-overlay"></div>
 
-    <main class="container">        <!-- Konten utama -->
+    <main class="container">
+        <!-- Konten utama -->
         <section class="profile-header">
             <h1 data-translate="profile.title">Vacationland - Jelajahi Dunia Bersama Kami</h1>
             <p data-translate="profile.description">
                 Vacationland adalah perusahaan travel yang berkomitmen memberikan pengalaman liburan tak terlupakan dengan layanan terbaik,
                 paket wisata lengkap, dan customer care yang ramah. Kami memadukan keindahan budaya lokal dan destinasi wisata populer untuk Anda.
             </p>
-        </section>        <section class="gallery">
+        </section>
+
+        <section class="gallery">
             <div class="gallery-background"></div>
             <div class="gallery-main">
                 <img id="main-photo" src="../../assets/images/borobudur.jpg" alt="Main Gallery Photo" />
             </div>
-        </section>
-
-        <!-- About Us Section -->
+        </section>        <!-- About Us Section -->
         <section class="about-section">
-            <div class="container">
-                <h2 data-translate="profile.sections.about.title">Tentang Kami</h2>
-                <p data-translate="profile.sections.about.content">
-                    Vacationland adalah perusahaan travel dengan pengalaman lebih dari 10 tahun di industri pariwisata Indonesia. 
-                    Kami mengkhususkan diri dalam memberikan pengalaman perjalanan yang tak terlupakan dengan standar pelayanan tertinggi.
-                </p>
-            </div>
+            <h2 data-translate="profile.sections.about.title">Tentang Kami</h2>
+            <p data-translate="profile.sections.about.content">
+                Vacationland adalah perusahaan travel dengan pengalaman lebih dari 10 tahun di industri pariwisata Indonesia. 
+                Kami mengkhususkan diri dalam memberikan pengalaman perjalanan yang tak terlupakan dengan standar pelayanan tertinggi.
+            </p>
         </section>
 
         <!-- Vision Section -->
         <section class="vision-section">
-            <div class="container">
-                <h2 data-translate="profile.sections.vision.title">Visi Kami</h2>
-                <p data-translate="profile.sections.vision.content">
-                    Menjadi perusahaan travel terdepan di Indonesia yang memberikan pengalaman wisata berkualitas tinggi dan berkelanjutan.
-                </p>
-            </div>
-        </section>        <!-- Mission Section -->
-        <section class="mission-section">
-            <div class="container">
-                <h2 data-translate="profile.sections.mission.title">Misi Kami</h2>
-                <ul class="mission-list">
-                    <li data-mission-item="0">Memberikan pelayanan wisata terbaik dengan standar internasional</li>
-                    <li data-mission-item="1">Mempromosikan keindahan dan budaya Indonesia ke dunia</li>
-                    <li data-mission-item="2">Menciptakan lapangan kerja dan memberdayakan masyarakat lokal</li>
-                    <li data-mission-item="3">Melestarikan alam dan budaya di setiap destinasi</li>
-                </ul>
-            </div>
+            <h2 data-translate="profile.sections.vision.title">Visi Kami</h2>
+            <p data-translate="profile.sections.vision.content">
+                Menjadi perusahaan travel terdepan di Indonesia yang memberikan pengalaman wisata berkualitas tinggi dan berkelanjutan.
+            </p>
         </section>
-    </main><button id="admin-login-btn" data-translate="admin.login">Login Admin</button>
+
+        <!-- Mission Section -->
+        <section class="mission-section">
+            <h2 data-translate="profile.sections.mission.title">Misi Kami</h2>
+            <ul class="mission-list">
+                <li data-mission-item="0">Memberikan pelayanan wisata terbaik dengan standar internasional</li>
+                <li data-mission-item="1">Mempromosikan keindahan dan budaya Indonesia ke dunia</li>
+                <li data-mission-item="2">Menciptakan lapangan kerja dan memberdayakan masyarakat lokal</li>
+                <li data-mission-item="3">Melestarikan alam dan budaya di setiap destinasi</li>
+            </ul>
+        </section>
+    </main>
+
+    <button id="admin-login-btn" data-translate="admin.login">Login Admin</button>
 
     <div id="login-modal">
         <div class="login-box">
             <span class="login-close" id="login-close">&times;</span>
             <h2 data-translate="admin.login">Login Admin</h2>
-            <form id="login-form" action="../../BackEnd/loginadmin.php" method="POST">
+            <form id="login-form" action="../../BackEnd/login.php" method="POST">
                 <input type="email" name="email" placeholder="Email" required />
                 <input type="password" name="password" placeholder="Password" required />
                 <button type="submit" data-translate="nav.login">Log In</button>
@@ -104,6 +106,14 @@
     </div>    <script src="../../assets/js/main.js"></script>
     <script src="../../assets/js/mobile-nav-universal.js"></script>
     <script src="../../assets/js/translations.js"></script>
+    <script src="../../assets/js/contact-loader.js"></script>
+    
+    <!-- Main Scripts -->
+    <script src="../../assets/js/translations.js?v=2.2"></script>
+    <script src="../../assets/js/contact-loader.js?v=2.2"></script>
+    <script src="../../assets/js/payment-methods-loader.js?v=2.2"></script>
+    <script src="../../assets/js/newsletter.js?v=2.2"></script>
+    <script src="../../assets/js/main.js?v=2.2"></script>
     
     <script>
         // Profile-specific translation handler
@@ -171,6 +181,5 @@
         };
     </script>
 </body>
-
 
 </html>

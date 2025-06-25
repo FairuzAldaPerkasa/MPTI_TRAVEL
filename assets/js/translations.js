@@ -20,140 +20,109 @@ class TranslationSystem {
         this.applyTranslations();
         this.observeContentChanges();
         console.log(`✅ Translation System ready - Current language: ${this.currentLanguage}`);
-    }
-
-    async loadTranslations() {
-        try {
-            console.log('📝 Loading translations...');
-            // Try to load from multiple possible paths
-            const possiblePaths = [
-                '../assets/js/translations.json',
-                './assets/js/translations.json',
-                './translations.json',
-                '../js/translations.json',
-                'assets/js/translations.json'
-            ];
-            
-            let loadedSuccessfully = false;
-            for (const path of possiblePaths) {
-                try {
-                    const response = await fetch(path);
-                    if (response.ok) {
-                        this.translations = await response.json();
-                        console.log(`✅ Translations loaded from: ${path}`);
-                        loadedSuccessfully = true;
-                        break;
-                    }
-                } catch (e) {
-                    console.log(`❌ Failed to load from: ${path}`);
+    }    async loadTranslations() {        // Mencoba beberapa path yang mungkin untuk memastikan file ditemukan
+        const possiblePaths = [
+            '../../assets/js/translations.json',  // Untuk file di FrontEnd/html/ (ini yang benar)
+            '../js/translations.json',  // Dari assets/css/
+            './translations.json',  // Jika sudah di direktori assets/js/
+            '/MPTI_TRAVEL/assets/js/translations.json',  // Path absolut
+            '../translations.json'  // Fallback lama
+        ];
+        
+        let jsonPath = null;
+        let response = null;
+          // Coba setiap path sampai menemukan yang benar
+        for (const path of possiblePaths) {
+            try {
+                console.log(`📝 Mencoba memuat terjemahan dari: ${path}`);
+                response = await fetch(path);
+                console.log(`📝 Response status untuk ${path}:`, response.status);
+                if (response.ok) {
+                    jsonPath = path;
+                    console.log(`✅ Path berhasil: ${path}`);
+                    break;
                 }
+            } catch (error) {
+                console.log(`❌ Path ${path} gagal:`, error.message);
             }
-            
-            if (!loadedSuccessfully) {
-                console.warn('⚠️ Could not load translations from JSON, using fallback');
-                this.loadFallbackTranslations();
-            }
-        } catch (error) {
-            console.error('❌ Error loading translations:', error);
-            this.loadFallbackTranslations();
         }
+        
+        if (jsonPath && response) {
+            try {
+                console.log(`✅ File terjemahan ditemukan di: ${jsonPath}`);
+                const data = await response.json();
+                this.translations = data;
+                console.log(`✅ Terjemahan berhasil dimuat dari ${jsonPath}.`);
+                return;
+            } catch (error) {
+                console.error(`❌ Error parsing JSON dari ${jsonPath}:`, error);
+            }
+        }        
+        // Jika semua path gagal, gunakan fallback
+        console.error(`❌ Gagal memuat terjemahan dari semua path yang dicoba`);
+        console.warn('⚠️ Menggunakan terjemahan fallback.');
+        this.loadFallbackTranslations();
     }
 
     loadFallbackTranslations() {
         // Comprehensive fallback translations
         this.translations = {
-            id: {                nav: {
+            id: {
+                nav: {
                     home: "Beranda",
-                    packages: "Paket Wisata", 
+                    packages: "Paket Wisata",
                     about: "Tentang Kami",
                     contact: "Kontak",
                     login: "Login",
                     profile: "Tentang Kami"
                 },
-                hero: {
-                    title: "Jelajahi Keindahan Indonesia",
-                    subtitle: "Nikmati pengalaman tak terlupakan dengan paket wisata terbaik kami",
-                    cta: "Mulai Petualangan",
-                    explore: "Jelajahi Paket"
-                },                packages: {
-                    title: "Paket Wisata Unggulan",
-                    subtitle: "Pilihan destinasi terbaik untuk liburan sempurna Anda",
-                    viewAll: "Lihat Semua Paket",
-                    from: "Mulai dari",
-                    person: "per orang",
-                    days: "hari",
-                    nights: "malam",
-                    book: "Pesan Sekarang",
-                    details: "Lihat Detail",
-                    includes: "Termasuk",
-                    excludes: "Tidak Termasuk",
-                    itinerary: "Rencana Perjalanan",
-                    gallery: "Galeri Foto"
-                },
-                packageDetail: {
-                    loading: {
-                        title: "Memuat paket...",
-                        description: "Memuat deskripsi...",
-                        itinerary: "Memuat jadwal...",
-                        activities: "Memuat aktivitas...",
-                        gallery: "Memuat foto...",
-                        message: "Mohon tunggu sebentar"
+                profile: {
+                    pageTitle: "Tentang Kami | MPTI Travel",
+                    hero: {
+                        title: "Tentang MPTI Travel",
+                        breadcrumbHome: "Beranda",
+                        breadcrumbAbout: "Tentang Kami"
                     },
-                    sections: {
-                        description: "Deskripsi Paket",
-                        itinerary: "Jadwal Perjalanan",
-                        included: "Yang Termasuk",
-                        excluded: "Yang Tidak Termasuk",
-                        highlights: "Highlight Tour",
-                        gallery: "Galeri Foto"
+                    about: {
+                        title: "Cerita Kami",
+                        subtitle: "Perjalanan Kami Membangun MPTI Travel",
+                        content: "MPTI Travel lahir dari kecintaan kami pada kekayaan budaya dan alam Indonesia. Sejak didirikan, kami bertekad untuk tidak hanya menjadi penyedia jasa perjalanan, tetapi juga menjadi jembatan yang menghubungkan wisatawan dengan esensi sejati dari setiap destinasi. Kami percaya bahwa perjalanan adalah tentang pengalaman, penemuan, dan kenangan yang abadi."
                     },
-                    price: {
-                        title: "Harga Paket",
-                        note: "per orang (minimal 2 peserta)",
-                        contact: "Hubungi untuk harga"
+                    vision: {
+                        title: "Visi Kami",
+                        content: "Menjadi agen perjalanan terkemuka di Indonesia yang dikenal karena inovasi, layanan berkualitas, dan komitmen terhadap pariwisata berkelanjutan yang mengangkat komunitas lokal."
                     },
-                    gallery: {
-                        description: "Lihat foto destinasi yang akan Anda kunjungi"
-                    },
-                    bookNow: "Pesan Sekarang",
-                    error: {
-                        title: "Terjadi Kesalahan",
-                        message: "Tidak dapat memuat detail paket",
-                        retry: "Coba Lagi"
-                    },
-                    fallback: {
-                        inclusions: [
-                            "Transportasi AC",
-                            "Tiket masuk wisata",
-                            "Makan sesuai program",
-                            "Guide berpengalaman"
-                        ],
-                        exclusions: [
-                            "Tiket pesawat",
-                            "Pengeluaran pribadi",
-                            "Minuman beralkohol",
-                            "Tips guide (optional)"
-                        ],
-                        highlights: [
-                            "Pengalaman wisata yang tak terlupakan",
-                            "Guide berpengalaman dan ramah",
-                            "Destinasi wisata terpopuler",
-                            "Fasilitas lengkap dan nyaman"
+                    mission: {
+                        title: "Misi Kami",
+                        items: [
+                            "Menyusun paket wisata yang unik dan otentik.",
+                            "Memberikan pelayanan pelanggan yang personal dan responsif.",
+                            "Berkolaborasi dengan masyarakat lokal untuk menciptakan dampak positif.",
+                            "Mempromosikan praktik pariwisata yang ramah lingkungan."
                         ]
+                    },
+                    team: {
+                        title: "Tim Profesional Kami",
+                        subtitle: "Orang-orang di Balik Perjalanan Anda",
+                        member1: {
+                            name: "Muhammad Raihan",
+                            role: "Project Manager"
+                        },
+                        member2: {
+                            name: "Pascal Theophylus",
+                            role: "System Analyst"
+                        },
+                        member3: {
+                            name: "I Kadek Agus",
+                            role: "Programmer"
+                        },
+                        member4: {
+                            name: "Theodorus Karsten",
+                            role: "UI/UX Designer"
+                        }
                     }
-                },                common: {
-                    loading: "Memuat...",
-                    error: "Terjadi kesalahan",
-                    success: "Berhasil",
-                    close: "Tutup",
-                    save: "Simpan",
-                    edit: "Edit",
-                    delete: "Hapus",
-                    confirm: "Konfirmasi",
-                    yes: "Ya",
-                    no: "Tidak",
-                    language: "Bahasa / Language"
-                },                footer: {
+                },
+                footer: {
                     tagline: "Temukan Keindahan Yogyakarta Bersama Kami",
                     operatingHours: "Jam Operasional",
                     mondayFriday: "Senin - Jumat",
@@ -203,98 +172,62 @@ class TranslationSystem {
                     login: "Login Admin"
                 }
             },
-            en: {                nav: {
+            en: {
+                nav: {
                     home: "Home",
-                    packages: "Travel Packages",
-                    about: "About Us", 
+                    packages: "Tour Packages",
+                    about: "About Us",
                     contact: "Contact",
                     login: "Login",
                     profile: "About Us"
                 },
-                hero: {
-                    title: "Explore the Beauty of Indonesia",
-                    subtitle: "Enjoy unforgettable experiences with our best travel packages",
-                    cta: "Start Adventure",
-                    explore: "Explore Packages"
-                },                packages: {
-                    title: "Featured Travel Packages",
-                    subtitle: "Best destination choices for your perfect vacation",
-                    viewAll: "View All Packages",
-                    from: "Starting from",
-                    person: "per person",
-                    days: "days",
-                    nights: "nights",
-                    book: "Book Now",
-                    details: "View Details",
-                    includes: "Includes",
-                    excludes: "Excludes",
-                    itinerary: "Itinerary",
-                    gallery: "Photo Gallery"
-                },
-                packageDetail: {
-                    loading: {
-                        title: "Loading package...",
-                        description: "Loading description...",
-                        itinerary: "Loading schedule...",
-                        activities: "Loading activities...",
-                        gallery: "Loading photos...",
-                        message: "Please wait a moment"
+                profile: {
+                    pageTitle: "About Us | MPTI Travel",
+                    hero: {
+                        title: "About MPTI Travel",
+                        breadcrumbHome: "Home",
+                        breadcrumbAbout: "About Us"
                     },
-                    sections: {
-                        description: "Package Description",
-                        itinerary: "Travel Itinerary",
-                        included: "What's Included",
-                        excluded: "What's Not Included",
-                        highlights: "Tour Highlights",
-                        gallery: "Photo Gallery"
+                    about: {
+                        title: "Our Story",
+                        subtitle: "Our Journey Building MPTI Travel",
+                        content: "MPTI Travel was born from our love for the cultural and natural wealth of Indonesia. Since our founding, we have been determined not only to be a travel service provider, but also to be a bridge connecting tourists with the true essence of each destination. We believe that travel is about experience, discovery, and lasting memories."
                     },
-                    price: {
-                        title: "Package Price",
-                        note: "per person (minimum 2 participants)",
-                        contact: "Contact for price"
+                    vision: {
+                        title: "Our Vision",
+                        content: "To become the leading travel agency in Indonesia known for innovation, quality service, and a commitment to sustainable tourism that uplifts local communities."
                     },
-                    gallery: {
-                        description: "View photos of destinations you will visit"
-                    },
-                    bookNow: "Book Now",
-                    error: {
-                        title: "An Error Occurred",
-                        message: "Unable to load package details",
-                        retry: "Try Again"
-                    },
-                    fallback: {
-                        inclusions: [
-                            "AC transportation",
-                            "Tourist attraction tickets",
-                            "Meals as per program",
-                            "Experienced guide"
-                        ],
-                        exclusions: [
-                            "Flight tickets",
-                            "Personal expenses",
-                            "Alcoholic beverages",
-                            "Guide tips (optional)"
-                        ],
-                        highlights: [
-                            "Unforgettable travel experience",
-                            "Experienced and friendly guide",
-                            "Most popular tourist destinations",
-                            "Complete and comfortable facilities"
+                    mission: {
+                        title: "Our Mission",
+                        items: [
+                            "Curating unique and authentic tour packages.",
+                            "Providing personal and responsive customer service.",
+                            "Collaborating with local communities to create a positive impact.",
+                            "Promoting environmentally friendly tourism practices."
                         ]
+                    },
+                    team: {
+                        title: "Our Professional Team",
+                        subtitle: "The People Behind Your Journey",
+                        member1: {
+                            name: "Muhammad Raihan",
+                            role: "Project Manager"
+                        },
+                        member2: {
+                            name: "Pascal Theophylus",
+                            role: "System Analyst"
+                        },
+                        member3: {
+                            name: "I Kadek Agus",
+                            role: "Programmer"
+                        },
+                        member4: {
+                            name: "Theodorus Karsten",
+                            role: "UI/UX Designer"
+                        }
                     }
-                },                common: {
-                    loading: "Loading...",
-                    error: "An error occurred",
-                    success: "Success",
-                    close: "Close",
-                    save: "Save",
-                    edit: "Edit",
-                    delete: "Delete",
-                    confirm: "Confirm",
-                    yes: "Yes",
-                    no: "No",
-                    language: "Language / Bahasa"
-                },                footer: {
+                },
+                footer: {
                     tagline: "Discover the Beauty of Yogyakarta with Us",
                     operatingHours: "Operating Hours",
                     mondayFriday: "Monday - Friday",

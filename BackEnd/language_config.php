@@ -1,12 +1,29 @@
 <?php
-// Language Configuration for MPTI Travel Backend
-// Multi-language support for API responses
-
+/**
+ * Language and Localization Configuration
+ *
+ * This class manages all multi-language text (translations) and localization settings,
+ * such as currency and date formatting. It detects the user's requested language
+ * via HTTP headers and provides a centralized system for retrieving translated strings.
+ *
+ * @version 1.1
+ * @author MPTI_TRAVEL
+ * @filepath c:\xampp\htdocs\MPTI_TRAVEL\BackEnd\language_config.php
+ */
 class LanguageConfig {
+    // The currently active language, detected from the client's request.
     private $current_language = 'id';
+    
+    // The default language to use if a translation is not found in the current language.
     private $fallback_language = 'id';
     
+    /**
+     * A multi-dimensional array holding all translation strings.
+     * Organized by language code (e.g., 'id', 'en') and then by category (e.g., 'errors', 'package').
+     * @var array
+     */
     private $translations = [
+        // --- Indonesian Translations ---
         'id' => [
             'errors' => [
                 'invalid_package_id' => 'ID paket tidak valid',
@@ -16,28 +33,21 @@ class LanguageConfig {
                 'query_execution_failed' => 'Eksekusi query gagal',
                 'unknown_error' => 'Terjadi kesalahan tidak dikenal'
             ],
-            'status' => [
-                'loading' => 'Memuat...',
-                'processing' => 'Memproses...',
-                'success' => 'Berhasil',
-                'failed' => 'Gagal'
+            'messages' => [
+                'packages_loaded' => 'Daftar paket berhasil dimuat.',
+                'package_detail_loaded' => 'Detail paket berhasil dimuat.'
             ],
             'currency' => [
                 'prefix' => 'Rp ',
                 'suffix' => '',
-                'format' => 'id-ID'
-            ],
-            'date_format' => [
-                'locale' => 'id-ID',
-                'format' => 'd F Y'
+                'format' => 'id-ID' // Locale for number formatting
             ],
             'package' => [
                 'default_description' => 'Deskripsi paket akan segera tersedia',
                 'price_on_request' => 'Hubungi untuk harga',
-                'minimum_participants' => 'per orang (minimal 2 peserta)',
+                'minimum_participants' => 'per orang (min. 2 pax)',
                 'duration_days' => 'hari',
                 'duration_nights' => 'malam',
-                'contact_for_booking' => 'Hubungi kami untuk pemesanan',
                 'included_default' => [
                     'Transportasi AC',
                     'Tiket masuk wisata',
@@ -47,17 +57,19 @@ class LanguageConfig {
                 'excluded_default' => [
                     'Tiket pesawat',
                     'Pengeluaran pribadi',
-                    'Minuman beralkohol',
-                    'Tips guide (optional)'
+                    'Tips guide (opsional)'
+                ],                'highlights_default' => [
+                    'Pengalaman wisata tak terlupakan',
+                    'Destinasi populer',
+                    'Fasilitas nyaman'
                 ],
-                'highlights_default' => [
-                    'Pengalaman wisata yang tak terlupakan',
-                    'Guide berpengalaman dan ramah',
-                    'Destinasi wisata terpopuler',
-                    'Fasilitas lengkap dan nyaman'
-                ]
+                'photo_caption_main' => 'Foto Utama',
+                'photo_caption_gallery' => 'Galeri',
+                'photo_caption_borobudur' => 'Candi Borobudur',
+                'photo_caption_prambanan' => 'Candi Prambanan'
             ]
         ],
+        // --- English Translations ---
         'en' => [
             'errors' => [
                 'invalid_package_id' => 'Invalid package ID',
@@ -67,183 +79,149 @@ class LanguageConfig {
                 'query_execution_failed' => 'Query execution failed',
                 'unknown_error' => 'An unknown error occurred'
             ],
-            'status' => [
-                'loading' => 'Loading...',
-                'processing' => 'Processing...',
-                'success' => 'Success',
-                'failed' => 'Failed'
+            'messages' => [
+                'packages_loaded' => 'Package list loaded successfully.',
+                'package_detail_loaded' => 'Package detail loaded successfully.'
             ],
             'currency' => [
                 'prefix' => 'IDR ',
                 'suffix' => '',
-                'format' => 'en-US'
-            ],
-            'date_format' => [
-                'locale' => 'en-US',
-                'format' => 'F d, Y'
+                'format' => 'en-US' // Locale for number formatting
             ],
             'package' => [
                 'default_description' => 'Package description will be available soon',
                 'price_on_request' => 'Contact for price',
-                'minimum_participants' => 'per person (minimum 2 participants)',
+                'minimum_participants' => 'per person (min. 2 pax)',
                 'duration_days' => 'days',
                 'duration_nights' => 'nights',
-                'contact_for_booking' => 'Contact us for booking',
                 'included_default' => [
                     'AC Transportation',
-                    'Tourist attraction tickets',
-                    'Meals according to program',
+                    'Attraction tickets',
+                    'Meals as per program',
                     'Experienced guide'
                 ],
                 'excluded_default' => [
                     'Flight tickets',
                     'Personal expenses',
-                    'Alcoholic beverages',
                     'Guide tips (optional)'
-                ],
-                'highlights_default' => [
+                ],                'highlights_default' => [
                     'Unforgettable travel experience',
-                    'Experienced and friendly guide',
-                    'Most popular tourist destinations',
-                    'Complete and comfortable facilities'
-                ]
+                    'Popular destinations',
+                    'Comfortable facilities'
+                ],
+                'photo_caption_main' => 'Main Photo',
+                'photo_caption_gallery' => 'Gallery',
+                'photo_caption_borobudur' => 'Borobudur Temple',
+                'photo_caption_prambanan' => 'Prambanan Temple'
             ]
         ]
     ];
-    
-    public function __construct($language = null) {
-        if ($language) {
-            $this->setLanguage($language);
-        } else {
-            // Try to get language from various sources
-            $this->detectLanguage();
-        }
-    }
-    
-    private function detectLanguage() {
-        // Priority: URL parameter -> Header -> Session -> Cookie -> Default
-        $lang = null;
-        
-        // 1. Check URL parameter
-        if (isset($_GET['lang']) && in_array($_GET['lang'], ['id', 'en'])) {
-            $lang = $_GET['lang'];
-        }
-        // 2. Check POST parameter
-        elseif (isset($_POST['lang']) && in_array($_POST['lang'], ['id', 'en'])) {
-            $lang = $_POST['lang'];
-        }
-        // 3. Check custom header
-        elseif (isset($_SERVER['HTTP_X_LANGUAGE']) && in_array($_SERVER['HTTP_X_LANGUAGE'], ['id', 'en'])) {
-            $lang = $_SERVER['HTTP_X_LANGUAGE'];
-        }
-        // 4. Check Accept-Language header
-        elseif (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-            $accept_lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-            if (strpos($accept_lang, 'id') !== false) {
-                $lang = 'id';
-            } elseif (strpos($accept_lang, 'en') !== false) {
-                $lang = 'en';
+
+    /**
+     * Constructor: Initializes the language configuration.
+     * It checks for a language preference from the 'X-Language' HTTP header
+     * and sets the current language accordingly.
+     */
+    public function __construct() {
+        // Check for a custom language header sent from the client.
+        if (isset($_SERVER['HTTP_X_LANGUAGE'])) {
+            $lang = strtolower(trim($_SERVER['HTTP_X_LANGUAGE']));
+            // If the requested language exists in our translations, use it.
+            if (array_key_exists($lang, $this->translations)) {
+                $this->current_language = $lang;
             }
         }
-        
-        $this->setLanguage($lang ?: $this->fallback_language);
     }
-    
-    public function setLanguage($language) {
-        if (in_array($language, ['id', 'en'])) {
-            $this->current_language = $language;
-        } else {
-            $this->current_language = $this->fallback_language;
-        }
-    }
-    
-    public function getLanguage() {
-        return $this->current_language;
-    }
-    
-    public function translate($key, $fallback = null) {
+
+    /**
+     * Retrieves a translated string for a given key.
+     *
+     * @param string $key The key for the translation, using dot notation (e.g., 'errors.package_not_found').
+     * @return string The translated string or the key itself if not found.
+     */
+    public function translate($key) {
         $keys = explode('.', $key);
-        $value = $this->translations[$this->current_language];
-        
+        $temp = $this->translations[$this->current_language];
+
+        // Traverse the translation array using the key parts.
         foreach ($keys as $k) {
-            if (isset($value[$k])) {
-                $value = $value[$k];
+            if (isset($temp[$k])) {
+                $temp = $temp[$k];
             } else {
-                // Try fallback language
-                $fallback_value = $this->translations[$this->fallback_language];
-                foreach ($keys as $fk) {
-                    if (isset($fallback_value[$fk])) {
-                        $fallback_value = $fallback_value[$fk];
-                    } else {
-                        return $fallback ?: $key;
-                    }
-                }
-                return $fallback_value;
+                // If not found in the current language, try the fallback language.
+                return $this->translateFallback($key);
             }
         }
-        
-        return $value;
+        return $temp;
     }
-    
-    public function formatCurrency($amount) {
-        if (!is_numeric($amount) || $amount <= 0) {
+
+    /**
+     * Fallback mechanism to retrieve a translation from the default language.
+     *
+     * @param string $key The key for the translation.
+     * @return string The translated string from the fallback language, or the key itself.
+     */
+    private function translateFallback($key) {
+        $keys = explode('.', $key);
+        $temp = $this->translations[$this->fallback_language];
+        foreach ($keys as $k) {
+            if (isset($temp[$k])) {
+                $temp = $temp[$k];
+            } else {
+                // If the key is not found even in the fallback, return the key itself.
+                return $key;
+            }
+        }
+        return $temp;
+    }
+
+    /**
+     * Formats a numeric value as currency based on the current language settings.
+     *
+     * @param float|null $number The number to format.
+     * @return string The formatted currency string (e.g., "Rp 1.500.000") or a default text if the number is null.
+     */
+    public function formatCurrency($number) {
+        if ($number === null || !is_numeric($number)) {
             return $this->translate('package.price_on_request');
         }
-        
+
         $config = $this->translations[$this->current_language]['currency'];
-        $formatted = number_format($amount, 0, ',', '.');
-        
-        return $config['prefix'] . $formatted . $config['suffix'];
-    }
-    
-    public function formatDate($date, $format = null) {
-        if (!$date) return '';
-        
-        $config = $this->translations[$this->current_language]['date_format'];
-        $format = $format ?: $config['format'];
-        
-        if (is_string($date)) {
-            $date = new DateTime($date);
+        $formatted_number = '';
+
+        try {
+            // First, check if the Intl extension and NumberFormatter class are available.
+            if (class_exists('NumberFormatter')) {
+                // Use PHP's NumberFormatter for locale-aware currency formatting.
+                $formatter = new NumberFormatter($config['format'], NumberFormatter::DECIMAL);
+                // Check if the formatter was created successfully before using it.
+                if ($formatter) {
+                    $formatted_number = $formatter->format($number);
+                } else {
+                    // Throw an exception to trigger the fallback if formatter creation fails.
+                    throw new Exception('NumberFormatter creation failed.');
+                }
+            } else {
+                // Throw an exception to use the fallback if the class doesn't exist.
+                throw new Exception('NumberFormatter class not found.');
+            }
+        } catch (Throwable $e) {
+            // If Intl fails for any reason (not installed, locale not supported, etc.),
+            // provide a safe fallback using number_format().
+            $decimal_separator = ($this->current_language === 'id') ? ',' : '.';
+            $thousand_separator = ($this->current_language === 'id') ? '.' : ',';
+            $formatted_number = number_format((float)$number, 0, $decimal_separator, $thousand_separator);
         }
-        
-        return $date->format($format);
-    }
-    
-    public function getDefaultInclusions() {
-        return $this->translate('package.included_default');
-    }
-    
-    public function getDefaultExclusions() {
-        return $this->translate('package.excluded_default');
-    }
-    
-    public function getDefaultHighlights() {
-        return $this->translate('package.highlights_default');
-    }
-}
 
-// Helper function for easy access
-function lang($key, $fallback = null) {
-    global $language_config;
-    if (!isset($language_config)) {
-        $language_config = new LanguageConfig();
+        return $config['prefix'] . $formatted_number . $config['suffix'];
     }
-    return $language_config->translate($key, $fallback);
-}
 
-function formatCurrency($amount) {
-    global $language_config;
-    if (!isset($language_config)) {
-        $language_config = new LanguageConfig();
+    /**
+     * Retrieves the currently set language.
+     *
+     * @return string The current language code (e.g., 'id').
+     */
+    public function getCurrentLanguage() {
+        return $this->current_language;
     }
-    return $language_config->formatCurrency($amount);
 }
-
-function formatDate($date, $format = null) {
-    global $language_config;
-    if (!isset($language_config)) {
-        $language_config = new LanguageConfig();
-    }
-    return $language_config->formatDate($date, $format);
-}
-?>

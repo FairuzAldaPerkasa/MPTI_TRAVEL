@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Package Detail</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .test-link {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        .test-link:hover {
+            background: #0056b3;
+        }
+        .debug-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            margin: 20px 0;
+        }
+        .console-log {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Package Detail Testing Page</h1>
+        
+        <div class="debug-section">
+            <h3>Quick Tests:</h3>
+            <div class="test-links">
+                <a href="package_detail.html?id=1" class="test-link" target="_blank">Test Package ID 1</a>
+                <a href="package_detail.html?id=2" class="test-link" target="_blank">Test Package ID 2</a>
+                <a href="package_detail.html?id=999" class="test-link" target="_blank">Test Invalid ID (Fallback)</a>
+                <a href="package_detail.html" class="test-link" target="_blank">Test No ID (Error)</a>
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h3>Backend Tests:</h3>
+            <button onclick="testBackend(1)" class="test-link">Test Backend API ID 1</button>
+            <button onclick="testBackend(2)" class="test-link">Test Backend API ID 2</button>
+            <button onclick="testBackend(999)" class="test-link">Test Invalid ID Backend</button>
+            <button onclick="testBackendConnection()" class="test-link">Test Backend Connection</button>
+        </div>
+
+        <div class="debug-section">
+            <h3>Console Output:</h3>
+            <div id="console-output" class="console-log">
+                Click any test button to see results here...
+            </div>
+        </div>
+
+        <div class="debug-section">
+            <h3>System Info:</h3>
+            <ul>
+                <li><strong>Current URL:</strong> <span id="current-url"></span></li>
+                <li><strong>User Agent:</strong> <span id="user-agent"></span></li>
+                <li><strong>Timestamp:</strong> <span id="timestamp"></span></li>
+                <li><strong>Language:</strong> <span id="language"></span></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Console logging to page
+        function log(message, type = 'info') {
+            const output = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : '🔍';
+            output.innerHTML += `[${timestamp}] ${prefix} ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+            console.log(message);
+        }
+
+        // Clear console
+        function clearConsole() {
+            document.getElementById('console-output').innerHTML = '';
+        }
+
+        // Test backend API
+        async function testBackend(id) {
+            clearConsole();
+            log(`Testing backend API for package ID: ${id}`);
+            
+            try {
+                const url = `../../BackEnd/get_package_detail_simple.php?id=${id}`;
+                log(`Fetching: ${url}`);
+                
+                const response = await fetch(url);
+                log(`Response status: ${response.status} ${response.statusText}`);
+                
+                const text = await response.text();
+                log(`Response length: ${text.length} characters`);
+                log(`Raw response (first 200 chars): ${text.substring(0, 200)}...`);
+                
+                if (response.ok) {
+                    try {
+                        const data = JSON.parse(text);
+                        log(`✅ JSON parsed successfully`, 'success');
+                        log(`Data structure: ${JSON.stringify(data, null, 2)}`);
+                        
+                        if (data.success && data.data) {
+                            log(`✅ Package data found: ${data.data.nama}`, 'success');
+                        } else {
+                            log(`⚠️ Package not found or error: ${data.message}`, 'error');
+                        }
+                    } catch (parseError) {
+                        log(`❌ JSON parse error: ${parseError.message}`, 'error');
+                    }
+                } else {
+                    log(`❌ HTTP error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        // Test backend connection
+        async function testBackendConnection() {
+            clearConsole();
+            log('Testing backend connection...');
+            
+            try {
+                const url = `../../BackEnd/get_paket.php`;
+                log(`Testing: ${url}`);
+                
+                const response = await fetch(url);
+                log(`Response status: ${response.status} ${response.statusText}`);
+                
+                if (response.ok) {
+                    log('✅ Backend is accessible', 'success');
+                    const text = await response.text();
+                    log(`Response preview: ${text.substring(0, 100)}...`);
+                } else {
+                    log(`❌ Backend returned error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Cannot connect to backend: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize page info
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('user-agent').textContent = navigator.userAgent;
+            document.getElementById('timestamp').textContent = new Date().toLocaleString();
+            document.getElementById('language').textContent = localStorage.getItem('mpti_language') || 'id';
+        });
+    </script>
+</body>
+</html>

@@ -1,5 +1,9 @@
 {
-  "id": {    "nav": {
+  "id": {
+    "common": {
+      "loading": "Memuat..."
+    },
+    "nav": {
       "home": "Beranda",
       "packages": "Paket Wisata",
       "about": "Tentang Kami",
@@ -22,8 +26,7 @@
       "days": "hari",
       "nights": "malam",
       "book": "Pesan Sekarang",
-      "details": "Lihat Detail"    },
-    "packageDetail": {
+      "details": "Lihat Detail"    },    "packageDetail": {
       "pageTitle": "Detail Paket | Vacationland",
       "loading": {
         "title": "Memuat paket...",
@@ -32,26 +35,61 @@
         "activities": "Memuat aktivitas...",
         "gallery": "Memuat foto..."
       },
+      "tabs": {
+        "overview": "Overview",
+        "gallery": "Galeri",
+        "itinerary": "Itinerary", 
+        "features": "Fitur",
+        "highlights": "Highlights"
+      },
       "sections": {
         "description": "Deskripsi Paket",
-        "itinerary": "Jadwal Perjalanan",
+        "itinerary": "Itinerary Perjalanan",
         "included": "Yang Termasuk",
         "excluded": "Yang Tidak Termasuk",
-        "highlights": "Highlight Tour",
+        "highlights": "Highlights Perjalanan",
         "gallery": "Galeri Foto"
-      },
-      "price": {
-        "title": "Harga Paket",
-        "note": "per orang (minimal 2 peserta)",
-        "contact": "Hubungi untuk harga"
+      },      "meta": {
+        "duration": "Durasi",
+        "price": "Harga",
+        "group": "Grup",
+        "location": "Yogyakarta",
+        "minGroup": "Min. 2 orang",
+        "priceNote": "per orang"
+      },      "booking": {
+        "title": "Siap untuk Berpetualang?",
+        "subtitle": "Jangan lewatkan kesempatan untuk menikmati paket wisata terbaik ini!",
+        "whatsapp": "Book via WhatsApp",
+        "call": "Hubungi Kami",
+        "whatsappMessage": "Halo, saya tertarik dengan paket"
       },
       "gallery": {
-        "description": "Lihat foto destinasi yang akan Anda kunjungi"
-      },      "bookNow": "Pesan Sekarang",
+        "title": "Galeri Foto",
+        "noGallery": "Tidak ada foto galeri tersedia.",
+        "photoLabel": "Foto"
+      },
+      "itinerary": {
+        "title": "Itinerary Perjalanan",
+        "day": "Hari",
+        "noItinerary": "Itinerary akan diinformasikan kemudian.",
+        "activitiesLater": "Detail aktivitas akan diinformasikan kemudian."
+      },
+      "features": {
+        "included": "Yang Termasuk",
+        "excluded": "Yang Tidak Termasuk",
+        "infoLater": "Informasi akan diperbarui kemudian."
+      },
+      "highlights": {
+        "title": "Highlights Perjalanan",
+        "highlight": "Highlight",
+        "main": "Highlight Utama",
+        "noHighlights": "Highlights akan diinformasikan kemudian."
+      },
       "error": {
-        "title": "Terjadi Kesalahan",
+        "title": "Gagal Memuat Detail Paket",
         "message": "Tidak dapat memuat detail paket",
-        "retry": "Coba Lagi"
+        "retry": "Coba Lagi",
+        "backToHome": "Kembali ke Beranda"
       },
       "fallback": {
         "inclusions": [
@@ -81,9 +119,11 @@
       "features": {
         "experience": "Pengalaman 10+ Tahun",
         "destinations": "50+ Destinasi",
-        "customers": "1000+ Pelanggan Puas",
-        "guides": "Guide Berpengalaman"
+        "customers": "1000+ Pelanggan Puas",        "guides": "Guide Berpengalaman"
       }
+    },
+    "admin": {
+      "login": "Login Admin"
     },
     "contact": {
       "title": "Hubungi Kami",
@@ -99,34 +139,46 @@
         "message": "Pesan",
         "send": "Kirim Pesan"
       }
-    },
-    "footer": {
+    },    "footer": {
+      "about": "Tentang Vacationland",
+      "aboutDesc": "Kami adalah penyedia paket wisata terkemuka di Yogyakarta, menawarkan pengalaman tak terlupakan dengan harga bersaing.",
+      "contact": "Kontak Kami",
+      "address": "Jl. Malioboro No. 123, Yogyakarta",
       "tagline": "Temukan Keindahan Yogyakarta Bersama Kami",
       "operatingHours": "Jam Operasional",
       "mondayFriday": "Senin - Jumat",
       "saturday": "Sabtu",
       "sunday": "Minggu",
+      "sundayHoliday": "Minggu & Hari Libur",
+      "closed": "Tutup",
       "ourServices": "Layanan Kami",
       "services": {
         "cultural": "Paket Wisata Budaya",
         "historical": "Wisata Sejarah",
         "culinary": "Wisata Kuliner",
+        "adventure": "Petualangan Alam",
         "nature": "Wisata Alam",
         "customized": "Paket Kustomisasi",
-        "groupTour": "Tour Grup"
+        "groupTour": "Tour Grup",
+        "transport": "Transportasi Wisata"
       },
       "paymentMethods": "Metode Pembayaran",
-      "newsletter": {
-        "title": "Newsletter",
-        "description": "Dapatkan penawaran terbaru dan tips perjalanan",
-        "placeholder": "Masukkan email Anda",
-        "subscribe": "Berlangganan"
-      },
-      "copyright": "Hak Cipta © 2024 MPTI Travel. Semua hak dilindungi."
-    },    "profile": {
+      "newsletter": "Newsletter",
+      "newsletterDesc": "Dapatkan penawaran spesial dengan berlangganan",
+      "emailPlaceholder": "Alamat email Anda",
+      "subscribe": "Berlangganan",
+      "description": "Dapatkan penawaran terbaru dan tips perjalanan",
+      "placeholder": "Masukkan email Anda",
+      "copyright": "Copyright ©2025 Vacationland | All rights reserved | Created with ❤️ by ARK"
+    },"profile": {
       "pageTitle": "Tentang Kami | Vacationland",
       "title": "Vacationland - Jelajahi Dunia Bersama Kami",
-      "description": "Vacationland adalah perusahaan travel yang berkomitmen memberikan pengalaman liburan tak terlupakan dengan pelayanan terbaik, paket wisata lengkap, dan customer care yang ramah. Kami menghadirkan keindahan budaya lokal dan destinasi wisata populer untuk Anda.",
+      "description": "Vacationland adalah perusahaan travel yang berkomitmen memberikan pengalaman liburan tak terlupakan dengan layanan terbaik, paket wisata lengkap, dan customer care yang ramah. Kami memadukan keindahan budaya lokal dan destinasi wisata populer untuk Anda.",
+      "hero": {
+        "title": "Tentang Vacationland",
+        "breadcrumbHome": "Beranda",
+        "breadcrumbAbout": "Tentang Kami"
+      },
       "sections": {
         "about": {
           "title": "Tentang Kami",
@@ -145,10 +197,50 @@
             "Melestarikan alam dan budaya di setiap destinasi"
           ]
         }
+      },
+      "about": {
+        "title": "Cerita Kami",
+        "subtitle": "Perjalanan Kami Membangun Vacationland",
+        "content": "Vacationland lahir dari kecintaan kami pada kekayaan budaya dan alam Indonesia. Sejak didirikan, kami bertekad untuk tidak hanya menjadi penyedia jasa perjalanan, tetapi juga menjadi jembatan yang menghubungkan wisatawan dengan esensi sejati dari setiap destinasi. Kami percaya bahwa perjalanan adalah tentang pengalaman, penemuan, dan kenangan yang abadi."
+      },
+      "vision": {
+        "title": "Visi Kami",
+        "content": "Menjadi agen perjalanan terkemuka di Indonesia yang dikenal karena inovasi, layanan berkualitas, dan komitmen terhadap pariwisata berkelanjutan yang mengangkat komunitas lokal."
+      },
+      "mission": {
+        "title": "Misi Kami",
+        "items": [
+          "Menyusun paket wisata yang unik dan otentik.",
+          "Memberikan pelayanan pelanggan yang personal dan responsif.",
+          "Berkolaborasi dengan masyarakat lokal untuk menciptakan dampak positif.",
+          "Mempromosikan praktik pariwisata yang ramah lingkungan."
+        ]
+      },
+      "team": {
+        "title": "Tim Profesional Kami",
+        "subtitle": "Orang-orang di Balik Perjalanan Anda",
+        "member1": {
+          "name": "Muhammad Raihan",
+          "role": "Project Manager"
+        },
+        "member2": {
+          "name": "Pascal Theophylus",
+          "role": "System Analyst"
+        },
+        "member3": {
+          "name": "I Kadek Agus",
+          "role": "Programmer"
+        },
+        "member4": {
+          "name": "Theodorus Karsten",
+          "role": "UI/UX Designer"
+        }
       }
     }
-  },
-  "en": {
+  },  "en": {
+    "common": {
+      "loading": "Loading..."
+    },
     "nav": {
       "home": "Home",
       "packages": "Tour Packages",      "about": "About Us",
@@ -171,8 +263,7 @@
       "days": "days",
       "nights": "nights",
       "book": "Book Now",
-      "details": "View Details"    },
-    "packageDetail": {
+      "details": "View Details"    },    "packageDetail": {
       "pageTitle": "Package Detail | Vacationland", 
       "loading": {
         "title": "Loading package...",
@@ -181,26 +272,61 @@
         "activities": "Loading activities...",
         "gallery": "Loading photos..."
       },
+      "tabs": {
+        "overview": "Overview",
+        "gallery": "Gallery",
+        "itinerary": "Itinerary", 
+        "features": "Features",
+        "highlights": "Highlights"
+      },
       "sections": {
         "description": "Package Description",
         "itinerary": "Travel Itinerary",
         "included": "What's Included",
         "excluded": "What's Not Included",
-        "highlights": "Tour Highlights",
+        "highlights": "Travel Highlights",
         "gallery": "Photo Gallery"
-      },
-      "price": {
-        "title": "Package Price",
-        "note": "per person (minimum 2 participants)",
-        "contact": "Contact for price"
+      },      "meta": {
+        "duration": "Duration",
+        "price": "Price",
+        "group": "Group",
+        "location": "Yogyakarta",
+        "minGroup": "Min. 2 people",
+        "priceNote": "per person"
+      },      "booking": {
+        "title": "Ready for Adventure?",
+        "subtitle": "Don't miss the opportunity to enjoy this best tour package!",
+        "whatsapp": "Book via WhatsApp",
+        "call": "Call Us",
+        "whatsappMessage": "Hello, I am interested in the package"
       },
       "gallery": {
-        "description": "View photos of destinations you will visit"
-      },      "bookNow": "Book Now",
+        "title": "Photo Gallery",
+        "noGallery": "No gallery photos available.",
+        "photoLabel": "Photo"
+      },
+      "itinerary": {
+        "title": "Travel Itinerary",
+        "day": "Day",
+        "noItinerary": "Itinerary will be informed later.",
+        "activitiesLater": "Activity details will be informed later."
+      },
+      "features": {
+        "included": "What's Included",
+        "excluded": "What's Not Included",
+        "infoLater": "Information will be updated later."
+      },
+      "highlights": {
+        "title": "Travel Highlights",
+        "highlight": "Highlight",
+        "main": "Main Highlight",
+        "noHighlights": "Highlights will be informed later."
+      },
       "error": {
-        "title": "An Error Occurred",
+        "title": "Failed to Load Package Details",
         "message": "Unable to load package details",
-        "retry": "Try Again"
+        "retry": "Try Again",
+        "backToHome": "Back to Home"
       },
       "fallback": {
         "inclusions": [
@@ -230,9 +356,11 @@
       "features": {
         "experience": "10+ Years Experience",
         "destinations": "50+ Destinations",
-        "customers": "1000+ Happy Customers",
-        "guides": "Professional Guides"
+        "customers": "1000+ Happy Customers",        "guides": "Professional Guides"
       }
+    },
+    "admin": {
+      "login": "Admin Login"
     },
     "contact": {
       "title": "Contact Us",
@@ -248,51 +376,101 @@
         "message": "Message",
         "send": "Send Message"
       }
-    },
-    "footer": {
+    },    "footer": {
+      "about": "About Vacationland",
+      "aboutDesc": "We are a leading tour package provider in Yogyakarta, offering unforgettable experiences at competitive prices.",
+      "contact": "Contact Us",
+      "address": "Jl. Malioboro No. 123, Yogyakarta",
       "tagline": "Discover the Beauty of Yogyakarta with Us",
       "operatingHours": "Operating Hours",
       "mondayFriday": "Monday - Friday",
       "saturday": "Saturday",
       "sunday": "Sunday",
+      "sundayHoliday": "Sunday & Holidays",
+      "closed": "Closed",
       "ourServices": "Our Services",
       "services": {
         "cultural": "Cultural Tour Packages",
         "historical": "Historical Tourism",
         "culinary": "Culinary Tourism",
+        "adventure": "Nature Adventure",
         "nature": "Nature Tourism",
         "customized": "Customized Packages",
-        "groupTour": "Group Tours"
+        "groupTour": "Group Tours",
+        "transport": "Tourism Transportation"
       },
       "paymentMethods": "Payment Methods",
-      "newsletter": {
-        "title": "Newsletter",
-        "description": "Get latest offers and travel tips",
-        "placeholder": "Enter your email",
-        "subscribe": "Subscribe"
-      },
-      "copyright": "Copyright © 2024 MPTI Travel. All rights reserved."
-    },    "profile": {
+      "newsletter": "Newsletter",
+      "newsletterDesc": "Get special offers by subscribing",
+      "emailPlaceholder": "Your email address",
+      "subscribe": "Subscribe",
+      "description": "Get latest offers and travel tips",
+      "placeholder": "Enter your email",
+      "copyright": "Copyright ©2025 Vacationland | All rights reserved | Created with ❤️ by ARK"
+    },"profile": {
       "pageTitle": "About Us | Vacationland",
       "title": "Vacationland - Explore the World with Us",
-      "description": "Vacationland is a travel company committed to delivering unforgettable holiday experiences with the best service, comprehensive tour packages, and friendly customer care. We combine local cultural beauty and popular travel destinations for you.",
+      "description": "Vacationland is a travel company committed to providing unforgettable vacation experiences with the best service, complete tour packages, and friendly customer care. We combine the beauty of local culture and popular tourist destinations for you.",
+      "hero": {
+        "title": "About Vacationland",
+        "breadcrumbHome": "Home",
+        "breadcrumbAbout": "About Us"
+      },
       "sections": {
         "about": {
-          "title": "Who We Are",
+          "title": "About Us",
           "content": "Vacationland is a travel company with more than 10 years of experience in the Indonesian tourism industry. We specialize in providing unforgettable travel experiences with the highest service standards."
         },
         "vision": {
           "title": "Our Vision",
-          "content": "To become the leading travel company in Indonesia that provides high-quality and sustainable tourism experiences."
+          "content": "To become a leading travel company in Indonesia that provides high-quality and sustainable tourism experiences."
         },
         "mission": {
           "title": "Our Mission",
           "items": [
-            "Provide the best tourism services with international standards",
-            "Promote the beauty and culture of Indonesia to the world",
-            "Create jobs and empower local communities",
-            "Preserve nature and culture at every destination"
+            "Providing the best tourism services with international standards",
+            "Promoting the beauty and culture of Indonesia to the world",
+            "Creating jobs and empowering local communities",
+            "Preserving nature and culture in every destination"
           ]
+        }
+      },
+      "about": {
+        "title": "Our Story",
+        "subtitle": "Our Journey Building Vacationland",
+        "content": "Vacationland was born from our love for the cultural and natural wealth of Indonesia. Since our founding, we have been determined not only to be a travel service provider, but also to be a bridge connecting tourists with the true essence of each destination. We believe that travel is about experience, discovery, and lasting memories."
+      },
+      "vision": {
+        "title": "Our Vision",
+        "content": "To become the leading travel agency in Indonesia known for innovation, quality service, and a commitment to sustainable tourism that uplifts local communities."
+      },
+      "mission": {
+        "title": "Our Mission",
+        "items": [
+          "Curating unique and authentic tour packages.",
+          "Providing personal and responsive customer service.",
+          "Collaborating with local communities to create a positive impact.",
+          "Promoting environmentally friendly tourism practices."
+        ]
+      },
+      "team": {
+        "title": "Our Professional Team",
+        "subtitle": "The People Behind Your Journey",
+        "member1": {
+          "name": "Muhammad Raihan",
+          "role": "Project Manager"
+        },
+        "member2": {
+          "name": "Pascal Theophylus",
+          "role": "System Analyst"
+        },
+        "member3": {
+          "name": "I Kadek Agus",
+          "role": "Programmer"
+        },
+        "member4": {
+          "name": "Theodorus Karsten",
+          "role": "UI/UX Designer"
         }
       }
     }

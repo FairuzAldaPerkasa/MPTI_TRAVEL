@@ -393,8 +393,39 @@ function editPackage(id) {
 }
 
 function deletePackage(id, name) {
-    if (confirm(`Yakin ingin menghapus paket "${name}"?\n\nSemua foto dan data akan dihapus permanen!`)) {
-        window.location.href = `admin.php?hapus=${id}`;
+    const modal = document.getElementById('deleteModal');
+    const packageNameEl = document.getElementById('deletePackageName');
+    const packageIdInput = document.getElementById('deletePackageId');
+
+    if (modal && packageNameEl && packageIdInput) {
+        packageNameEl.textContent = name;
+        packageIdInput.value = id;
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    } else {
+        // Fallback to old method if modal is not found
+        if (confirm(`Yakin ingin menghapus paket "${name}"?\n\nSemua foto dan data akan dihapus permanen!`)) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'admin.php';
+
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'hapus';
+            hiddenField.value = id;
+
+            form.appendChild(hiddenField);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
     }
 }
 
@@ -494,18 +525,18 @@ function editPhotoCaption(photoId, currentCaption) {
 }
 
 // Highlight Functions
-function addHighlight() {
+function addHighlight(value = '') {
     const container = document.getElementById('highlightsContainer');
-    const newItem = createListItem('highlights[]', 'Masukkan highlight menarik...');
+    const newItem = createListItem('highlights[]', 'Masukkan highlight menarik...', value);
     container.appendChild(newItem);
     newItem.classList.add('list-item-enter');
 }
 
 // Itinerary Functions
-function addDay() {
+function addDay(title = '') {
     dayCounter++;
     const container = document.getElementById('itineraryContainer');
-    const newDay = createDayElement(dayCounter);
+    const newDay = createDayElement(dayCounter, title);
     container.appendChild(newDay);
     activityCounters.push(0);
     newDay.classList.add('list-item-enter');
@@ -521,12 +552,12 @@ function removeDay(button) {
     }
 }
 
-function addActivity(button) {
+function addActivity(button, time = '', activity = '') {
     const dayElement = button.closest('.itinerary-day');
     const dayIndex = Array.from(dayElement.parentNode.children).indexOf(dayElement);
     const activitiesList = dayElement.querySelector('.activities-list');
     
-    const newActivity = createActivityElement(dayIndex, activityCounters[dayIndex]);
+    const newActivity = createActivityElement(dayIndex, activityCounters[dayIndex], time, activity);
     activitiesList.appendChild(newActivity);
     activityCounters[dayIndex]++;
     newActivity.classList.add('list-item-enter');
@@ -544,7 +575,7 @@ function removeActivity(button) {
     }
 }
 
-function createDayElement(dayNum) {
+function createDayElement(dayNum, title = '') {
     const dayElement = document.createElement('div');
     dayElement.className = 'itinerary-day';
     dayElement.innerHTML = `
@@ -557,7 +588,7 @@ function createDayElement(dayNum) {
         <div class="day-content">
             <div class="form-group">
                 <label>Judul Hari</label>
-                <input type="text" name="itinerary_titles[]" placeholder="Contoh: Eksplorasi Kota & Kuliner Tour" maxlength="100">
+                <input type="text" name="itinerary_titles[]" value="${title}" placeholder="Contoh: Eksplorasi Kota & Kuliner Tour" maxlength="100">
             </div>
             <div class="activities-list">
                 ${createActivityElement(dayNum - 1, 0).outerHTML}
@@ -570,15 +601,15 @@ function createDayElement(dayNum) {
     return dayElement;
 }
 
-function createActivityElement(dayIndex, activityIndex) {
+function createActivityElement(dayIndex, activityIndex, time = '08:00', activity = '') {
     const activityElement = document.createElement('div');
     activityElement.className = 'activity-item';
     activityElement.innerHTML = `
         <div class="activity-time">
-            <input type="time" name="itinerary_times[${dayIndex}][]" value="08:00">
+            <input type="time" name="itinerary_times[${dayIndex}][]" value="${time}">
         </div>
         <div class="activity-desc">
-            <textarea name="itinerary_activities[${dayIndex}][]" placeholder="Deskripsi aktivitas..." rows="2"></textarea>
+            <textarea name="itinerary_activities[${dayIndex}][]" placeholder="Deskripsi aktivitas..." rows="2">${activity}</textarea>
         </div>
         <div class="activity-actions">
             <button type="button" class="btn-remove-activity" onclick="removeActivity(this)">
@@ -590,48 +621,56 @@ function createActivityElement(dayIndex, activityIndex) {
 }
 
 // Inclusion/Exclusion Functions
-function addInclusion() {
+function addInclusion(text = '', icon = '') {
     const container = document.getElementById('inclusionsContainer');
-    const newItem = createInclusionExclusionItem('inclusions[]', 'inclusion_icons[]', 'inclusion');
+    const newItem = createInclusionExclusionItem('inclusions[]', 'inclusion_icons[]', 'inclusion', text, icon);
     container.appendChild(newItem);
     newItem.classList.add('list-item-enter');
 }
 
-function addExclusion() {
+function addExclusion(text = '', icon = '') {
     const container = document.getElementById('exclusionsContainer');
-    const newItem = createInclusionExclusionItem('exclusions[]', 'exclusion_icons[]', 'exclusion');
+    const newItem = createInclusionExclusionItem('exclusions[]', 'exclusion_icons[]', 'exclusion', text, icon);
     container.appendChild(newItem);
     newItem.classList.add('list-item-enter');
 }
 
-function createInclusionExclusionItem(nameAttr, iconAttr, type) {
+function createInclusionExclusionItem(nameAttr, iconAttr, type, text = '', selectedIcon = '') {
     const item = document.createElement('div');
     item.className = 'list-item';
     
     const icons = type === 'inclusion' ? [
-        'fas fa-check-circle',
-        'fas fa-hotel',
-        'fas fa-utensils',
-        'fas fa-bus-alt',
-        'fas fa-ticket-alt',
-        'fas fa-user-tie'
+        { value: 'fas fa-hotel', label: '🏨 Hotel' },
+        { value: 'fas fa-utensils', label: '🍽️ Makan' },
+        { value: 'fas fa-car', label: '🚗 Transport' },
+        { value: 'fas fa-ticket-alt', label: '🎫 Tiket' },
+        { value: 'fas fa-user-tie', label: '👔 Guide' },
+        { value: 'fas fa-camera', label: '📸 Dokumentasi' },
+        { value: 'fas fa-shield-alt', label: '🛡️ Asuransi' },
+        { value: 'fas fa-gift', label: '🎁 Souvenir' }
     ] : [
-        'fas fa-times-circle',
-        'fas fa-plane-departure',
-        'fas fa-shopping-bag',
-        'fas fa-cocktail',
-        'fas fa-gift',
-        'fas fa-hand-holding-usd'
+        { value: 'fas fa-plane', label: '✈️ Pesawat' },
+        { value: 'fas fa-shopping-bag', label: '🛍️ Belanja' },
+        { value: 'fas fa-utensils', label: '🍽️ Makan Tambahan' },
+        { value: 'fas fa-spa', label: '💆 Spa/Massage' },
+        { value: 'fas fa-cocktail', label: '🍹 Minuman' },
+        { value: 'fas fa-tshirt', label: '👕 Perlengkapan' },
+        { value: 'fas fa-phone', label: '📱 Komunikasi' },
+        { value: 'fas fa-hand-holding-usd', label: '💰 Pengeluaran Pribadi' }
     ];
+    
+    const iconOptions = icons.map(icon => 
+        `<option value="${icon.value}" ${selectedIcon === icon.value ? 'selected' : ''}>${icon.label}</option>`
+    ).join('');
     
     item.innerHTML = `
         <div class="item-icon">
             <select name="${iconAttr}" class="icon-select">
-                ${icons.map(icon => `<option value="${icon}">${icon}</option>`).join('')}
+                ${iconOptions}
             </select>
         </div>
         <div class="item-content">
-            <input type="text" name="${nameAttr}" placeholder="Masukkan item..." required>
+            <input type="text" name="${nameAttr}" placeholder="Masukkan item..." value="${text}" required>
         </div>
         <div class="item-actions">
             <button type="button" class="btn-remove" onclick="removeListItem(this)">
@@ -644,12 +683,12 @@ function createInclusionExclusionItem(nameAttr, iconAttr, type) {
 }
 
 // Utility Functions
-function createListItem(nameAttr, placeholder) {
+function createListItem(nameAttr, placeholder, value = '') {
     const item = document.createElement('div');
     item.className = 'list-item';
     item.innerHTML = `
         <div class="item-content">
-            <input type="text" name="${nameAttr}" placeholder="${placeholder}" required>
+            <input type="text" name="${nameAttr}" placeholder="${placeholder}" value="${value}" required>
         </div>
         <div class="item-actions">
             <button type="button" class="btn-remove" onclick="removeListItem(this)">
@@ -977,6 +1016,7 @@ function debugGalleryLayout() {
 // Make functions available globally
 window.openGallery = openGallery;
 window.closeGallery = closeGallery;
+window.closeDeleteModal = closeDeleteModal; // <-- Add this line
 window.editPackage = editPackage;
 window.deletePackage = deletePackage;
 window.deleteGalleryPhoto = deleteGalleryPhoto;
