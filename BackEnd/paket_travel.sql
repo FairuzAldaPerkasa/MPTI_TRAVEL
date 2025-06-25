@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 31, 2025 at 07:47 AM
+-- Generation Time: Jun 25, 2025 at 03:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,6 +53,106 @@ INSERT INTO `admins` (`id`, `name`, `email`, `email_verified_at`, `password`, `r
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `booking_history`
+--
+
+CREATE TABLE `booking_history` (
+  `id` int(11) NOT NULL,
+  `customer_name` varchar(200) NOT NULL,
+  `customer_phone` varchar(20) NOT NULL,
+  `customer_email` varchar(200) DEFAULT NULL,
+  `package_id` int(11) DEFAULT NULL,
+  `package_name` varchar(300) NOT NULL,
+  `booking_date` date NOT NULL,
+  `travel_date` date DEFAULT NULL,
+  `participants` int(11) DEFAULT 1,
+  `total_price` decimal(15,2) NOT NULL,
+  `payment_method` varchar(100) DEFAULT NULL,
+  `payment_status` enum('pending','paid','cancelled') DEFAULT 'pending',
+  `booking_status` enum('confirmed','cancelled','completed') DEFAULT 'confirmed',
+  `notes` text DEFAULT NULL,
+  `whatsapp_number` varchar(20) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `booking_history`
+--
+
+INSERT INTO `booking_history` (`id`, `customer_name`, `customer_phone`, `customer_email`, `package_id`, `package_name`, `booking_date`, `travel_date`, `participants`, `total_price`, `payment_method`, `payment_status`, `booking_status`, `notes`, `whatsapp_number`, `created_at`, `updated_at`) VALUES
+(2, 'John Doe', '081234567890', 'john@email.com', 29, '2D1N Wisata Yogyakarta', '2025-06-20', '0000-00-00', 2, 3000000.00, 'BCA', 'paid', 'confirmed', 'Booking melalui WhatsApp', '6281234567890', '2025-06-22 14:34:54', '2025-06-22 14:34:54'),
+(3, 'Jane Smith', '081987654321', 'jane@email.com', NULL, '3D2N Adventure Jogja', '2025-06-21', '0000-00-00', 4, 6000000.00, 'GoPay', 'pending', 'confirmed', 'Menunggu konfirmasi pembayaran', '6281987654321', '2025-06-22 14:34:54', '2025-06-22 14:34:54'),
+(4, 'Budi Santoso', '082111222333', 'budi@email.com', 29, '2D1N Wisata Yogyakarta', '2025-06-22', '0000-00-00', 1, 1500000.00, 'OVO', 'paid', 'completed', 'Trip sudah selesai', '6282111222333', '2025-06-22 14:34:54', '2025-06-22 14:34:54');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `email_campaigns`
+--
+
+CREATE TABLE `email_campaigns` (
+  `id` int(11) NOT NULL,
+  `subject` varchar(500) NOT NULL,
+  `message` text NOT NULL,
+  `sent_to_count` int(11) DEFAULT 0,
+  `sent_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `sent_by` varchar(100) DEFAULT 'admin',
+  `campaign_type` enum('promo','newsletter','announcement') DEFAULT 'promo',
+  `status` enum('draft','sent','scheduled') DEFAULT 'sent',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `email_campaigns`
+--
+
+INSERT INTO `email_campaigns` (`id`, `subject`, `message`, `sent_to_count`, `sent_at`, `sent_by`, `campaign_type`, `status`, `created_at`, `updated_at`) VALUES
+(1, '🎉 Promo Spesial Liburan Sekolah!', 'Dapatkan diskon 25% untuk semua paket wisata Yogyakarta. Buruan booking sebelum kehabisan!', 4, '2025-06-22 14:46:20', 'admin', 'promo', 'sent', '2025-06-22 14:46:20', '2025-06-22 14:46:20'),
+(2, '📰 Newsletter Bulanan - Juni 2025', 'Informasi destinasi wisata terbaru dan tips traveling yang menarik untuk Anda.', 4, '2025-06-22 14:46:20', 'admin', 'newsletter', 'sent', '2025-06-22 14:46:20', '2025-06-22 14:46:20'),
+(3, '📢 Pembukaan Paket Baru: Bromo Adventure', 'Kami dengan bangga memperkenalkan paket wisata Bromo yang menakjubkan!', 3, '2025-06-22 14:46:20', 'admin', 'announcement', 'sent', '2025-06-22 14:46:20', '2025-06-22 14:46:20'),
+(4, 'Test Promo Newsletter', 'Halo Sahabat Traveler!\n\nIni adalah test newsletter promo dari admin panel.\n\nKami menawarkan:\n- Diskon 20% untuk paket Yogyakarta\n- Transport AC nyaman\n- Guide berpengalaman\n\nHubungi kami di WhatsApp untuk booking!\n\nSalam,\nMPTI Travel Team', 5, '2025-06-22 14:55:17', 'admin', 'promo', 'sent', '2025-06-22 14:55:17', '2025-06-22 14:55:17');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `newsletter_subscribers`
+--
+
+CREATE TABLE `newsletter_subscribers` (
+  `id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(200) DEFAULT NULL,
+  `status` enum('active','unsubscribed') DEFAULT 'active',
+  `subscription_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `last_email_sent` timestamp NULL DEFAULT NULL,
+  `source` varchar(100) DEFAULT 'website_footer',
+  `user_agent` text DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `verification_token` varchar(100) DEFAULT NULL,
+  `is_verified` tinyint(1) DEFAULT 1,
+  `unsubscribe_token` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `newsletter_subscribers`
+--
+
+INSERT INTO `newsletter_subscribers` (`id`, `email`, `name`, `status`, `subscription_date`, `last_email_sent`, `source`, `user_agent`, `ip_address`, `verification_token`, `is_verified`, `unsubscribe_token`, `created_at`, `updated_at`) VALUES
+(1, 'john.doe@email.com', 'John Doe', 'active', '2025-06-22 14:46:20', '2025-06-22 14:55:17', 'website_footer', NULL, NULL, NULL, 1, '0b193bffb070ed3e93a8d1c66a7ef66a', '2025-06-22 14:46:20', '2025-06-22 14:55:17'),
+(2, 'jane.smith@gmail.com', 'Jane Smith', 'active', '2025-06-22 14:46:20', '2025-06-22 14:55:17', 'website_footer', NULL, NULL, NULL, 1, 'f01b2b2cab7948114a19b56e27900ea5', '2025-06-22 14:46:20', '2025-06-22 14:55:17'),
+(3, 'budi.santoso@yahoo.com', 'Budi Santoso', 'active', '2025-06-22 14:46:20', '2025-06-22 14:55:17', 'website_footer', NULL, NULL, NULL, 1, 'eaca36120e7ab3d5f913a968805e22d5', '2025-06-22 14:46:20', '2025-06-22 14:55:17'),
+(4, 'sari.indah@hotmail.com', 'Sari Indah', 'active', '2025-06-22 14:46:20', '2025-06-22 14:55:17', 'website_footer', NULL, NULL, NULL, 1, 'e7e572d0667ea282f013fe22a03d7e28', '2025-06-22 14:46:20', '2025-06-22 14:55:17'),
+(5, 'andi.wijaya@email.com', 'Andi Wijaya', 'unsubscribed', '2025-06-22 14:46:20', NULL, 'website_footer', NULL, NULL, NULL, 1, 'a6632a07a88088ca4a60e288c4554258', '2025-06-22 14:46:20', '2025-06-22 14:46:20'),
+(7, 'test.user@example.com', 'Test User', 'active', '2025-06-22 14:54:24', '2025-06-22 14:55:17', 'website_footer', '', '::1', NULL, 1, 'd407b57b7c5f5e9b94aafa71a5762202', '2025-06-22 14:54:24', '2025-06-22 14:55:17'),
+(8, 'fairuz@gmail.com', '', 'active', '2025-06-22 14:56:52', NULL, 'website_footer', 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36', '::1', NULL, 1, '6f67bf77d8b5edd55284d522df2ce744', '2025-06-22 14:56:52', '2025-06-22 14:56:52');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `package_gallery`
 --
 
@@ -70,7 +170,12 @@ CREATE TABLE `package_gallery` (
 --
 
 INSERT INTO `package_gallery` (`id`, `package_id`, `photo_filename`, `caption`, `photo_order`, `uploaded_at`) VALUES
-(1, 15, 'gallery_15_1748667617_683a8ce10f8c8.png', 'fyfyy', 1, '2025-05-31 05:00:17');
+(1, 15, 'gallery_15_1748667617_683a8ce10f8c8.png', 'fyfyy', 1, '2025-05-31 05:00:17'),
+(3, 23, 'gallery_23_1748854189_683d65ada6036.png', '', 1, '2025-06-02 08:49:49'),
+(13, 28, 'gallery_28_1749742136_684af23882646.jpg', '', 1, '2025-06-12 15:28:56'),
+(14, 28, 'gallery_28_1749742136_684af238828aa.png', '', 2, '2025-06-12 15:28:56'),
+(15, 28, 'gallery_28_1749742153_684af249c06f2.jpg', '', 3, '2025-06-12 15:29:13'),
+(16, 28, 'gallery_28_1749742165_684af2553a9e2.png', '', 4, '2025-06-12 15:29:25');
 
 -- --------------------------------------------------------
 
@@ -89,7 +194,7 @@ CREATE TABLE `paket` (
   `highlights` text DEFAULT NULL,
   `inclusions` text DEFAULT NULL,
   `exclusions` text DEFAULT NULL,
-  `price` decimal(10,2) DEFAULT NULL,
+  `price` decimal(12,2) NOT NULL DEFAULT 0.00,
   `duration` varchar(50) DEFAULT '2D1N'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -98,7 +203,7 @@ CREATE TABLE `paket` (
 --
 
 INSERT INTO `paket` (`id`, `nama`, `deskripsi`, `fotos`, `created_at`, `updated_at`, `itinerary`, `highlights`, `inclusions`, `exclusions`, `price`, `duration`) VALUES
-(15, 'bla bla bla', 'Jelajahi warisan budaya dan sejarah Yogyakarta dalam paket wisata 2 hari 1 malam. Kunjungi Candi Borobudur, Prambanan, Keraton, dan nikmati kuliner khas Jogja dengan pemandu berpengalaman.', '[\"1748618583_6839cd57671f8_1.jpg\",\"1748618583_6839cd57674aa_2.jpg\",\"1748618583_6839cd5767685_3.jpg\"]', '2025-05-30 15:23:03', '2025-05-30 15:23:03', 'Hari 1: Siang - jalan santau | Sore - nonton | Malam - turu', 'Candi Borobudur - Warisan Dunia UNESCO | Keraton Yogyakarta - Istana Sultan | Candi Prambanan - Kemegahan Hindu | Malioboro Street - Jantung Kota Jogja | Taman Sari - Istana Air Bersejarah | Kuliner Khas Gudeg Jogja', 'Hotel bintang 3 dengan AC dan breakfast | Transportasi AC selama tour | Guide profesional berbahasa Indonesia | Tiket masuk semua objek wisata | Makan siang 2x | Air mineral selama perjalanan | Parkir dan toll', 'Tiket pesawat/kereta api | Makan malam | Pengeluaran pribadi | Tips guide dan driver | Asuransi perjalanan | Aktivitas tambahan di luar itinerary', 0.00, '1D');
+(29, 'Jogja Heritage & Culture Tour', 'Ini paket yang menarik harusnya', '[\"1750604771_6ee38d9e6f23172b_1.jpg\",\"1750604771_5bb183bfcda02fed_2.jpg\",\"1750604771_862441fe52da2a45_3.jpeg\"]', '2025-06-17 09:11:15', '2025-06-22 15:06:11', '[{\"day\":1,\"title\":\"mantap\",\"activities\":[{\"time\":\"14:00\",\"activity\":\"wkledknwd\"}]},{\"day\":2,\"title\":\"Kedatangan\",\"activities\":[{\"time\":\"12:00\",\"activity\":\"nsjdkbds\"}]}]', '[\"Pemandangan Mantepg\",\"Keren\",\"Cool\"]', '[{\"icon\":\"fas fa-hotel\",\"text\":\"r\"}]', '[{\"icon\":\"fas fa-plane\",\"text\":\"r\"}]', 2000000.00, '2D1N');
 
 -- --------------------------------------------------------
 
@@ -126,6 +231,39 @@ INSERT INTO `paket_backup` (`id`, `nama`, `deskripsi`, `fotos`, `created_at`, `u
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `payment_methods`
+--
+
+CREATE TABLE `payment_methods` (
+  `id` int(11) NOT NULL,
+  `method_name` varchar(100) NOT NULL,
+  `method_type` enum('bank','ewallet','card','other') DEFAULT 'other',
+  `icon_class` varchar(100) DEFAULT 'fas fa-credit-card',
+  `is_active` tinyint(1) DEFAULT 1,
+  `display_order` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `payment_methods`
+--
+
+INSERT INTO `payment_methods` (`id`, `method_name`, `method_type`, `icon_class`, `is_active`, `display_order`, `created_at`, `updated_at`) VALUES
+(1, 'BCA', 'bank', 'fas fa-university', 1, 1, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(2, 'Mandiri', 'bank', 'fas fa-university', 1, 2, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(3, 'BNI', 'bank', 'fas fa-university', 1, 3, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(4, 'BRI', 'bank', 'fas fa-university', 1, 4, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(5, 'VISA', 'card', 'fab fa-cc-visa', 1, 5, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(6, 'Mastercard', 'card', 'fab fa-cc-mastercard', 1, 6, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(7, 'GoPay', 'ewallet', 'fas fa-mobile-alt', 1, 7, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(8, 'OVO', 'ewallet', 'fas fa-wallet', 1, 8, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(9, 'DANA', 'ewallet', 'fas fa-mobile-alt', 1, 9, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(10, 'ShopeePay', 'ewallet', 'fas fa-shopping-bag', 1, 10, '2025-06-22 14:41:38', '2025-06-22 14:41:38');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -140,6 +278,43 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `website_settings`
+--
+
+CREATE TABLE `website_settings` (
+  `id` int(11) NOT NULL,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text NOT NULL,
+  `setting_type` enum('text','number','email','url','textarea') DEFAULT 'text',
+  `description` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `website_settings`
+--
+
+INSERT INTO `website_settings` (`id`, `setting_key`, `setting_value`, `setting_type`, `description`, `created_at`, `updated_at`) VALUES
+(1, 'whatsapp_number', '628122702748', 'text', 'Nomor WhatsApp untuk booking (format: 62xxx tanpa +)', '2025-06-22 14:17:06', '2025-06-22 14:32:39'),
+(2, 'phone_number', '+62 8122702748', 'text', 'Nomor telepon untuk kontak', '2025-06-22 14:17:06', '2025-06-22 14:22:55'),
+(3, 'company_email', 'info@mptitravel.com', 'email', 'Email perusahaan', '2025-06-22 14:17:06', '2025-06-22 14:17:36'),
+(4, 'company_address', 'Yogyakarta, Indonesia', 'textarea', 'Alamat perusahaan', '2025-06-22 14:17:06', '2025-06-22 14:17:36'),
+(5, 'instagram_handle', '@mptitravel', 'text', 'Handle Instagram', '2025-06-22 14:17:06', '2025-06-22 14:17:36'),
+(6, 'facebook_page', 'Vacationland', 'text', 'Nama halaman Facebook', '2025-06-22 14:17:06', '2025-06-22 14:17:06'),
+(7, 'website_url', 'https://mptitravel.com', 'url', 'URL website', '2025-06-22 14:17:06', '2025-06-22 14:17:36'),
+(8, 'email', 'info@mptitravel.com', 'text', NULL, '2025-06-22 14:17:36', '2025-06-22 14:17:36'),
+(9, 'website_name', 'MPTI Travel', 'text', NULL, '2025-06-22 14:17:36', '2025-06-22 14:17:36'),
+(10, 'whatsapp_message', 'Halo, saya tertarik dengan paket wisata dari Vacationland. Bisakah Anda memberikan informasi lebih lanjut?', 'text', NULL, '2025-06-22 14:17:36', '2025-06-22 14:26:46'),
+(11, 'address', 'Yogyakarta, Indonesia', 'text', NULL, '2025-06-22 14:17:36', '2025-06-22 14:17:36'),
+(12, 'city', 'Yogyakarta', 'text', NULL, '2025-06-22 14:17:36', '2025-06-22 14:17:36'),
+(13, 'province', 'DIY', 'text', NULL, '2025-06-22 14:17:36', '2025-06-22 14:17:36'),
+(14, 'description', 'Vacationland - Solusi perjalanan wisata terbaik untuk liburan Anda', 'text', NULL, '2025-06-22 14:17:36', '2025-06-22 14:26:46'),
+(15, 'instagram', '@mptitravel', 'text', NULL, '2025-06-22 14:17:36', '2025-06-22 14:17:36');
+
 --
 -- Indexes for dumped tables
 --
@@ -151,6 +326,29 @@ ALTER TABLE `admins`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
   ADD UNIQUE KEY `admins_email_unique` (`email`);
+
+--
+-- Indexes for table `booking_history`
+--
+ALTER TABLE `booking_history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `package_id` (`package_id`);
+
+--
+-- Indexes for table `email_campaigns`
+--
+ALTER TABLE `email_campaigns`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `newsletter_subscribers`
+--
+ALTER TABLE `newsletter_subscribers`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `idx_email` (`email`),
+  ADD KEY `idx_status` (`status`),
+  ADD KEY `idx_subscription_date` (`subscription_date`);
 
 --
 -- Indexes for table `package_gallery`
@@ -168,12 +366,25 @@ ALTER TABLE `paket`
   ADD KEY `idx_id` (`id`);
 
 --
+-- Indexes for table `payment_methods`
+--
+ALTER TABLE `payment_methods`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
   ADD UNIQUE KEY `users_email_unique` (`email`);
+
+--
+-- Indexes for table `website_settings`
+--
+ALTER TABLE `website_settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `setting_key` (`setting_key`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -186,22 +397,62 @@ ALTER TABLE `admins`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `booking_history`
+--
+ALTER TABLE `booking_history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `email_campaigns`
+--
+ALTER TABLE `email_campaigns`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `newsletter_subscribers`
+--
+ALTER TABLE `newsletter_subscribers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `package_gallery`
 --
 ALTER TABLE `package_gallery`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `paket`
 --
 ALTER TABLE `paket`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT for table `payment_methods`
+--
+ALTER TABLE `payment_methods`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `website_settings`
+--
+ALTER TABLE `website_settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `booking_history`
+--
+ALTER TABLE `booking_history`
+  ADD CONSTRAINT `booking_history_ibfk_1` FOREIGN KEY (`package_id`) REFERENCES `paket` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
