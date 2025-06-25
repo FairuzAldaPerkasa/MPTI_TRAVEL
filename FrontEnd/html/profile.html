@@ -96,7 +96,7 @@
         <div class="login-box">
             <span class="login-close" id="login-close">&times;</span>
             <h2 data-translate="admin.login">Login Admin</h2>
-            <form id="login-form" action="../../BackEnd/login.php" method="POST">
+            <form id="login-form" action="../../BackEnd/ViewLoginAdmin.php" method="POST">
                 <input type="email" name="email" placeholder="Email" required />
                 <input type="password" name="password" placeholder="Password" required />
                 <button type="submit" data-translate="nav.login">Log In</button>
@@ -180,6 +180,77 @@
             }
         };
     </script>
+    
+    <!-- Debug Script for Notifications -->
+    <script>
+        console.log('🔍 Debug: Page loaded');
+        
+        // Check if script is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Debug: DOM ready');
+            
+            // Check URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            const message = urlParams.get('message');
+            
+            console.log('🔍 Debug: URL params -', 'error:', error, 'message:', message);
+            
+            if (error && message) {
+                console.log('🔍 Debug: Error found, creating simple notification');
+                
+                // Create simple notification element
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #fee2e2;
+                    color: #dc2626;
+                    padding: 20px;
+                    border-radius: 8px;
+                    border-left: 4px solid #dc2626;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    z-index: 10000;
+                    max-width: 400px;
+                    font-family: Arial, sans-serif;
+                `;
+                
+                notification.innerHTML = `
+                    <div style="font-weight: bold; margin-bottom: 8px;">
+                        ❌ Error: ${error}
+                    </div>
+                    <div>
+                        ${decodeURIComponent(message)}
+                    </div>
+                    <button onclick="this.parentElement.remove()" style="
+                        background: #dc2626;
+                        color: white;
+                        border: none;
+                        padding: 5px 10px;
+                        border-radius: 4px;
+                        margin-top: 10px;
+                        cursor: pointer;
+                    ">Tutup</button>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Clean URL
+                const url = new URL(window.location);
+                url.searchParams.delete('error');
+                url.searchParams.delete('message');
+                window.history.replaceState({}, document.title, url.toString());
+                
+                console.log('🔍 Debug: Simple notification created');
+            } else {
+                console.log('🔍 Debug: No error parameters found');
+            }
+        });
+    </script>
+    
+    <!-- Enhanced Notification System -->
+    <script src="../../assets/js/enhanced-notifications.js"></script>
 </body>
 
 </html>

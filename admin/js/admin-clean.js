@@ -1013,6 +1013,18 @@ function debugGalleryLayout() {
     console.log('🎯 Debug complete. Check for OVERLAP DETECTED warnings above.');
 }
 
+// Logout function
+function performLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // Clear any local storage or session storage if used
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Redirect to logout URL which will redirect to profile.html
+        window.location.href = 'ViewLoginAdmin.php?logout=1';
+    }
+}
+
 // Make functions available globally
 window.openGallery = openGallery;
 window.closeGallery = closeGallery;
@@ -1031,3 +1043,4 @@ window.addInclusion = addInclusion;
 window.addExclusion = addExclusion;
 window.removeListItem = removeListItem;
 window.debugGalleryLayout = debugGalleryLayout;
+window.performLogout = performLogout;

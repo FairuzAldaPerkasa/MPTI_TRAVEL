@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(loginForm);
             
             try {
-                const response = await fetch('../../BackEnd/login.php', { // URL fixed
+                const response = await fetch('../../BackEnd/ViewLoginAdmin.php', { // URL fixed
                     method: 'POST',
                     body: formData
                 });

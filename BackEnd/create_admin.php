@@ -17,10 +17,11 @@ if ($koneksi->connect_error) {
 echo "<h2>👤 Creating Admin User...</h2>";
 
 // Create admin table if not exists
-$admin_table_sql = "CREATE TABLE IF NOT EXISTS admin (
+$admin_table_sql = "CREATE TABLE IF NOT EXISTS admins (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    name VARCHAR(100) DEFAULT 'Admin',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP NULL
 )";
@@ -32,23 +33,24 @@ if ($koneksi->query($admin_table_sql) === TRUE) {
 }
 
 // Check if admin already exists
-$check_admin = $koneksi->query("SELECT id FROM admin WHERE username = 'admin'");
+$check_admin = $koneksi->query("SELECT id FROM admins WHERE email = 'admin@mptitravel.com'");
 
 if ($check_admin->num_rows > 0) {
     echo "ℹ️ Admin user already exists<br>";
 } else {
     // Create default admin user
-    $username = 'admin';
+    $email = 'admin@mptitravel.com';
     $password = password_hash('admin123', PASSWORD_DEFAULT); // Change this password!
+    $name = 'Administrator';
     
-    $stmt = $koneksi->prepare("INSERT INTO admin (username, password) VALUES (?, ?)");
-    $stmt->bind_param("ss", $username, $password);
+    $stmt = $koneksi->prepare("INSERT INTO admins (email, password, name) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $email, $password, $name);
     
     if ($stmt->execute()) {
         echo "✅ Admin user created successfully<br>";
         echo "<div style='background: #fef3c7; padding: 15px; border-radius: 8px; margin: 10px 0;'>";
         echo "<h3>⚠️ Default Login Credentials:</h3>";
-        echo "<p><strong>Username:</strong> admin</p>";
+        echo "<p><strong>Email:</strong> admin@mptitravel.com</p>";
         echo "<p><strong>Password:</strong> admin123</p>";
         echo "<p><em>Please change the password after first login!</em></p>";
         echo "</div>";

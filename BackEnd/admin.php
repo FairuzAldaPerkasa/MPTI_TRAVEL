@@ -18,7 +18,7 @@ session_start();
 // --- SECURITY & SESSION CHECK ---
 // Redirect to login page if the admin is not logged in.
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header("Location: login.php?error=not_logged_in");
+    header("Location: ViewLoginAdmin.php");
     exit;
 }
 
@@ -687,7 +687,7 @@ function getLatestPackageDate($koneksi) {
                     <i class="fas fa-user-circle"></i>
                     <span>Hi, <?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></span>
                 </div>
-                <a href="login.php?logout=1" class="logout-btn">
+                <a href="#" onclick="performLogout()" class="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
                     Logout
                 </a>

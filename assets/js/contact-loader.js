@@ -75,6 +75,9 @@ function updateContactElements() {
     
     // Update any other contact links
     updateOtherContactLinks();
+    
+    // Update floating WhatsApp button
+    updateFloatingWhatsAppButton();
 }
 
 function updateFooterContacts() {
@@ -159,6 +162,23 @@ function updateOtherContactLinks() {
     });
     
     console.log('✅ Other contact links updated');
+}
+
+function updateFloatingWhatsAppButton() {
+    // Update floating WhatsApp button
+    const whatsappBtn = document.getElementById('whatsapp-floating-btn');
+    if (whatsappBtn && websiteSettings.whatsapp_number) {
+        const message = websiteSettings.whatsapp_message || 'Halo, saya tertarik dengan paket wisata';
+        const encodedMessage = encodeURIComponent(message);
+        whatsappBtn.href = `https://wa.me/${websiteSettings.whatsapp_number}?text=${encodedMessage}`;
+        
+        // Add click event for analytics
+        whatsappBtn.onclick = function() {
+            console.log('📱 WhatsApp button clicked');
+        };
+        
+        console.log('✅ Floating WhatsApp button updated:', whatsappBtn.href);
+    }
 }
 
 // Global functions for other scripts to use

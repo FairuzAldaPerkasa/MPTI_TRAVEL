@@ -5,6 +5,6 @@
  */
 
 // Redirect to the correct login file
-header("Location: login.php");
+header("Location: ViewLoginAdmin.php");
 exit;
 ?>
