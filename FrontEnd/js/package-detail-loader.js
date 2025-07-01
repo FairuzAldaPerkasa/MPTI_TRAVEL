@@ -243,8 +243,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderInclusions(inclusions) {
-        console.log('🔍 Debugging inclusions:', inclusions, typeof inclusions);
-        
         if (!inclusions) {
             return `
                 <li class="feature-item">
@@ -256,9 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         }
         
-        // Handle if inclusions is an object but not array (like object with icon:text pairs)
         if (typeof inclusions === 'object' && !Array.isArray(inclusions)) {
-            console.log('📦 Processing inclusions as object:', inclusions);
             return Object.entries(inclusions).map(([icon, text]) => `
                 <li class="feature-item">
                     <div class="feature-icon">
@@ -269,46 +265,17 @@ document.addEventListener('DOMContentLoaded', function() {
             `).join('');
         }
         
-        // Handle if inclusions is an array
         if (Array.isArray(inclusions)) {
-            console.log('📦 Processing inclusions as array:', inclusions);
-            return inclusions.map(item => {
-                // Handle if item is object
-                if (typeof item === 'object') {
-                    if (item.text && item.icon) {
-                        return `
-                            <li class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="${item.icon}"></i>
-                                </div>
-                                <span>${item.text}</span>
-                            </li>
-                        `;
-                    } else {
-                        // If object without expected structure, stringify it
-                        return `
-                            <li class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <span>${JSON.stringify(item)}</span>
-                            </li>
-                        `;
-                    }
-                }
-                // Handle if item is string
-                return `
-                    <li class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <span>${item}</span>
-                    </li>
-                `;
-            }).join('');
+            return inclusions.map(item => `
+                <li class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <span>${item}</span>
+                </li>
+            `).join('');
         }
         
-        // Handle if inclusions is a string or other type
         return `
             <li class="feature-item">
                 <div class="feature-icon">
@@ -320,8 +287,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderExclusions(exclusions) {
-        console.log('🔍 Debugging exclusions:', exclusions, typeof exclusions);
-        
         if (!exclusions) {
             return `
                 <li class="feature-item">
@@ -333,9 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         }
         
-        // Handle if exclusions is an object but not array (like object with icon:text pairs)
         if (typeof exclusions === 'object' && !Array.isArray(exclusions)) {
-            console.log('📦 Processing exclusions as object:', exclusions);
             return Object.entries(exclusions).map(([icon, text]) => `
                 <li class="feature-item">
                     <div class="feature-icon">
@@ -346,46 +309,17 @@ document.addEventListener('DOMContentLoaded', function() {
             `).join('');
         }
         
-        // Handle if exclusions is an array
         if (Array.isArray(exclusions)) {
-            console.log('📦 Processing exclusions as array:', exclusions);
-            return exclusions.map(item => {
-                // Handle if item is object
-                if (typeof item === 'object') {
-                    if (item.text && item.icon) {
-                        return `
-                            <li class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="${item.icon}"></i>
-                                </div>
-                                <span>${item.text}</span>
-                            </li>
-                        `;
-                    } else {
-                        // If object without expected structure, stringify it
-                        return `
-                            <li class="feature-item">
-                                <div class="feature-icon">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                                <span>${JSON.stringify(item)}</span>
-                            </li>
-                        `;
-                    }
-                }
-                // Handle if item is string
-                return `
-                    <li class="feature-item">
-                        <div class="feature-icon">
-                            <i class="fas fa-times"></i>
-                        </div>
-                        <span>${item}</span>
-                    </li>
-                `;
-            }).join('');
+            return exclusions.map(item => `
+                <li class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <span>${item}</span>
+                </li>
+            `).join('');
         }
         
-        // Handle if exclusions is a string or other type
         return `
             <li class="feature-item">
                 <div class="feature-icon">
@@ -459,9 +393,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayPackageDetail(pkg) {
         console.log('🎨 Displaying package detail:', pkg.nama);
-        
-        // Process JSON fields - Parse JSON strings to objects/arrays
-        pkg = processPackageData(pkg);
         
         // Update page title
         document.title = `${pkg.nama} | Vacationland`;
@@ -604,49 +535,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         console.log('✅ Package detail displayed successfully');
-    }
-    
-    function processPackageData(pkg) {
-        console.log('🔄 Processing package data...');
-        
-        // Parse JSON fields if they are strings
-        try {
-            if (typeof pkg.fotos === 'string') {
-                pkg.fotos = JSON.parse(pkg.fotos);
-            }
-            if (typeof pkg.highlights === 'string') {
-                pkg.highlights = JSON.parse(pkg.highlights);
-            }
-            if (typeof pkg.itinerary === 'string') {
-                pkg.itinerary = JSON.parse(pkg.itinerary);
-            }
-            if (typeof pkg.inclusions === 'string') {
-                pkg.inclusions = JSON.parse(pkg.inclusions);
-            }
-            if (typeof pkg.exclusions === 'string') {
-                pkg.exclusions = JSON.parse(pkg.exclusions);
-            }
-        } catch (e) {
-            console.warn('⚠️ Error parsing JSON fields:', e);
-        }
-        
-        // Ensure arrays exist
-        if (!Array.isArray(pkg.fotos)) pkg.fotos = [];
-        if (!Array.isArray(pkg.highlights)) pkg.highlights = [];
-        if (!Array.isArray(pkg.itinerary)) pkg.itinerary = [];
-        if (!Array.isArray(pkg.inclusions)) pkg.inclusions = [];
-        if (!Array.isArray(pkg.exclusions)) pkg.exclusions = [];
-        
-        // Format price
-        pkg.formattedPrice = formatPrice(pkg.price);
-        
-        console.log('✅ Processed package data:', pkg);
-        return pkg;
-    }
-    
-    function formatPrice(price) {
-        const numPrice = parseFloat(price);
-        if (isNaN(numPrice)) return 'Rp 0';
-        return 'Rp ' + numPrice.toLocaleString('id-ID');
     }
 });

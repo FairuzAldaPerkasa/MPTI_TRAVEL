@@ -3,7 +3,7 @@
  * Newsletter Subscription API
  * 
  * @version 1.0
- * @author MPTI_TRAVEL
+ * @author Vacationland
  */
 
 header('Content-Type: application/json; charset=utf-8');
@@ -66,7 +66,6 @@ try {
             } else {
                 throw new Exception('Gagal mengaktifkan kembali subscription');
             }
-            $update_stmt->close();
         }
     } else {
         // Add new subscriber
@@ -80,7 +79,7 @@ try {
         if ($insert_stmt->execute()) {
             echo json_encode([
                 'success' => true,
-                'message' => 'Terima kasih! Anda telah berhasil berlangganan newsletter MPTI Travel. Kami akan mengirimkan promo dan update terbaru ke email Anda.'
+                'message' => 'Terima kasih! Anda telah berhasil berlangganan newsletter Vacationland. Kami akan mengirimkan promo dan update terbaru ke email Anda.'
             ], JSON_UNESCAPED_UNICODE);
         } else {
             throw new Exception('Gagal menyimpan subscription');

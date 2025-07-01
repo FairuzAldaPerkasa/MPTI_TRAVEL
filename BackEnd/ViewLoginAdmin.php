@@ -115,33 +115,24 @@ header("Pragma: no-cache");
 header("Expires: 0");
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Admin Login | MPTI Travel</title>
+    <title>Vacationland - Admin Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../admin/css/admin-clean.css">
 </head>
 <body>
     <div class="login-container">
-        <div class="card">
-            <div class="logo-section">
-                <div class="logo">
-                    <img src="../assets/images/logompti.png" alt="MPTI Travel Logo">
-                    <span>MPTI Travel</span>
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🏖️ Vacationland</h1>
+                <p class="admin-portal-text">Admin Portal</p>
+                <div class="admin-info">
+                    <small>Panel administrasi untuk pengelolaan website Vacationland.</small>
                 </div>
-                <div class="admin-badge">
-                    <i class="fas fa-shield-alt"></i> Admin Portal
-                </div>
-                <p class="admin-info">
-                    <i class="fas fa-info-circle"></i> 
-                    Halaman login administrator untuk mengelola website MPTI Travel.
-                </p>
             </div>
 
         <?php if (!empty($error_message)): ?>
@@ -215,19 +206,15 @@ header("Expires: 0");
                 <i class="fas fa-sign-in-alt"></i> Masuk
             </button>
         </form>
-
-        <div class="footer-text">
-            <p>&copy; <?= date('Y') ?> MPTI Travel Admin Panel</p>
-        </div>
-
-        <div class="back-to-site">
-            <a href="../FrontEnd/html/profile.html">
-                <i class="fas fa-arrow-left"></i> Kembali ke Website Utama
-            </a>
-        </div>
-        </div>
     </div>
     </div>
+
+    <footer class="admin-footer">
+        <p>&copy; 2025 Vacationland Admin Panel</p>
+        <a href="../FrontEnd/html/Index.html" class="back-to-site">
+            <i class="fas fa-arrow-left"></i> Kembali ke Website Utama
+        </a>
+    </footer>
 
     <script src="../admin/js/admin-clean.js"></script>
     <script>
