@@ -27,28 +27,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bind_param("s", $email);
                 $stmt->execute();
                 $result = $stmt->get_result();
-                $admin = $result->fetch_assoc();
                 
-                if ($admin && password_verify($password, $admin['password'])) {
-                    // Login successful
-                    $_SESSION['admin_logged_in'] = true;
-                    $_SESSION['admin_id'] = $admin['id'];
-                    $_SESSION['admin_name'] = $admin['name'];
-                    $_SESSION['admin_email'] = $admin['email'];
-                    $_SESSION['admin_role'] = 'admin';
+                if ($result->num_rows == 1) {
+                    $admin = $result->fetch_assoc();
                     
-                    $stmt->close();
-                    $koneksi->close();
-                    
-                    // Clear any error messages and redirect to admin
-                    header("Location: admin.php");
-                    exit;
+                    // Verifikasi password menggunakan password_verify()
+                    if (password_verify($password, $admin['password'])) {
+                        // Login berhasil
+                        session_start();
+                        $_SESSION['admin_id'] = $admin['id'];
+                        $_SESSION['admin_email'] = $admin['email'];
+                        $_SESSION['login_time'] = time();
+                        
+                        header("Location: admin.php");
+                        exit;
+                    } else {
+                        // Password salah
+                        $error = "login_failed";
+                        $message = "Email atau password salah";
+                    }
                 } else {
-                    // Login failed - redirect to profile.html with error
-                    $stmt->close();
-                    $koneksi->close();
-                    header("Location: ../FrontEnd/html/profile.html?error=login_failed&message=" . urlencode("Email atau password salah! Periksa kembali kredensial Anda."));
-                    exit;
+                    // Email tidak ditemukan
+                    $error = "login_failed";
+                    $message = "Email atau password salah";
                 }
             } catch (Exception $e) {
                 // Database error - show user-friendly message

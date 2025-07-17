@@ -40,11 +40,12 @@ if ($check_admin->num_rows > 0) {
 } else {
     // Create default admin user
     $email = 'admin@mptitravel.com';
-    $password = password_hash('admin123', PASSWORD_DEFAULT); // Change this password!
+    $password = 'adminganteng16'; // Change this password!
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $name = 'Administrator';
     
     $stmt = $koneksi->prepare("INSERT INTO admins (email, password, name) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $email, $password, $name);
+    $stmt->bind_param("sss", $email, $hashed_password, $name);
     
     if ($stmt->execute()) {
         echo "✅ Admin user created successfully<br>";
@@ -60,6 +61,46 @@ if ($check_admin->num_rows > 0) {
     $stmt->close();
 }
 
+// Additional code to handle admin creation or password update
+$email = "admin@mptitravel.com";
+$plain_password = "adminganteng16";  // Ganti dengan password yang diinginkan
+
+// Hash password
+$hashed_password = password_hash($plain_password, PASSWORD_DEFAULT);
+
+// Cek apakah email sudah ada
+$check_stmt = $koneksi->prepare("SELECT id FROM admins WHERE email = ?");
+$check_stmt->bind_param("s", $email);
+$check_stmt->execute();
+$result = $check_stmt->get_result();
+
+if ($result->num_rows > 0) {
+    // Update password yang sudah ada
+    $update_stmt = $koneksi->prepare("UPDATE admins SET password = ? WHERE email = ?");
+    $update_stmt->bind_param("ss", $hashed_password, $email);
+    
+    if ($update_stmt->execute()) {
+        echo "✅ Admin password updated for: {$email}";
+    } else {
+        echo "❌ Failed to update admin password";
+    }
+    
+    $update_stmt->close();
+} else {
+    // Buat admin baru
+    $insert_stmt = $koneksi->prepare("INSERT INTO admins (email, password) VALUES (?, ?)");
+    $insert_stmt->bind_param("ss", $email, $hashed_password);
+    
+    if ($insert_stmt->execute()) {
+        echo "✅ New admin created: {$email}";
+    } else {
+        echo "❌ Failed to create admin";
+    }
+    
+    $insert_stmt->close();
+}
+
+$check_stmt->close();
 $koneksi->close();
 
 echo "<hr>";

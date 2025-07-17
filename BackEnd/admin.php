@@ -15,12 +15,21 @@
  */
 session_start();
 
-// --- SECURITY & SESSION CHECK ---
-// Redirect to login page if the admin is not logged in.
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+// Cek apakah user sudah login
+if (!isset($_SESSION['admin_id'])) {
     header("Location: ViewLoginAdmin.php");
     exit;
 }
+
+// Cek session timeout (optional - 2 jam)
+if (isset($_SESSION['login_time']) && (time() - $_SESSION['login_time']) > 7200) {
+    session_destroy();
+    header("Location: ViewLoginAdmin.php?error=session_timeout&message=Session expired");
+    exit;
+}
+
+// Update last activity time
+$_SESSION['last_activity'] = time();
 
 // --- DATABASE CONNECTION ---
 $koneksi = new mysqli("localhost", "root", "", "paket_travel");
@@ -542,43 +551,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
 // --- MESSAGE HANDLING ---
 $message = '';
-if (isset($_GET['success'])) {    $successMessages = [
-        'package_added' => 'Paket berhasil ditambahkan!',
-        'package_updated' => 'Paket berhasil diperbarui!',
-        'settings_updated' => 'Pengaturan berhasil diperbarui!',
-        'booking_added' => 'Booking berhasil ditambahkan!',
-        'payment_updated' => 'Metode pembayaran berhasil diperbarui!',
-        'payment_deleted' => 'Metode pembayaran berhasil dihapus!',
-        'newsletter_sent' => 'Newsletter berhasil dikirim ke ' . ($_GET['count'] ?? '0') . ' subscriber!',
-        'subscriber_deleted' => 'Subscriber berhasil dihapus!'
-    ];
+$successMessages = [
+    'package_added' => 'Paket berhasil ditambahkan!',
+    'package_updated' => 'Paket berhasil diperbarui!',
+    'settings_updated' => 'Pengaturan berhasil diperbarui!',
+    'booking_added' => 'Booking berhasil ditambahkan!',
+    'payment_updated' => 'Metode pembayaran berhasil diperbarui!',
+    'payment_deleted' => 'Metode pembayaran berhasil dihapus!',
+    'newsletter_sent' => 'Newsletter berhasil dikirim ke ' . ($_GET['count'] ?? '0') . ' subscriber!',
+    'subscriber_deleted' => 'Subscriber berhasil dihapus!',
+    'password_changed' => 'Password berhasil diubah!' 
+];
+$errorMessages = [
+    'invalid_price' => 'Harga tidak valid!',
+    'price_too_low' => 'Harga minimal Rp 100.000!',
+    'price_too_high' => 'Harga maksimal Rp 50.000.000!',
+    'empty_fields' => 'Semua field harus diisi!',
+    'no_files' => 'Minimal harus upload 1 foto!',
+    'invalid_photo_count' => 'Upload 3-6 foto saja!',
+    'invalid_file_type' => 'Hanya file JPG, JPEG, PNG yang diperbolehkan!',
+    'settings_error' => 'Gagal memperbarui pengaturan!',
+    'file_too_large' => 'Ukuran file maksimal 5MB!',
+    'upload_failed' => 'Gagal upload file!',
+    'database_error' => 'Terjadi kesalahan database!',
+    'input_too_long' => 'Input terlalu panjang!',
+    'invalid_package_id' => 'ID paket tidak valid!',
+    'package_not_found' => 'Paket tidak ditemukan!',
+    'booking_empty_fields' => 'Nama customer, telepon, dan nama paket harus diisi!',
+    'booking_failed' => 'Gagal menambahkan booking!',
+    'payment_empty_name' => 'Nama metode pembayaran harus diisi!',
+    'payment_failed' => 'Gagal memperbarui metode pembayaran!',
+    'payment_delete_failed' => 'Gagal menghapus metode pembayaran!',
+    'newsletter_empty_fields' => 'Subject dan pesan newsletter harus diisi!',
+    'newsletter_failed' => 'Gagal mengirim newsletter!',
+    'subscriber_delete_failed' => 'Gagal menghapus subscriber!',
+    'password_empty_fields' => 'Semua field password harus diisi!',
+    'password_mismatch' => 'Password baru dan konfirmasi tidak cocok!',
+    'password_too_short' => 'Password baru minimal 6 karakter!',
+    'password_incorrect' => 'Password saat ini salah!',
+    'password_update_failed' => 'Gagal mengubah password!',
+    'admin_not_found' => 'Admin tidak ditemukan!'
+];
+if (isset($_GET['success'])) {
     $successKey = $_GET['success'];
     $successMsg = $successMessages[$successKey] ?? 'Operasi berhasil!';
     $message = '<div class="alert alert-success"><i class="fas fa-check-circle"></i> ' . htmlspecialchars($successMsg) . '</div>';
-} elseif (isset($_GET['error'])) {    $errorMessages = [
-        'invalid_price' => 'Harga tidak valid!',
-        'price_too_low' => 'Harga minimal Rp 100.000!',
-        'price_too_high' => 'Harga maksimal Rp 50.000.000!',
-        'empty_fields' => 'Semua field harus diisi!',
-        'no_files' => 'Minimal harus upload 1 foto!',
-        'invalid_photo_count' => 'Upload 3-6 foto saja!',
-        'invalid_file_type' => 'Hanya file JPG, JPEG, PNG yang diperbolehkan!',
-        'settings_error' => 'Gagal memperbarui pengaturan!',
-        'file_too_large' => 'Ukuran file maksimal 5MB!',
-        'upload_failed' => 'Gagal upload file!',
-        'database_error' => 'Terjadi kesalahan database!',
-        'input_too_long' => 'Input terlalu panjang!',
-        'invalid_package_id' => 'ID paket tidak valid!',
-        'package_not_found' => 'Paket tidak ditemukan!',
-        'booking_empty_fields' => 'Nama customer, telepon, dan nama paket harus diisi!',
-        'booking_failed' => 'Gagal menambahkan booking!',
-        'payment_empty_name' => 'Nama metode pembayaran harus diisi!',
-        'payment_failed' => 'Gagal memperbarui metode pembayaran!',
-        'payment_delete_failed' => 'Gagal menghapus metode pembayaran!',
-        'newsletter_empty_fields' => 'Subject dan pesan newsletter harus diisi!',
-        'newsletter_failed' => 'Gagal mengirim newsletter!',
-        'subscriber_delete_failed' => 'Gagal menghapus subscriber!'
-    ];
+} elseif (isset($_GET['error'])) {
     $errorKey = $_GET['error'];
     $errorMsg = $errorMessages[$errorKey] ?? 'Terjadi kesalahan tidak dikenal!';
     $message = '<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> ' . htmlspecialchars($errorMsg) . '</div>';
@@ -634,6 +652,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['hapus'])) {
     exit;
 }
 
+// Handle change password
+if (isset($_POST['action']) && $_POST['action'] == 'change_password') {
+    $current_password = $_POST['current_password'];
+    $new_password = $_POST['new_password'];
+    $confirm_password = $_POST['confirm_password'];
+    
+    if (empty($current_password) || empty($new_password) || empty($confirm_password)) {
+        $error_message = "Semua field harus diisi";
+    } elseif ($new_password !== $confirm_password) {
+        $error_message = "Password baru dan konfirmasi tidak cocok";
+    } elseif (strlen($new_password) < 6) {
+        $error_message = "Password baru minimal 6 karakter";
+    } else {
+        // Ambil password saat ini dari database
+        $stmt = $koneksi->prepare("SELECT password FROM admins WHERE id = ?");
+        $stmt->bind_param("i", $_SESSION['admin_id']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows == 1) {
+            $admin = $result->fetch_assoc();
+            
+            // Verifikasi password saat ini
+            if (password_verify($current_password, $admin['password'])) {
+                // Hash password baru
+                $hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
+                
+                // Update password
+                $update_stmt = $koneksi->prepare("UPDATE admins SET password = ? WHERE id = ?");
+                $update_stmt->bind_param("si", $hashed_new_password, $_SESSION['admin_id']);
+                
+                if ($update_stmt->execute()) {
+                    $success_message = "Password berhasil diubah";
+                    // Clear form variables
+                    $current_password = '';
+                    $new_password = '';
+                    $confirm_password = '';
+                } else {
+                    $error_message = "Gagal mengubah password";
+                }
+                
+                $update_stmt->close();
+            } else {
+                $error_message = "Password saat ini salah";
+            }
+        } else {
+            $error_message = "Admin tidak ditemukan";
+        }
+        
+        $stmt->close();
+    }
+}
+
 // Dashboard statistics functions
 function getTotalPackages($koneksi) {
     $result = $koneksi->query("SELECT COUNT(*) as total FROM paket");
@@ -680,56 +751,68 @@ function getLatestPackageDate($koneksi) {
     <header class="admin-header">
         <div class="header-content">
             <div class="header-left">
-                <img src="../assets/images/logompti.png" alt="Logo" class="logo">
-                <h1>Vacationland Admin</h1>
-            </div>            <div class="header-right">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <img src="../assets/images/logompti.png" alt="Vacationland" class="logo">
+                <h1>Admin Panel</h1>
+            </div>
+            <div class="header-right">
                 <div class="admin-welcome">
-                    <i class="fas fa-user-circle"></i>
-                    <span>Hi, <?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></span>
+                    <i class="fas fa-user-shield"></i>
+                    <span>Welcome, Admin!</span>
                 </div>
-                <a href="#" onclick="performLogout()" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Logout
-                </a>
             </div>
         </div>
     </header>
 
-    <!-- Navigation -->
-    <nav class="admin-nav">        <div class="nav-content">
-            <a href="#dashboard" class="nav-link active" onclick="showSection('dashboard', event)">
-                <i class="fas fa-chart-pie"></i>
-                Dashboard
-            </a>
-            <a href="#add-package" class="nav-link" onclick="showSection('add-package', event)">
-                <i class="fas fa-plus-circle"></i>
-                Tambah Paket
-            </a>
-            <a href="#packages-list" class="nav-link" onclick="showSection('packages-list', event)">
-                <i class="fas fa-list"></i>
-                Daftar Paket
-            </a>
-            <a href="#booking-history" class="nav-link" onclick="showSection('booking-history', event)">
-                <i class="fas fa-history"></i>
-                Riwayat Booking
-            </a>            <a href="#payment-methods" class="nav-link" onclick="showSection('payment-methods', event)">
-                <i class="fas fa-credit-card"></i>
-                Metode Pembayaran
-            </a>
-            <a href="#newsletter" class="nav-link" onclick="showSection('newsletter', event)">
-                <i class="fas fa-envelope"></i>
-                Newsletter
-            </a>
-            <a href="#settings" class="nav-link" onclick="showSection('settings', event)">
-                <i class="fas fa-cog"></i>
-                Pengaturan
-            </a>
-            <a href="../FrontEnd/html/Index.html" target="_blank" class="nav-link">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="sidebar-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#packages-list" class="sidebar-link">
+                    <i class="fas fa-box"></i>
+                    <span>Paket Travel</span>
+                </a>
+                <a href="#add-package" class="sidebar-link">
+                    <i class="fas fa-plus"></i>
+                    <span>Tambah Paket</span>
+                </a>
+                <a href="#booking-history" class="sidebar-link">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Booking</span>
+                </a>
+                <a href="#payment-methods" class="sidebar-link">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Metode Pembayaran</span>
+                </a>
+            
+                <a href="#change-password" class="sidebar-link">
+                    <i class="fas fa-key"></i>
+                    <span>Ubah Password</span>
+                </a>
+                <a href="#settings" class="sidebar-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Pengaturan</span>
+                </a>
+            <a href="../FrontEnd/html/Index.html" target="_blank" class="sidebar-link">
                 <i class="fas fa-external-link-alt"></i>
                 Lihat Website
             </a>
+            <a href="#" onclick="performLogout()" class="sidebar-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </nav>
         </div>
-    </nav>
+    </aside>
+
+    
 
     <!-- Main Content -->
     <main class="admin-main">
@@ -885,7 +968,7 @@ function getLatestPackageDate($koneksi) {
                             <div class="itinerary-day">
                                 <div class="day-header">
                                     <h4><i class="fas fa-calendar-day"></i> Hari 1</h4>
-                                    <button type="button" class="btn-remove-day" onclick="removeDay(this)" title="Hapus Hari">
+                                    <button type="button" class="btn-remove" onclick="removeDay(this)" title="Hapus Hari">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
@@ -903,13 +986,13 @@ function getLatestPackageDate($koneksi) {
                                                 <textarea name="itinerary_activities[0][]" placeholder="Deskripsi aktivitas..." rows="2"></textarea>
                                             </div>
                                             <div class="activity-actions">
-                                                <button type="button" class="btn-remove-activity" onclick="removeActivity(this)">
+                                                <button type="button" class="btn-remove" onclick="removeActivity(this)">
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn-add-activity" onclick="addActivity(this)">
+                                    <button type="button" class="btn-add" onclick="addActivity(this)">
                                         <i class="fas fa-plus"></i> Tambah Aktivitas
                                     </button>
                                 </div>
@@ -1630,7 +1713,8 @@ function getLatestPackageDate($koneksi) {
                     }
                     ?>
                 </div>
-            </div>        </section>
+            </div>        
+        </section>
 
         <!-- Newsletter Section -->
         <section id="newsletter" class="content-section">
@@ -1667,7 +1751,6 @@ function getLatestPackageDate($koneksi) {
                             <textarea id="newsletter_message" name="newsletter_message" rows="8" required 
                                       placeholder="Tulis pesan promo Anda di sini...&#10;&#10;Contoh:&#10;Halo Sahabat Traveler!&#10;&#10;Kami menawarkan promo spesial untuk paket wisata Yogyakarta dengan diskon hingga 30%!&#10;&#10;Paket termasuk:&#10;- Transport AC&#10;- Makan 3x sehari&#10;- Guide berpengalaman&#10;- Tiket masuk wisata&#10;&#10;Hubungi kami segera di WhatsApp untuk booking!"></textarea>
                         </div>
-                        
                         <div class="newsletter-stats">
                             <?php
                             $subscriber_count = $koneksi->query("SELECT COUNT(*) as total FROM newsletter_subscribers WHERE status = 'active'")->fetch_assoc()['total'];
@@ -1774,7 +1857,80 @@ function getLatestPackageDate($koneksi) {
                 </div>
             </div>
         </section>
+        
+        <!-- Change Password Section -->
+        <section id="change-password" class="content-section">
+    <div class="section-header">
+        <h2><i class="fas fa-key"></i> Ubah Password</h2>
+        <p>Ubah password untuk keamanan akun admin</p>
+    </div>
+     <?php if (isset($success_message) && !empty($success_message)): ?>
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <?php echo htmlspecialchars($success_message); ?>
+        </div>
+    <?php endif; ?>
+    
+    <?php if (isset($error_message) && !empty($error_message)): ?>
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <?php echo htmlspecialchars($error_message); ?>
+        </div>
+    <?php endif; ?>
+    
+    <div class="form-container">
+        <form method="POST" class="change-password-form" id="passwordForm">
+            <input type="hidden" name="action" value="change_password">
+            
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-lock"></i>
+                    Ubah Password Admin
+                </h3>
+                
+                <div class="form-group">
+                    <label for="current_password">
+                        <i class="fas fa-key"></i>
+                        Password Saat Ini *
+                    </label>
+                    <input type="password" id="current_password" name="current_password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new_password">
+                        <i class="fas fa-lock"></i>
+                        Password Baru *
+                    </label>
+                    <input type="password" id="new_password" name="new_password" required minlength="6">
+                    <small class="form-help">Minimal 6 karakter</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_password">
+                        <i class="fas fa-lock"></i>
+                        Konfirmasi Password Baru *
+                    </label>
+                    <input type="password" id="confirm_password" name="confirm_password" required minlength="6">
+                </div>
+                
+                <div class="form-actions">
+                    <button type="reset" class="btn-secondary">
+                        <i class="fas fa-undo"></i>
+                        Reset
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Ubah Password
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
     </main>
+
+    <!-- Overlay untuk mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal">
@@ -1871,10 +2027,6 @@ function getLatestPackageDate($koneksi) {
         }
         
         function resetPaymentForm() {
-            document.getElementById('method_id').value = '0';
-            document.getElementById('method_name').value = '';
-            document.getElementById('method_type').value = 'bank';
-            document.getElementById('icon_class').value = '';
             document.getElementById('is_active').checked = true;
             document.getElementById('display_order').value = '0';
             document.getElementById('form-title').textContent = 'Tambah Metode Pembayaran';
@@ -2112,6 +2264,52 @@ function getLatestPackageDate($koneksi) {
             const container = document.getElementById('itineraryContainer');
             if (container) container.innerHTML = '';
         }
+    </script>
+    
+    <script>
+// Auto-clear password form on success
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    
+    if (success === 'password_changed') {
+        // Clear password form
+        const passwordForm = document.getElementById('passwordForm');
+        if (passwordForm) {
+            passwordForm.reset();
+        }
+        
+        // Auto-hide success message after 5 seconds
+        setTimeout(() => {
+            const successAlert = document.querySelector('.alert-success');
+            if (successAlert) {
+                successAlert.style.transition = 'opacity 0.5s ease';
+                successAlert.style.opacity = '0';
+                setTimeout(() => {
+                    successAlert.remove();
+                }, 500);
+            }
+        }, 5000);
+    }
+});
+
+// Form validation
+document.getElementById('passwordForm').addEventListener('submit', function(e) {
+    const newPassword = document.getElementById('new_password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    if (newPassword !== confirmPassword) {
+        e.preventDefault();
+        alert('Password baru dan konfirmasi password tidak cocok!');
+        return false;
+    }
+    
+    if (newPassword.length < 6) {
+        e.preventDefault();
+        alert('Password baru minimal 6 karakter!');
+        return false;
+    }
+});
     </script>
 </body>
 </html>

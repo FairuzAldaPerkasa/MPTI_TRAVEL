@@ -1024,7 +1024,456 @@ function performLogout() {
         window.location.href = 'ViewLoginAdmin.php?logout=1';
     }
 }
+// Tambahkan di bagian akhir admin.php:
 
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('adminSidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const body = document.body;
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    // Sidebar Toggle
+    function toggleSidebar() {
+        body.classList.toggle('sidebar-open');
+    }
+
+    // Close Sidebar
+    function closeSidebar() {
+        body.classList.remove('sidebar-open');
+    }
+
+    // Event Listeners
+    sidebarToggle.addEventListener('click', toggleSidebar);
+    sidebarOverlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+
+    // Navigation Logic
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href').substring(1);
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                // Remove active class from all links
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Hide all sections
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Show target section
+                targetSection.classList.add('active');
+                
+                // Close sidebar on mobile after navigation
+                if (window.innerWidth <= 1024) {
+                    closeSidebar();
+                }
+                
+                // Update URL hash
+                history.pushState(null, null, '#' + targetId);
+            }
+        });
+    });
+
+    // Handle page load with hash
+    function handleHashChange() {
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const targetSection = document.getElementById(hash);
+            const targetLink = document.querySelector(`[href="#${hash}"]`);
+            
+            if (targetSection && targetLink) {
+                // Remove active class from all
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Activate target
+                targetLink.classList.add('active');
+                targetSection.classList.add('active');
+            }
+        } else {
+            // Default to dashboard
+            const dashboardLink = document.querySelector('[href="#dashboard"]');
+            const dashboardSection = document.getElementById('dashboard');
+            
+            if (dashboardLink && dashboardSection) {
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                dashboardLink.classList.add('active');
+                dashboardSection.classList.add('active');
+            }
+        }
+    }
+
+    // Handle hash change
+    window.addEventListener('hashchange', handleHashChange);
+    
+    // Initial load
+    handleHashChange();
+
+    // Auto-close sidebar on window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 1024) {
+            closeSidebar();
+        }
+    });
+});
+// Enhanced Form UX JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-resize textareas
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    });
+    
+    // Enhanced file upload with drag & drop
+    const fileUploads = document.querySelectorAll('.file-upload');
+    fileUploads.forEach(upload => {
+        upload.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+        
+        upload.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+        
+        upload.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFiles(files, this);
+        });
+    });
+    
+    // Form validation
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                const formGroup = field.closest('.form-group');
+                
+                if (!field.value.trim()) {
+                    isValid = false;
+                    formGroup.classList.add('error');
+                    showError(field, 'Field ini wajib diisi');
+                } else {
+                    formGroup.classList.remove('error');
+                    formGroup.classList.add('success');
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                showNotification('Mohon lengkapi semua field yang wajib diisi', 'error');
+            }
+        });
+    });
+    
+    // Real-time validation
+    const inputs = document.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('input', function() {
+            const formGroup = this.closest('.form-group');
+            if (formGroup.classList.contains('error')) {
+                validateField(this);
+            }
+        });
+    });
+    
+    // Price formatter
+    const priceInputs = document.querySelectorAll('.price-input input');
+    priceInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            let value = this.value.replace(/[^\d]/g, '');
+            this.value = formatPrice(value);
+        });
+    });
+    
+    // Auto-save draft
+    let saveTimeout;
+    const formInputs = document.querySelectorAll('input, select, textarea');
+    formInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveDraft();
+            }, 2000);
+        });
+    });
+    
+    // Enhanced accordion
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+    accordionHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const isActive = this.classList.contains('active');
+            
+            // Close all accordions
+            accordionHeaders.forEach(h => h.classList.remove('active'));
+            document.querySelectorAll('.accordion-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            
+            // Toggle current accordion
+            if (!isActive) {
+                this.classList.add('active');
+                content.classList.add('active');
+            }
+        });
+    });
+});
+
+// Helper functions
+function validateField(field) {
+    const formGroup = field.closest('.form-group');
+    const value = field.value.trim();
+    
+    // Remove existing messages
+    const existingError = formGroup.querySelector('.error-message');
+    if (existingError) existingError.remove();
+    
+    formGroup.classList.remove('error', 'success');
+    
+    // Check required
+    if (field.hasAttribute('required') && !value) {
+        formGroup.classList.add('error');
+        showError(field, 'Field ini wajib diisi');
+        return false;
+    }
+    
+    // Check email
+    if (field.type === 'email' && value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+            formGroup.classList.add('error');
+            showError(field, 'Format email tidak valid');
+            return false;
+        }
+    }
+    
+    // Check number
+    if (field.type === 'number' && value) {
+        const num = parseFloat(value);
+        const min = parseFloat(field.getAttribute('min'));
+        const max = parseFloat(field.getAttribute('max'));
+        
+        if (min && num < min) {
+            formGroup.classList.add('error');
+            showError(field, `Nilai minimum ${min}`);
+            return false;
+        }
+        
+        if (max && num > max) {
+            formGroup.classList.add('error');
+            showError(field, `Nilai maksimum ${max}`);
+            return false;
+        }
+    }
+    
+    // Check minlength
+    const minLength = field.getAttribute('minlength');
+    if (minLength && value.length < minLength) {
+        formGroup.classList.add('error');
+        showError(field, `Minimal ${minLength} karakter`);
+        return false;
+    }
+    
+    // If all validations pass
+    formGroup.classList.add('success');
+    return true;
+}
+
+function showError(field, message) {
+    const formGroup = field.closest('.form-group');
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+    formGroup.appendChild(errorDiv);
+}
+
+function formatPrice(value) {
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type} show`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+function saveDraft() {
+    const formData = new FormData(document.querySelector('form'));
+    const data = {};
+    
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+    }
+    
+    localStorage.setItem('admin_form_draft', JSON.stringify(data));
+    showNotification('Draft tersimpan otomatis', 'success');
+}
+
+function loadDraft() {
+    const draft = localStorage.getItem('admin_form_draft');
+    if (draft) {
+        const data = JSON.parse(draft);
+        Object.keys(data).forEach(key => {
+            const field = document.querySelector(`[name="${key}"]`);
+            if (field) {
+                field.value = data[key];
+            }
+        });
+    }
+}
+
+function handleFiles(files, uploadElement) {
+    Array.from(files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Create preview
+                const preview = document.createElement('img');
+                preview.src = e.target.result;
+                preview.style.maxWidth = '100px';
+                preview.style.maxHeight = '100px';
+                preview.style.objectFit = 'cover';
+                preview.style.borderRadius = '8px';
+                
+                uploadElement.appendChild(preview);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+// Enhanced textarea functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-expand textareas
+    const textareas = document.querySelectorAll('textarea');
+    
+    textareas.forEach(textarea => {
+        // Auto-resize functionality
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 400) + 'px';
+        });
+        
+        // Character counter
+        if (textarea.hasAttribute('maxlength')) {
+            addCharacterCounter(textarea);
+        }
+        
+        // Enhanced placeholder
+        enhancePlaceholder(textarea);
+    });
+    
+    // Add character counter
+    function addCharacterCounter(textarea) {
+        const maxLength = textarea.getAttribute('maxlength');
+        const container = document.createElement('div');
+        container.className = 'textarea-container';
+        
+        const counter = document.createElement('div');
+        counter.className = 'char-counter';
+        
+        // Wrap textarea
+        textarea.parentNode.insertBefore(container, textarea);
+        container.appendChild(textarea);
+        container.appendChild(counter);
+        
+        // Update counter
+        function updateCounter() {
+            const current = textarea.value.length;
+            const remaining = maxLength - current;
+            
+            counter.textContent = `${current}/${maxLength}`;
+            
+            if (remaining < 50) {
+                counter.className = 'char-counter warning';
+            } else if (remaining < 20) {
+                counter.className = 'char-counter danger';
+            } else {
+                counter.className = 'char-counter';
+            }
+        }
+        
+        textarea.addEventListener('input', updateCounter);
+        updateCounter(); // Initial call
+    }
+    
+    // Enhanced placeholder functionality
+    function enhancePlaceholder(textarea) {
+        const name = textarea.getAttribute('name') || '';
+        
+        if (name.includes('highlight')) {
+            textarea.placeholder = `Contoh:
+• Menikmati sunset di Pantai Kuta yang menakjubkan
+• Mengunjungi Pura Tanah Lot yang eksotis
+• Bermain air di Waterbom Bali
+• Mencicipi kuliner khas Bali di Pasar Sukawati
+• Berbelanja oleh-oleh di Pasar Seni Ubud`;
+        } else if (name.includes('description') || name.includes('deskripsi')) {
+            textarea.placeholder = `Deskripsikan paket wisata ini dengan detail. Jelaskan keunikan, daya tarik, dan pengalaman yang akan didapat wisatawan. Sertakan informasi tentang lokasi, aktivitas, dan hal-hal menarik lainnya yang membuat paket ini istimewa.`;
+        } else if (name.includes('itinerary') || name.includes('kegiatan')) {
+            textarea.placeholder = `Contoh:
+08:00 - Sarapan di hotel
+09:00 - Perjalanan menuju Pantai Kuta
+10:00 - Bermain di pantai dan surfing
+12:00 - Makan siang di restoran lokal
+14:00 - Mengunjungi Pura Tanah Lot`;
+        }
+    }
+    
+    // Focus enhancement
+    textareas.forEach(textarea => {
+        textarea.addEventListener('focus', function() {
+            this.closest('.form-group').classList.add('focus-within');
+        });
+        
+        textarea.addEventListener('blur', function() {
+            this.closest('.form-group').classList.remove('focus-within');
+        });
+    });
+});
 // Make functions available globally
 window.openGallery = openGallery;
 window.closeGallery = closeGallery;

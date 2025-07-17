@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 25, 2025 at 03:42 PM
+-- Generation Time: Jul 17, 2025 at 10:20 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,7 +32,7 @@ CREATE TABLE `admins` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `role` varchar(50) DEFAULT 'admin',
   `avatar` varchar(255) DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1,
@@ -46,9 +46,8 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`id`, `name`, `email`, `email_verified_at`, `password`, `role`, `avatar`, `is_active`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin MPTI Travel', 'admin@mptitravel.com', NULL, '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', NULL, 1, NULL, '2025-05-30 12:23:16', '2025-05-30 12:23:16'),
-(2, 'test', 'testadmin@gmail.com', '2025-05-16 12:51:05', 'testadmin', 'admin', NULL, 1, NULL, '2025-05-30 12:51:43', '2025-05-30 12:51:43'),
-(3, 'Admin', 'admin@vacationland.com', NULL, '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', NULL, 1, NULL, '2025-05-30 12:56:24', '2025-05-30 12:56:24');
+(3, 'Admin', 'admin@vacationland.com', NULL, '$2y$10$Dl2cRWFD1qVn6C8i/ETqr.CAmqIqzz3e38ed0TgZnRQCmyrYf6tAa', 'admin', NULL, 1, NULL, '2025-05-30 12:56:24', '2025-07-17 08:14:31'),
+(4, 'Administrator', 'admin@mptitravel.com', NULL, '$2y$10$2V5KSBDUMtg.9u0RW56Yy.x3aUk6DPSkFWcuwUmGuH0wPBIBKoADC', 'admin', NULL, 1, NULL, '2025-07-17 06:15:12', '2025-07-17 08:19:17');
 
 -- --------------------------------------------------------
 
@@ -142,13 +141,8 @@ CREATE TABLE `newsletter_subscribers` (
 --
 
 INSERT INTO `newsletter_subscribers` (`id`, `email`, `name`, `status`, `subscription_date`, `last_email_sent`, `source`, `user_agent`, `ip_address`, `verification_token`, `is_verified`, `unsubscribe_token`, `created_at`, `updated_at`) VALUES
-(1, 'john.doe@email.com', 'John Doe', 'active', '2025-06-22 14:46:20', '2025-06-22 14:55:17', 'website_footer', NULL, NULL, NULL, 1, '0b193bffb070ed3e93a8d1c66a7ef66a', '2025-06-22 14:46:20', '2025-06-22 14:55:17'),
-(2, 'jane.smith@gmail.com', 'Jane Smith', 'active', '2025-06-22 14:46:20', '2025-06-22 14:55:17', 'website_footer', NULL, NULL, NULL, 1, 'f01b2b2cab7948114a19b56e27900ea5', '2025-06-22 14:46:20', '2025-06-22 14:55:17'),
-(3, 'budi.santoso@yahoo.com', 'Budi Santoso', 'active', '2025-06-22 14:46:20', '2025-06-22 14:55:17', 'website_footer', NULL, NULL, NULL, 1, 'eaca36120e7ab3d5f913a968805e22d5', '2025-06-22 14:46:20', '2025-06-22 14:55:17'),
-(4, 'sari.indah@hotmail.com', 'Sari Indah', 'active', '2025-06-22 14:46:20', '2025-06-22 14:55:17', 'website_footer', NULL, NULL, NULL, 1, 'e7e572d0667ea282f013fe22a03d7e28', '2025-06-22 14:46:20', '2025-06-22 14:55:17'),
-(5, 'andi.wijaya@email.com', 'Andi Wijaya', 'unsubscribed', '2025-06-22 14:46:20', NULL, 'website_footer', NULL, NULL, NULL, 1, 'a6632a07a88088ca4a60e288c4554258', '2025-06-22 14:46:20', '2025-06-22 14:46:20'),
-(7, 'test.user@example.com', 'Test User', 'active', '2025-06-22 14:54:24', '2025-06-22 14:55:17', 'website_footer', '', '::1', NULL, 1, 'd407b57b7c5f5e9b94aafa71a5762202', '2025-06-22 14:54:24', '2025-06-22 14:55:17'),
-(8, 'fairuz@gmail.com', '', 'active', '2025-06-22 14:56:52', NULL, 'website_footer', 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36', '::1', NULL, 1, '6f67bf77d8b5edd55284d522df2ce744', '2025-06-22 14:56:52', '2025-06-22 14:56:52');
+(9, '2200018138@webmail.uad.ac.id', '', 'active', '2025-07-01 15:00:46', NULL, 'website_footer', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '::1', NULL, 1, 'ae3fe831efb297d51c097fe2f4f4a163', '2025-07-01 15:00:46', '2025-07-01 15:00:46'),
+(10, 'fairuzaldaperkasa@gmail.com', '', 'active', '2025-07-01 15:02:09', NULL, 'website_footer', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', '::1', NULL, 1, '90e67ee997939c66713dc6887c5bd3ec', '2025-07-01 15:02:09', '2025-07-01 15:02:09');
 
 -- --------------------------------------------------------
 
@@ -203,7 +197,7 @@ CREATE TABLE `paket` (
 --
 
 INSERT INTO `paket` (`id`, `nama`, `deskripsi`, `fotos`, `created_at`, `updated_at`, `itinerary`, `highlights`, `inclusions`, `exclusions`, `price`, `duration`) VALUES
-(29, 'Jogja Heritage & Culture Tour', 'Ini paket yang menarik harusnya', '[\"1750604771_6ee38d9e6f23172b_1.jpg\",\"1750604771_5bb183bfcda02fed_2.jpg\",\"1750604771_862441fe52da2a45_3.jpeg\"]', '2025-06-17 09:11:15', '2025-06-22 15:06:11', '[{\"day\":1,\"title\":\"mantap\",\"activities\":[{\"time\":\"14:00\",\"activity\":\"wkledknwd\"}]},{\"day\":2,\"title\":\"Kedatangan\",\"activities\":[{\"time\":\"12:00\",\"activity\":\"nsjdkbds\"}]}]', '[\"Pemandangan Mantepg\",\"Keren\",\"Cool\"]', '[{\"icon\":\"fas fa-hotel\",\"text\":\"r\"}]', '[{\"icon\":\"fas fa-plane\",\"text\":\"r\"}]', 2000000.00, '2D1N');
+(29, 'Jogja Heritage & Culture Tour', 'Ini paket yang menarik harusnya', '[\"1750864322_e299d4b52481fe4d_1.png\",\"1750864322_ea1a22f2f1b7f66e_2.png\",\"1750864322_ff2fd4e3eb854672_3.png\"]', '2025-06-17 09:11:15', '2025-06-25 15:12:02', '[{\"day\":1,\"title\":\"mantap\",\"activities\":[]},{\"day\":2,\"title\":\"Kedatangan\",\"activities\":[{\"time\":\"14:00\",\"activity\":\"wkledknwd\"}]}]', '[\"Pemandangan Mantepg\",\"Keren\",\"Cool\"]', '[{\"icon\":\"fas fa-ticket-alt\",\"text\":\"r,smdnjkbkjds\"}]', '[{\"icon\":\"fas fa-shopping-bag\",\"text\":\"rsdjnsdn\"}]', 2000000.00, '2D1N');
 
 -- --------------------------------------------------------
 
@@ -259,7 +253,8 @@ INSERT INTO `payment_methods` (`id`, `method_name`, `method_type`, `icon_class`,
 (7, 'GoPay', 'ewallet', 'fas fa-mobile-alt', 1, 7, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
 (8, 'OVO', 'ewallet', 'fas fa-wallet', 1, 8, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
 (9, 'DANA', 'ewallet', 'fas fa-mobile-alt', 1, 9, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
-(10, 'ShopeePay', 'ewallet', 'fas fa-shopping-bag', 1, 10, '2025-06-22 14:41:38', '2025-06-22 14:41:38');
+(10, 'ShopeePay', 'ewallet', 'fas fa-shopping-bag', 1, 10, '2025-06-22 14:41:38', '2025-06-22 14:41:38'),
+(11, 'TEST', 'bank', 'fa-credit-card', 1, 2, '2025-07-17 06:40:11', '2025-07-17 06:40:11');
 
 -- --------------------------------------------------------
 
@@ -394,7 +389,7 @@ ALTER TABLE `website_settings`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `booking_history`
@@ -412,7 +407,7 @@ ALTER TABLE `email_campaigns`
 -- AUTO_INCREMENT for table `newsletter_subscribers`
 --
 ALTER TABLE `newsletter_subscribers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `package_gallery`
@@ -430,7 +425,7 @@ ALTER TABLE `paket`
 -- AUTO_INCREMENT for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
