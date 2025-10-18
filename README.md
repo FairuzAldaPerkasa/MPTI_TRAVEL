@@ -1,13 +1,8 @@
-Tentu, ini draf `README.md` yang menarik dan informatif untuk proyek GitHub Anda, dibuat berdasarkan file-file yang Anda berikan.
-
------
-
-````markdown
 <div align="center">
-  <img src="https://raw.githubusercontent.com/fairuzaldaperkasa/mpti_travel/main/assets/images/logompti.png" alt="Vacationland Logo" width="150"/>
+  <img src="https://raw.githubusercontent.com/fairuzaldaperkasa/mpti_travel/main/assets/images/logompti.png" alt="Vacationland Logo" width="170"/>
   <h1><b>Vacationland Tour & Travel</b></h1>
   <p>
-    <b>Sebuah platform website agen travel dinamis yang dibangun dengan PHP native dan Vanilla JavaScript.</b>
+    <b>Platform Website Agen Travel Dinamis Berbasis PHP Native, dirancang untuk pengelolaan konten yang mudah dan pengalaman pengguna yang modern.</b>
   </p>
   <p>
     <img src="https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP">
@@ -18,126 +13,155 @@ Tentu, ini draf `README.md` yang menarik dan informatif untuk proyek GitHub Anda
   </p>
 </div>
 
-**Vacationland** adalah proyek website travel yang dirancang untuk menjadi portal pemesanan paket wisata yang modern, responsif, dan mudah dikelola. Dilengkapi dengan **Admin Panel** yang lengkap, pengelola dapat dengan mudah mengatur konten paket, galeri, metode pembayaran, hingga melihat riwayat pemesanan.
+**Vacationland** adalah proyek sistem informasi untuk agen travel yang dibangun dari dasar menggunakan PHP native dan Vanilla JavaScript. Proyek ini menyediakan antarmuka yang bersih bagi pengguna untuk menjelajahi paket wisata, serta panel admin yang komprehensif bagi pengelola untuk mengontrol setiap aspek konten website secara dinamis.
 
-## ✨ Fitur Utama
+## ✨ Fitur Unggulan
 
-- **✈️ Manajemen Paket Wisata (CRUD):** Tambah, lihat, edit, dan hapus paket wisata dengan mudah melalui Admin Panel.
-- **🖼️ Galeri Foto Dinamis:** Unggah banyak foto untuk setiap paket, tambahkan caption, dan atur urutannya.
-- **💳 Pengaturan Dinamis:** Kelola informasi kontak, nomor WhatsApp, metode pembayaran, dan pengaturan website lainnya langsung dari admin.
-- **🌍 Dukungan Multi-bahasa:** Sistem terjemahan JSON untuk mendukung Bahasa Indonesia (id) dan Inggris (en).
-- **📋 Riwayat Pemesanan:** Catat dan lihat riwayat pemesanan paket wisata oleh pelanggan.
-- **📧 Fitur Newsletter:** Kumpulkan email subscriber dan kirimkan newsletter promo langsung dari Admin Panel.
-- **🔐 Otentikasi Admin:** Halaman login yang aman untuk melindungi akses ke Admin Panel.
-- **🎨 Frontend Modern & Responsif:** Tampilan yang bersih, modern, dan dapat diakses dengan baik di berbagai perangkat (desktop & mobile).
-- **🚀 Pemuatan Konten Asinkron:** Paket wisata dan detailnya dimuat secara dinamis menggunakan Fetch API, memberikan pengalaman pengguna yang cepat.
+Proyek ini dilengkapi dengan serangkaian fitur yang membuatnya menjadi solusi lengkap untuk agen travel.
+
+### Untuk Pengguna (Frontend)
+- **🎨 Tampilan Modern & Responsif:** Desain antarmuka yang menarik dan beradaptasi dengan baik di berbagai ukuran layar, dari desktop hingga mobile.
+- **✈️ Katalog Paket Dinamis:** Daftar paket wisata dimuat secara asinkron dari database, memastikan data selalu yang terbaru.
+- **📄 Halaman Detail Interaktif:** Halaman detail paket yang kaya informasi, dilengkapi dengan tab untuk *overview*, galeri, *itinerary*, fitur, dan *highlights*.
+- **🌍 Dukungan Multi-bahasa:** Website mendukung Bahasa Indonesia (id) dan Inggris (en) yang dapat diganti oleh pengguna. Sistem terjemahan berbasis JSON ini mencakup semua teks antarmuka.
+- **📱 Tombol Kontak Dinamis:** Tombol WhatsApp dan telepon mengambil nomor tujuan langsung dari database, memudahkan pengguna untuk terhubung.
+- **💳 Metode Pembayaran:** Menampilkan berbagai metode pembayaran yang didukung, yang juga dikelola secara dinamis dari admin panel.
+- **📧 Berlangganan Newsletter:** Pengguna dapat mendaftarkan email mereka untuk mendapatkan pembaruan dan promo.
+
+### Untuk Administrator (Backend)
+- **🔐 Panel Admin Aman:** Halaman admin dilindungi oleh sistem login berbasis sesi dengan password yang di-hash.
+- **📊 Dashboard Informatif:** Halaman utama admin menampilkan statistik kunci seperti total paket, jumlah foto, dan tanggal paket terbaru ditambahkan.
+- **➕ Manajemen Paket (CRUD):**
+    - **Tambah Paket:** Form komprehensif untuk membuat paket baru, termasuk detail dasar, harga, durasi, *highlights*, *inclusions*, *exclusions*, dan *itinerary* harian.
+    - **Edit Paket:** Mengubah semua detail paket yang sudah ada, termasuk opsi untuk mengganti foto.
+    - **Hapus Paket:** Menghapus paket beserta semua file foto terkait dari server.
+- **🖼️ Manajemen Galeri Foto:**
+    - Unggah foto tambahan untuk setiap paket melalui modal interaktif.
+    - Tambah, edit, dan hapus *caption* untuk setiap foto di galeri.
+    - Hapus foto dari galeri satu per satu.
+- **⚙️ Pengaturan Website Dinamis:** Halaman khusus untuk mengubah informasi vital website seperti nomor WhatsApp, email, alamat, dan template pesan WhatsApp tanpa perlu menyentuh kode.
+- **📋 Manajemen Booking:** Mencatat dan melihat riwayat pemesanan yang masuk, lengkap dengan detail pelanggan, status pembayaran, dan status booking.
+- **💳 Manajemen Metode Pembayaran:** Menambah, mengedit, atau menonaktifkan metode pembayaran (seperti transfer bank, e-wallet) yang akan ditampilkan di frontend.
+- **🔑 Ubah Password:** Admin dapat mengubah password login mereka sendiri demi keamanan.
 
 ## 🛠️ Teknologi yang Digunakan
+- **Backend:** PHP 8+ (Native), MySQL / MariaDB
+- **Frontend:** HTML5, CSS3 (Flexbox, Grid), Vanilla JavaScript (ES6+ Fetch API)
+- **Web Server:** Apache (via XAMPP/WAMP)
 
-- **Backend:**
-  - **PHP 8+** (Native, tanpa framework)
-  - **MySQL / MariaDB** untuk database
-- **Frontend:**
-  - **HTML5**
-  - **CSS3** (Flexbox, Grid)
-  - **Vanilla JavaScript (ES6+)** untuk interaktivitas dan pemanggilan API
-- **Web Server:** Apache (direkomendasikan via XAMPP/WAMP)
+## 📂 Struktur Proyek
 
-## ⚙️ Prasyarat & Instalasi
+Struktur folder utama proyek ini diorganisir sebagai berikut untuk memisahkan antara logika backend, tampilan frontend, dan aset.
+fairuzaldaperkasa/mpti_travel/
 
-Pastikan Anda memiliki lingkungan pengembangan web lokal yang sudah terpasang.
+├── admin/ # CSS & JS khusus untuk Admin Panel lama
 
-1.  **Web Server Lokal:**
-    - Unduh dan pasang **[XAMPP](https://www.apachefriends.org/index.html)** atau WAMP.
-    - Jalankan modul **Apache** dan **MySQL**.
+├── assets/ # Aset publik (CSS, JS, gambar, video)
+
+│ ├── css/ # File CSS utama
+
+│ ├── images/ # Gambar untuk UI
+
+│ ├── js/ # File JavaScript utama (termasuk terjemahan)
+
+│ └── video/ # Video untuk hero section
+
+├── BackEnd/ # Semua logika sisi server (PHP)
+
+│ ├── uploads/ # Direktori untuk foto paket yang diunggah
+
+│ │ └── gallery/ # Foto galeri tambahan
+
+│ ├── admin.php # Halaman utama Admin Panel
+
+│ ├── ViewLoginAdmin.php # Skrip login admin
+
+│ ├── get_paket.php # API untuk daftar paket
+
+│ ├── get_package_detail.php # API untuk detail paket
+
+│ ├── paket_travel.sql # File dump database
+
+│ └── ... # File API dan skrip pendukung lainnya
+
+└── FrontEnd/ # Semua file sisi klien (HTML & JS)
+
+├── html/ # Halaman HTML
+
+│ ├── Index.html # Halaman utama
+
+│ ├── package_detail.html
+
+│ └── profile.html
+
+└── js/ # JavaScript khusus halaman
+
+├── package-loader.js
+
+└── package-detail-loader.js
+## ⚙️ Panduan Instalasi
+
+Ikuti langkah-langkah ini untuk menjalankan proyek di lingkungan lokal Anda.
+
+1.  **Prasyarat:**
+    - Pastikan **XAMPP** (dengan Apache dan MySQL) sudah terpasang.
 
 2.  **Clone Repository:**
+    - Clone repository ini ke dalam direktori `htdocs` pada folder instalasi XAMPP Anda.
     ```bash
-    git clone [https://github.com/fairuzaldaperkasa/mpti_travel.git](https://github.com/fairuzaldaperkasa/mpti_travel.git)
+    cd C:\xampp\htdocs
+    git clone [https://github.com/fairuzaldaperkasa/mpti_travel.git](https://github.com/fairuzaldaperkasa/mpti_travel.git) MPTI_TRAVEL
     ```
-    Atau unduh ZIP dan ekstrak ke direktori `htdocs` di dalam folder instalasi XAMPP Anda.
+    - Jika Anda mengunduh sebagai ZIP, ekstrak isinya dan ganti nama foldernya menjadi `MPTI_TRAVEL`.
 
 3.  **Setup Database:**
-    - Buka **phpMyAdmin** (`http://localhost/phpmyadmin`).
+    - Jalankan layanan Apache dan MySQL dari XAMPP Control Panel.
+    - Buka browser dan pergi ke `http://localhost/phpmyadmin`.
     - Buat database baru dengan nama `paket_travel`.
-    - Pilih database `paket_travel`, lalu klik tab **Import**.
-    - Unggah file `BackEnd/paket_travel.sql` untuk membuat semua tabel yang diperlukan beserta data contoh.
+    - Pilih database `paket_travel`, lalu buka tab **Import**.
+    - Klik "Choose File" dan pilih file `MPTI_TRAVEL/BackEnd/paket_travel.sql`.
+    - Klik tombol **Import** di bagian bawah halaman untuk menjalankan proses impor.
 
-4.  **Jalankan Proyek:**
-    - Buka browser dan akses halaman utama:
+4.  **Konfigurasi Koneksi (Opsional):**
+    - Sebagian besar file PHP menggunakan kredensial database default XAMPP (`host: "localhost"`, `user: "root"`, `password: ""`). Jika konfigurasi MySQL Anda berbeda, Anda perlu menyesuaikannya di setiap file PHP yang melakukan koneksi database.
+
+5.  **Jalankan Proyek:**
+    - Buka browser dan akses halaman utama proyek:
       `http://localhost/MPTI_TRAVEL/FrontEnd/html/Index.html`
 
-## 📂 Susunan Proyek
+## 🚀 Cara Penggunaan
 
-````
+### Akses Admin Panel
+Hampir semua konten website dikelola melalui Admin Panel.
 
-/MPTI\_TRAVEL
-├── admin/
-│   ├── css/
-│   └── js/
-├── assets/
-│   ├── css/
-│   ├── images/
-│   ├── js/
-│   └── video/
-├── BackEnd/
-│   ├── uploads/
-│   ├── admin.php         \# Halaman utama Admin Panel
-│   ├── get\_paket.php     \# API untuk mengambil daftar paket
-│   ├── get\_package\_detail.php \# API untuk detail paket
-│   ├── ViewLoginAdmin.php \# Halaman & proses login
-│   └── ...               \# File backend lainnya
-├── FrontEnd/
-│   ├── html/
-│   │   ├── Index.html      \# Halaman utama
-│   │   ├── package\_detail.html
-│   │   └── profile.html
-│   └── js/
-│       ├── package-loader.js
-│       └── package-detail-loader.js
-└── README.md
-
-```
-
-## 🚀 Contoh Penggunaan
-
-### Mengakses Website
-- **Halaman Utama:** Buka `http://localhost/MPTI_TRAVEL/FrontEnd/html/Index.html` untuk melihat daftar paket wisata.
-- **Detail Paket:** Klik tombol "Lihat Detail" pada salah satu paket untuk melihat informasi lengkapnya.
-
-### Mengakses Admin Panel
-1.  Buka halaman login admin:
+1.  **Buka Halaman Login:**
     `http://localhost/MPTI_TRAVEL/BackEnd/ViewLoginAdmin.php`
 
-2.  Gunakan kredensial default untuk login:
-    - **Email:** `admin@vacationland.com` atau `admin@mptitravel.com`
-    - **Password:** `admin123` atau `adminganteng16`
+2.  **Gunakan Kredensial Default:**
+    - **Email:** `admin@vacationland.com` (atau `admin@mptitravel.com`)
+    - **Password:** `admin123` (atau `adminganteng16`)
 
-3.  Setelah login, Anda akan diarahkan ke **Dashboard Admin** dimana Anda dapat mulai mengelola konten website.
+    *Catatan: Kredensial ini mungkin bervariasi tergantung pada data yang ada di file `.sql` Anda. Anda dapat memeriksa tabel `admins` di phpMyAdmin untuk memastikan.*
 
-    - **Tambah Paket Baru:** Navigasi ke tab "Tambah Paket", isi semua detail, unggah 3-6 foto, lalu simpan.
-    - **Edit Paket:** Navigasi ke tab "Paket Travel", lalu klik ikon pensil pada paket yang ingin diubah.
+3.  **Kelola Konten:** Setelah berhasil login, Anda dapat mulai mengelola paket wisata, pengaturan website, melihat riwayat pemesanan, dan fitur lainnya melalui menu navigasi yang tersedia.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/fairuzaldaperkasa/mpti_travel/main/Asset/Layout_Awal.png" alt="Tampilan Proyek" width="700"/>
-</div>
+## 📡 Endpoint API Utama
+
+Proyek ini menggunakan beberapa endpoint API untuk komunikasi antara frontend dan backend.
+
+-   `GET /BackEnd/get_paket.php`: Mengambil daftar semua paket wisata untuk ditampilkan di halaman utama.
+-   `GET /BackEnd/get_package_detail.php`: Mengambil detail lengkap dari satu paket wisata berdasarkan `id`.
+-   `GET /BackEnd/get_settings.php`: Mengambil semua konfigurasi website (kontak, sosial media, dll).
+-   `GET /BackEnd/get_payment_methods.php`: Mengambil daftar metode pembayaran yang aktif.
+-   `POST /BackEnd/admin.php`: Endpoint utama untuk semua aksi dari admin panel (tambah/edit paket, simpan pengaturan, dll).
+-   `POST /BackEnd/upload_additional_photos.php`: Mengunggah foto untuk galeri paket.
 
 ## 🤝 Kontribusi
 
-Kontribusi Anda sangat kami hargai! Jika Anda ingin berkontribusi pada proyek ini, silakan ikuti langkah-langkah berikut:
+Kami sangat terbuka untuk kontribusi! Jika Anda ingin membantu mengembangkan proyek ini, silakan:
 
 1.  **Fork** repository ini.
-2.  Buat *branch* baru untuk fitur Anda (`git checkout -b fitur/FiturKeren`).
-3.  Lakukan perubahan dan **commit** (`git commit -m 'Menambahkan FiturKeren'`).
-4.  **Push** ke *branch* Anda (`git push origin fitur/FiturKeren`).
-5.  Buka **Pull Request**.
-
-## 📄 Lisensi
-
-Proyek ini dilisensikan di bawah **Lisensi MIT**. Lihat file `LICENSE` untuk detail lebih lanjut.
-
----
-<div align="center">
-  Dibuat dengan ❤️ oleh Tim MPTI
-</div>
-```
+2.  Buat *branch* baru (`git checkout -b fitur/NamaFitur`).
+3.  Lakukan perubahan dan **commit** (`git commit -m 'Menambahkan: NamaFitur'`).
+4.  **Push** ke *branch* Anda (`git push origin fitur/NamaFitur`).
+5.  Buat **Pull Request**.
